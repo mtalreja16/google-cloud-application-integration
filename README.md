@@ -1,4 +1,4 @@
-# Google-Application-Integration
+# Google-Cloud-Application-Integration
 
 Repository for Samples related to Google Application Integration
 
