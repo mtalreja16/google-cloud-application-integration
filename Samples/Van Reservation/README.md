@@ -34,8 +34,8 @@ Customer returns the van after trip while agent taking notes/images and confirm 
 
 <h2>Please follow the steps </h2>
 
-[Integration Setup](https://github.com/mtalreja16/Integration-Demo/tree/main/integration-definition)
+[Integration Setup](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/integration-definition)
 
-[Integration Management API](https://github.com/mtalreja16/Integration-Demo/tree/main/integration-lib)
+[Integration Management API](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/lib/integration-lib)
 
-[Reservaton App](https://github.com/mtalreja16/Integration-Demo/tree/main/client-app)
+[Reservaton App](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/client-app)
