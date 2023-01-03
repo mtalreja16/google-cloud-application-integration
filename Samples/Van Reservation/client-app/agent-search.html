@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap first, custom second to override bootstrap-->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/agent-search.css">
+
+</head>
+
+<body>
+  <!-- navbar with a toggler -->
+  <nav class="navbar navbar-dark navbar-expand-md">
+    <div class="container-lg">
+      <a href="#" class="navbar-brand">Cymbal Van Rentals</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      </div>
+    </div>
+  </nav>
+
+    <div class="container mt-5">
+      <h1 class="mb-5">Find Reservation</h1>
+      <form>
+        <div class="form-group">
+          <label for="searchTerm">Enter Reservation #</label>
+          <input type="text" class="input" id="searchTerm" placeholder="Search...">
+          <button type="submit" class="btn btn-primary" id="searchButton">Search</button>
+        </div>
+       </form>
+
+       <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel"> Reservation Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="modalContent">
+              <!-- Modal content will be added here -->
+            </div>
+            <div class="modal-footer" id="modelfooter">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="searchResults"></div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script>
+       function submitVanPickedup(id) {
+        var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
+       fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=reservation-demo2&trigger=reservation-demo2_API_1', {
+          method: 'POST',
+          body: JSON.stringify({
+            "Operation": "NA",
+            "reservation-payload": "{}",
+            "reservationid": data.id + ".0"
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          }).then(response => response.json())
+            .then(data => {});
+        }
+
+        function submitVanReturned(id) {
+          var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
+        // Prevent the form from submitting and refreshing the page
+        fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=reservation-demo2&trigger=reservation-demo2_API_2', {
+          method: 'POST',
+          body: JSON.stringify({
+            
+            "Operation": "NA",
+            "reservation-payload": "{}",
+            "reservationid": data.id + ".0"
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          }).then(response => response.json())
+            .then(data => {});
+        }
+    
+        // When the search button is clicked
+      $('#searchButton').click(function(e) {
+        // Prevent the form from submitting and refreshing the page
+        e.preventDefault();
+        fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=reservation-demo2&trigger=reservation-demo_API_1', {
+          method: 'POST',
+          body: JSON.stringify({
+            "Operation": "LIST",
+            "reservation-payload": "{}"
+          }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+          }).then(response => response.json())
+            .then(data => {
+              // Extract data points from payload
+              //console.log(JSON.stringify(data.outputParameters.reservations));
+              if(data.outputParameters.reservations == '')
+              {
+                const div = document.getElementById('searchResults');
+                div.innerHTML = "<p>No reservations found!!</p>";
+                return;
+              }
+              const dataPoints = data.outputParameters.reservations;
+
+              let html = '<table class="table"><tr>';
+
+              // Add table headers
+              html += '<th>Name</th>';
+              html += '<th>Email</th>';
+              html += '<th>License ID</th>';
+              html += '<th>SKU ID</th>';
+              html += '<th>Pickup Date</th>';
+              html += '<th>Dropoff Date</th>';
+              html += '<th>Status</th>';
+              html += '<th>Action</th>';
+              html += '</tr>';
+              
+              // Add table rows
+              dataPoints.forEach(dataPoint => {
+                html += '<tr>';
+                html += `<td id="recordId">${dataPoint.name}</td>`;
+                html += `<td>${dataPoint.email}</td>`;
+                html += `<td>${dataPoint.licenseid}</td>`;
+                html += `<td>${dataPoint.sku_id}</td>`;
+                html += `<td>${dataPoint.pickupdate}</td>`;
+                html += `<td>${dataPoint.dropoffdate}</td>`;
+                html += `<td>${dataPoint.status}</td>`;
+                sessionStorage.setItem('myitem-' + dataPoint.id, JSON.stringify(dataPoint))
+                var myid = 'myitem-' + dataPoint.id;
+                if(dataPoint.status == 'Reserved'){
+                  html += `<td><a href="#" onclick=viewDetails('true','${myid}');>Van Pickup </a></td>`
+                }
+                else if(dataPoint.status == 'Fulfilled'){
+                  html += `<td><a href="#" onclick=viewDetails('false','${myid}');>Van Return </a></td>`
+                }
+                html += '</tr>';
+              });
+
+              html += '</table>';
+              // Add HTML table to div element
+              const div = document.getElementById('searchResults');
+              div.innerHTML = html;
+            });
+          });
+      
+      function viewDetails(pickup, id) {
+            // Parse data object from string
+            var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
+            let html = '<table>';
+            // Add table rows
+            Object.entries(data).forEach(([key, value]) => {
+              html += `<tr><td>${key}:</td><td>${value}</td></tr>`;
+            });
+            html += `<tr><td>Add Notes: </td><td><input type=text></input></td></tr>`;
+            html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
+            html += '</table>';
+            if(pickup == 'true')
+            {
+              footerhtml =  `<button type="button" class="btn btn-secondary" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
+            }
+            else
+            {
+              footerhtml =  `<button type="button" class="btn btn-secondary" onclick="submitVanReturned('${id}')"id="vanreturn">Van Returned</button>`
+            }
+            // Set modal content
+            $('#modalContent').html(html);
+            $('#modelfooter').html(footerhtml);
+            // Open Bootstrap modal
+            $('#myModal').modal('show');
+        }
+   
+    </script>
+  </body>
+</html>
