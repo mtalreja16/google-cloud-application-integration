@@ -69,6 +69,7 @@ $form.submit(function(e) {
   data.totalamount = sessionStorage.getItem('vanDRent');
   data.depositamount = sessionStorage.getItem('vanDRent');
   data.gender = 1;
+  data.vanid = sessionStorage.getItem('vanID');
   var play = JSON.stringify(data);
 
 

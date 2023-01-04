@@ -1,6 +1,8 @@
-   function submitVanPickedup(id) {
+const $alertContainer = $('.alert-container');
+
+function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
-   fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=pickupVan', {
+   fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=pikcupvan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -10,7 +12,32 @@
         'Content-Type': 'application/json'
       }
       }).then(response => response.json())
-        .then(data => {});
+        .then(data => {
+          var out = JSON.stringify(data);
+          if(data.executionId!=null)
+          {
+            $alertContainer.append(
+              `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+                <p class="mb-0">Van Pickup was complete!!
+                  ${out}
+                </p>
+              </div>`);
+             $alertContainer.show();
+             $alertContainer[0].scrollIntoView(); 
+             $('#searchButton').click();
+          }
+          else
+          {
+            $alertContainer.append(
+              `<div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+              <h5 class="alert-heading">Ohhh no, we ran into issue, try again later!</h5>
+                <p class="mb-0">${out}</p>
+              </div>`);
+             $alertContainer.show();
+             $alertContainer[0].scrollIntoView(); 
+      }
+      });
+      
     }
 
 
@@ -26,10 +53,32 @@
       headers: {
         'Content-Type': 'application/json'
       }
-      }).then(response => response.json())
-        .then(data => {});
-    }
-
+    }).then(response => response.json())
+    .then(data => {
+      var out = JSON.stringify(data);
+      if(data.executionId!=null)
+      {
+        $alertContainer.append(
+          `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <p class="mb-0">Van Pickup was complete!!
+              ${out}
+            </p>
+          </div>`);
+         $alertContainer.show();
+         $alertContainer[0].scrollIntoView(); 
+         $('#searchButton').click();
+      }
+      else
+      {
+        $alertContainer.append(
+          ` <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <p class="mb-0"> Ohhh no, we ran into issue, try again later! ${out}</p>
+          </div>`);
+         $alertContainer.show();
+         $alertContainer[0].scrollIntoView(); 
+  }
+  });
+}
     // When the search button is clicked
   $('#searchButton').click(function(e) {
     // Prevent the form from submitting and refreshing the page
@@ -57,6 +106,7 @@
           let html = '<table class="table"><tr>';
 
           // Add table headers
+          html += '<th> # </th>';
           html += '<th>Name</th>';
           html += '<th>Email</th>';
           html += '<th>License ID</th>';
@@ -70,6 +120,7 @@
           // Add table rows
           dataPoints.forEach(dataPoint => {
             html += '<tr>';
+            html += `<td >${dataPoint.id}</td>`;
             html += `<td id="recordId">${dataPoint.name}</td>`;
             html += `<td>${dataPoint.email}</td>`;
             html += `<td>${dataPoint.licenseid}</td>`;
@@ -103,16 +154,16 @@
         Object.entries(data).forEach(([key, value]) => {
           html += `<tr><td>${key}:</td><td>${value}</td></tr>`;
         });
-        html += `<tr><td>Add Notes: </td><td><input type=text></input></td></tr>`;
+        html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
         html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
         html += '</table>';
         if(pickup == 'true')
         {
-          footerhtml =  `<button type="button" class="btn btn-secondary" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
+          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
         }
         else
         {
-          footerhtml =  `<button type="button" class="btn btn-secondary" onclick="submitVanReturned('${id}')"id="vanreturn">Van Returned</button>`
+          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanReturned('${id}')"id="vanreturn">Van Returned</button>`
         }
         // Set modal content
         $('#modalContent').html(html);

@@ -20,7 +20,7 @@ fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-d
            text = `
            <label class="vand-text"> ${van.rentperday}</label>$/day &nbsp;&nbsp;&nbsp;&nbsp;
            <label class="vand-text"> ${van.rentpermonth}</label>$/Month
-           <a href="form.html" type="button" class="btn btn-primary " onclick="setselectedValue('${van.brand} ${van.model}','${van.rentperday}')" id="btn-reserve">Reserve</a>`
+           <a href="form.html" type="button" class="btn btn-primary " onclick="setselectedValue('${van.brand} ${van.model}','${van.rentperday}', '${van.id}')" id="btn-reserve">Reserve</a>`
         }
         else{
            text = `
@@ -50,10 +50,11 @@ fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-d
 
 //Code that adds the vans in the above array to the vand-collection
 
-function setselectedValue(title, rent) 
+function setselectedValue(title, rent, id) 
 {
   sessionStorage.setItem('vanTitle', title);
   sessionStorage.setItem('vanDRent', rent);
+  sessionStorage.setItem('vanID', id);
 }
 
 // const $reserveButtons = $('.btn-reserve'); // will use later
