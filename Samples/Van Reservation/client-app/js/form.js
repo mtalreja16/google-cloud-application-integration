@@ -4,15 +4,13 @@ const $visaComponents = $(".visaComponents");
 const $cashComponents = $(".cashComponents");
 const $vanModel = $('.van-model');
 const $vanDRent = $('.day-rent');
-const $vanMRent = $('.month-rent');
 
 $visaComponents.hide();
 $alertContainer.hide();
 
 
 $vanModel[0].innerText += ` ${sessionStorage.getItem('vanTitle')}`;
-$vanDRent[0].innerText += sessionStorage.getItem('vanDRent') + "/day";
-$vanMRent[0].innerText += sessionStorage.getItem('vanMRent') + "/month";
+$vanDRent[0].innerText += sessionStorage.getItem('vanDRent') + "$/day";
 
 if(sessionStorage.getItem('vanTitle') === null) {
   $('form').remove();
@@ -61,23 +59,22 @@ $form.submit(function(e) {
   data.expiry = document.getElementById("expiry").value;
   data.cvv = document.getElementById("cvv").value;
   data.email = document.getElementById("email").value;
-  data.name = document.getElementById("name").value;
+  data.name = document.getElementById("full-name").value;
   data.state = document.getElementById("state").value;
   data.licenseid = document.getElementById("licenseid").value;
   data.dob = document.getElementById("dob").value;
   data.sku_id =  ` ${sessionStorage.getItem('vanTitle')}`;
   data.rate = sessionStorage.getItem('vanDRent');
   data.taxamount = sessionStorage.getItem('vanDRent');
-  data.totalamount = sessionStorage.getItem('vanMRent');
+  data.totalamount = sessionStorage.getItem('vanDRent');
   data.depositamount = sessionStorage.getItem('vanDRent');
   data.gender = 1;
   var play = JSON.stringify(data);
 
 
-  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=reservation-demo2&trigger=reservation-demo_API_1', {
+  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=manage-reservation_API_2', {
     method: 'POST',
     body: JSON.stringify({
-      "Operation": "POST",
       "reservation-payload": play
     }),
     headers: {
@@ -85,12 +82,39 @@ $form.submit(function(e) {
     }
   }).then(response => response.json())
   .then(data => {
-    $alertContainer.show();
-    $alertContainer[0].scrollIntoView(); // Use index to be able to use vanilla JS DOM functions
+    var out = JSON.stringify(data);
+    if(data.executionId!=null)
+    {
+        
+      $alertContainer.append(
+        `<div class="alert alert-success mb-4" role="alert">
+          <h5 class="alert-heading">Order Successful!</h5>
+          <p class="mb-0">An email will be sent to you within 30 minutes with the order details. <br>
+            Thank you for choosing Cymbal Van Rentals.
+            ${out}
+          </p>
+        </div>`);
+
+       $alertContainer.show();
+       $alertContainer[0].scrollIntoView(); 
+    }
+    else
+    {
+      $alertContainer.append(
+        ` 
+        <div class="alert alert-danger mb-4" role="alert">
+        <h5 class="alert-heading">Ohhh no, we ran into issue, try later!</h5>
+          <p class="mb-0">${out}</p>
+        </div>`);
+
+       $alertContainer.show();
+       $alertContainer[0].scrollIntoView(); 
+
+    }
     
   })
   .catch(err => {
-    console.error(err);
+      
   });
 
 });

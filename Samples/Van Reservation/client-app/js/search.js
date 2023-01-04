@@ -1,90 +1,60 @@
-//creating an array to insert vans images and info
-const vanList = [
-  {
-    image: "img/image1.jpg",
-    brand: "Thor Industries",
-    model: 2018,
-    type: "family-van",
-    rentperday: 150,
-    description: "Sleep 8, 32 Feet, Class A",
-    rentpermonth: 1350,
-  },
-  {
-    image: "img/image2.jpg",
-    brand: "Mercedes Benz",
-    model: 2012,
-    type: "sport-van",
-    rentperday: 175,
-    description: "Sleep 6, 20 Feet, Class C",
-    rentpermonth: 2500,
-  },
-  {
-    image: "img/image3.jpg",
-    brand: "Forest River",
-    model: 2018,
-    type: "sport-van",
-    rentperday: 145,
-    description: "Sleep 6, 20 Feet, Class C",
-    rentpermonth: 1200,
-  },
-  {
-    image: "img/image4.jpg",
-    brand: "Winnebago",
-    model: 2017,
-    type: "family-van",
-    rentperday: 155,
-    description: "Sleep 8, 32 Feet, Class A",
-    rentpermonth: 1360,
-  },
-  {
-    image: "img/image5.jpg",
-    brand: "Jayco",
-    model: 2016,
-    type: "family-van",
-    rentperday: 140,
-    description: "Sleep 8, 32 Feet, Class A",
-    rentpermonth: 1150,
-  },
-  {
-    image: "img/image6.jpg",
-    brand: "Newmar",
-    model: 2008,
-    type: "sport-van",
-    rentperday: 150,
-    description: "Sleep 6, 20 Feet, Class C",
-    rentpermonth: 1400,
-  }
-];
+window.onload = function(e) {
+
+ 
+const $vandCollection = $('.vand-collection');
+fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=getinventory', {
+   method: 'POST',
+   body: JSON.stringify({
+    "reservation-payload": "{}",
+    "reservationid": "0.0"
+  }),
+   headers: {
+     'Content-Type': 'application/json'
+   }
+   }).then(response => response.json())
+     .then(data => { 
+      const vans = data.outputParameters.vanlist;
+      vans.forEach(van => {
+        var text = ""
+        if(!van.reserved){
+           text = `
+           <label class="vand-text"> ${van.rentperday}</label>$/day &nbsp;&nbsp;&nbsp;&nbsp;
+           <label class="vand-text"> ${van.rentpermonth}</label>$/Month
+           <a href="form.html" type="button" class="btn btn-primary " onclick="setselectedValue('${van.brand} ${van.model}','${van.rentperday}')" id="btn-reserve">Reserve</a>`
+        }
+        else{
+           text = `
+          <div class="form-group">
+           <input type="text" class="form-control form-control-sm" placeholder="emai@email.com"> </input>
+         </div>
+           <div class="form-group">
+           <div class="form-check">
+             <input class="form-check-input" type="checkbox" id="gridCheck">
+             <label class="form-check-label" for="gridCheck"> Notify Me</label>
+           </div>`
+        }
+        $vandCollection.append(`
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="vand my-2 ${van.type}" data-van="${van.type}">
+            <img src="${van.image}" class="vand-img-top">
+            <div class="vand-body">
+              <h5 class="vand-title font-weight-bold">${van.brand} ${van.model}</h5>
+              <p class="vand-text text-muted font-weight-light">${van.description}</p>
+              <hr>
+              ${text}
+            </div>
+          </div>
+        </div>`);}
+        )});
+      }
 
 //Code that adds the vans in the above array to the vand-collection
-const $vandCollection = $('.vand-collection');
-vanList.forEach(van => {
-  $vandCollection.append(`
-  <div class="col-12 col-md-6 col-lg-4">
-    <div class="vand my-2 ${van.type}" data-van="${van.type}">
-      <img src="${van.image}" class="vand-img-top">
-      <div class="vand-body">
-        <h5 class="vand-title font-weight-bold">${van.brand} ${van.model}</h5>
-        <p class="vand-text text-muted font-weight-light">${van.description}</p>
-        <hr>
-         <label class="vand-text"> ${van.rentperday}</label>/day &nbsp;&nbsp;&nbsp;&nbsp;
-         <label class="vand-text"> ${van.rentpermonth}</label>/Month
-        <a href="form.html" class="btn btn-outline-primary btn-reserve">Reserve</a>
-      </div>
-    </div>
-  </div>
-  `);
-});
 
-$('.btn-reserve').click(function(e) {
-  let reservedVanTitle = $(this).parent().children()[0].innerText;
-  let reservedVanDRent = $(this).parent().children()[3].innerText;
-  let reservedVanMRent = $(this).parent().children()[4].innerText;
-
-  sessionStorage.setItem('vanTitle', reservedVanTitle);
-  sessionStorage.setItem('vanDRent', reservedVanDRent);
-  sessionStorage.setItem('vanMRent', reservedVanMRent);
-});
+function setselectedValue(title, rent) 
+{
+  sessionStorage.setItem('vanTitle', title);
+  sessionStorage.setItem('vanDRent', rent);
+}
 
 // const $reserveButtons = $('.btn-reserve'); // will use later
 
