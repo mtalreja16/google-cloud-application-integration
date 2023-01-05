@@ -2,6 +2,7 @@ const $alertContainer = $('.alert-container');
 
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
+    console.log(data)
    fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=pikcupvan', {
       method: 'POST',
       body: JSON.stringify({
@@ -14,6 +15,7 @@ function submitVanPickedup(id) {
       }).then(response => response.json())
         .then(data => {
           var out = JSON.stringify(data);
+          
           if(data.executionId!=null)
           {
             $alertContainer.append(
@@ -22,7 +24,7 @@ function submitVanPickedup(id) {
                   ${out}
                 </p>
               </div>`);
-             $alertContainer.show();
+            $alertContainer.show();
              $alertContainer[0].scrollIntoView(); 
              $('#searchButton').click();
           }
@@ -41,7 +43,7 @@ function submitVanPickedup(id) {
     }
 
 
-    function submitVanReturned(id) {
+  function submitVanReturned(id) {
       var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     // Prevent the form from submitting and refreshing the page
     fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=returnVan', {
@@ -56,11 +58,12 @@ function submitVanPickedup(id) {
     }).then(response => response.json())
     .then(data => {
       var out = JSON.stringify(data);
+      
       if(data.executionId!=null)
       {
         $alertContainer.append(
           `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-            <p class="mb-0">Van Pickup was complete!!
+            <p class="mb-0">Van Return was complete!!
               ${out}
             </p>
           </div>`);
@@ -76,7 +79,47 @@ function submitVanPickedup(id) {
           </div>`);
          $alertContainer.show();
          $alertContainer[0].scrollIntoView(); 
+      }
+    });
   }
+
+  function submitApproveRequest(id) {
+    var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
+  // Prevent the form from submitting and refreshing the page
+  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/resume?project=integration-demo-364406&region=us-west1&name=manage-reservation&executionId=' + data.execution_id , {
+    method: 'POST',
+    body: JSON.stringify({
+      "reservation-payload": "{}",
+      "reservationid": data.id + ".0"
+    }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(response => response.json())
+  .then(data => {
+    var out = JSON.stringify(data);
+    
+    if(data.executionId!=null)
+    {
+      $alertContainer.append(
+        `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+          <p class="mb-0">Van Return was complete!!
+            ${out}
+          </p>
+        </div>`);
+       $alertContainer.show();
+       $alertContainer[0].scrollIntoView(); 
+       $('#searchButton').click();
+    }
+    else
+    {
+      $alertContainer.append(
+        ` <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+          <p class="mb-0"> Ohhh no, we ran into issue, try again later! ${out}</p>
+        </div>`);
+       $alertContainer.show();
+       $alertContainer[0].scrollIntoView(); 
+    }
   });
 }
     // When the search button is clicked
@@ -131,10 +174,13 @@ function submitVanPickedup(id) {
             sessionStorage.setItem('myitem-' + dataPoint.id, JSON.stringify(dataPoint))
             var myid = 'myitem-' + dataPoint.id;
             if(dataPoint.status == 'Reserved'){
-              html += `<td><a href="#" onclick=viewDetails('true','${myid}');>Van Pickup </a></td>`
+              html += `<td><a href="#" onclick=viewDetails('Reserved','${myid}');>Van Pickup </a></td>`
             }
             else if(dataPoint.status == 'Fulfilled'){
-              html += `<td><a href="#" onclick=viewDetails('false','${myid}');>Van Return </a></td>`
+              html += `<td><a href="#" onclick=viewDetails('Fulfilled','${myid}');>Van Return </a></td>`
+            }
+            else if(dataPoint.status == 'Initiated'){
+              html += `<td><a href="#" onclick=viewDetails('Initiated','${myid}');>Approve Reservation </a></td>`
             }
             html += '</tr>';
           });
@@ -157,13 +203,17 @@ function submitVanPickedup(id) {
         html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
         html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
         html += '</table>';
-        if(pickup == 'true')
+        if(pickup == 'Reserved')
         {
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
         }
-        else
+        else if(pickup == 'Fulfilled')
         {
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanReturned('${id}')"id="vanreturn">Van Returned</button>`
+        }
+        else
+        {
+          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitApproveRequest('${id}')"id="vanreturn">Reservation Confirmed</button>`
         }
         // Set modal content
         $('#modalContent').html(html);

@@ -147,13 +147,13 @@ func execIntegration(integrationsService *integrations.Service, project string, 
 }
 
 func liftIntegration(integrationsService *integrations.Service, project string, location string, name string, executionId string) ([]byte, error) {
-	//construct the parent
 
-	parent := fmt.Sprintf("projects/%s/locations/%s/integrations/%s/executions/%s/-", project, location, name, executionId)
+	parent := fmt.Sprintf("projects/%s/locations/%s/products/%s/integrations/%s/executions/%s/suspensions/-", project, location, "apigee", name, executionId)
 
 	client := integrations.NewProjectsLocationsProductsIntegrationsExecutionsSuspensionsService(integrationsService)
 
 	suspensionRequest := integrations.GoogleCloudIntegrationsV1alphaLiftSuspensionRequest{}
+
 	suspensionRequest.SuspensionResult = "Done"
 
 	response, err := client.Lift(parent, &suspensionRequest).Do()
