@@ -25,13 +25,16 @@ https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGI
 
 ```sh
 export TOKEN=$(gcloud auth application-default print-access-token)
+export EXECUTION_ID=507585c6-c288-493b-b299-c4abbb404596
+export SUSPENSION_ID=e55b07b9-cd53-48b0-9765-3b3c5b7b374e
+export EXECUTION_ID2=39e1452a-1b67-4b07-ae24-82a725ae21a7
 
 curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST \
-https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/507585c6-c288-493b-b299-c4abbb404596/suspensions/e55b07b9-cd53-48b0-9765-3b3c5b7b374e:lift \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/$EXECUTION_ID/suspensions/$SUSPENSION_ID:lift \
 -d '{ "suspensionResult":"DONE"}'
 
 curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST \
-https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/39e1452a-1b67-4b07-ae24-82a725ae21a7/suspensions/-:lift \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/$EXECUTION_ID2/suspensions/-:lift \
 -d '{ "suspensionResult":"DONE"}'
 ```
 
