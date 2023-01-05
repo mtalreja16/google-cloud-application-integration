@@ -27,8 +27,8 @@ Scatter-Gather
 * Cloud SQL - MySQL
 <h4>Setup Cloud SQL Auth Proxy</h4>
 
-wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
-chmod +x cloud_sql_proxy
+   wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+   chmod +x cloud_sql_proxy
 
 <h4>Open 2 Cloud Shell</h4>
 
@@ -42,7 +42,7 @@ chmod +x cloud_sql_proxy
 * Create database name : catalog
 * MySQL Schema : Create tables and stored procedure [https://github.com/mtalreja16/Integration-Demo/blob/main/mysql-scripts/reservation_db.sql](https://github.com/mtalreja16/Integration-Demo/blob/main/mysql-scripts/reservation_db.sql)
 
-<h3>**Integration Setup **</h3>
+**Integration Setup**
 
 * Create Integration Connector for MySQL.
 * Import reservation-demov2-v10.json file in the application integration.
