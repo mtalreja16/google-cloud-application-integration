@@ -2,7 +2,7 @@ window.onload = function(e) {
 
  
 const $vandCollection = $('.vand-collection');
-fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=getinventory', {
+fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=getInventory', {
    method: 'POST',
    body: JSON.stringify({
     "reservation-payload": "{}",

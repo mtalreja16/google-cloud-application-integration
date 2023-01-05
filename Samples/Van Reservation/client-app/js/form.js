@@ -73,7 +73,7 @@ $form.submit(function(e) {
   var play = JSON.stringify(data);
 
 
-  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=manage-reservation_API_2', {
+  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=createReservation', {
     method: 'POST',
     body: JSON.stringify({
       "reservation-payload": play

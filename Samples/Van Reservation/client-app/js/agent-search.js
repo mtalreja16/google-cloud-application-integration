@@ -1,9 +1,11 @@
 const $alertContainer = $('.alert-container');
+const $url = 'https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation'
+const $resumeurl = 'https://integration-lib-eiiwtomg2a-uc.a.run.app/resume?project=integration-demo-364406&region=us-west1&name=manage-reservation'
 
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     console.log(data)
-   fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=pikcupvan', {
+   fetch($url + '&trigger=pickupVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -15,7 +17,6 @@ function submitVanPickedup(id) {
       }).then(response => response.json())
         .then(data => {
           var out = JSON.stringify(data);
-          
           if(data.executionId!=null)
           {
             $alertContainer.append(
@@ -45,12 +46,18 @@ function submitVanPickedup(id) {
 
   function submitVanReturned(id) {
       var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
-    // Prevent the form from submitting and refreshing the page
-    fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=returnVan', {
+      var claim = 'NA';
+      if(document.getElementById("Resend").checked)
+      {
+        claim = 'Process'
+      }
+      // Prevent the form from submitting and refreshing the page
+    fetch($url + '&trigger=returnVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
-        "reservationid": data.id + ".0"
+        "reservationid": data.id + ".0",
+        "processclaim": claim
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -85,21 +92,21 @@ function submitVanPickedup(id) {
 
   function submitApproveRequest(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
-  // Prevent the form from submitting and refreshing the page
-  fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/resume?project=integration-demo-364406&region=us-west1&name=manage-reservation&executionId=' + data.execution_id , {
-    method: 'POST',
-    body: JSON.stringify({
-      "reservation-payload": "{}",
-      "reservationid": data.id + ".0"
-    }),
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }).then(response => response.json())
-  .then(data => {
-    var out = JSON.stringify(data);
+    // Prevent the form from submitting and refreshing the page
+    fetch($resumeurl + '&executionId=' + data.execution_id, {
+      method: 'POST',
+      body: JSON.stringify({
+        "reservation-payload": "{}",
+        "reservationid": data.id + ".0"
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(response => response.json())
+    .then(data => {
+      var out = JSON.stringify(data);
     
-    if(data.executionId!=null)
+    if(data.eventExecutionInfoId!=null)
     {
       $alertContainer.append(
         `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -121,12 +128,12 @@ function submitVanPickedup(id) {
        $alertContainer[0].scrollIntoView(); 
     }
   });
-}
+  }
     // When the search button is clicked
   $('#searchButton').click(function(e) {
     // Prevent the form from submitting and refreshing the page
     e.preventDefault();
-    fetch('https://integration-lib-eiiwtomg2a-uc.a.run.app/run?project=integration-demo-364406&region=us-west1&name=manage-reservation&trigger=manage-reservation_API_1', {
+    fetch($url + '&trigger=getReservation', {
     method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}"
@@ -146,7 +153,7 @@ function submitVanPickedup(id) {
           }
           const dataPoints = data.outputParameters.reservations;
 
-          let html = '<table class="table"><tr>';
+          let html = '<table class="table table-sm"><tr>';
 
           // Add table headers
           html += '<th> # </th>';
@@ -200,21 +207,26 @@ function submitVanPickedup(id) {
         Object.entries(data).forEach(([key, value]) => {
           html += `<tr><td>${key}:</td><td>${value}</td></tr>`;
         });
-        html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
-        html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
-        html += '</table>';
         if(pickup == 'Reserved')
         {
+          html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
+          html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
         }
         else if(pickup == 'Fulfilled')
         {
-          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanReturned('${id}')"id="vanreturn">Van Returned</button>`
+          html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
+          html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
+          html += `<tr><td>Process for Claims </td><td><div class="bootstrap-switch-square">
+                    <input type="checkbox" data-toggle="switch" name="Resend" id="Resend" />
+                  </div></td></tr>`;
+          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanReturned('${id}')" id="vanreturn">Van Returned</button>`
         }
         else
         {
-          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitApproveRequest('${id}')"id="vanreturn">Reservation Confirmed</button>`
+          footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitApproveRequest('${id}')" id="reservationconfirm">Reservation Confirmed</button>`
         }
+        html += '</table>';
         // Set modal content
         $('#modalContent').html(html);
         $('#modelfooter').html(footerhtml);
