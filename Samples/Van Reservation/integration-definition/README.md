@@ -40,13 +40,16 @@ Fire-n-Forget
 
 * mysql -u root -p --host 127.0.0.1 --port 3306 
 * Create database name : catalog
-* MySQL Schema : Create tables and stored procedure [https://github.com/mtalreja16/Integration-Demo/blob/main/mysql-scripts/reservation_db.sql](https://github.com/mtalreja16/Integration-Demo/blob/main/mysql-scripts/reservation_db.sql)
+* MySQL Schema : Create tables and stored procedure [https://github.com/mtalreja16/google-cloud-application-integration/tree/main/Samples/Van%20Reservation/mysql-scripts](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/Samples/Van%20Reservation/mysql-scripts)
 
 **Integration Setup**
 
-* Create Integration Connector for MySQL.
-* Import reservation-demov2-v10.json file in the application integration.
-* We are using mail connector, make sure to change the email address in the integration after Importing.
+* Create Integration Connector for MySQL and name it "reservationdb
+* Create Pub/Sub Connector with topic inventory and inventory-sub and name it "inventory"
+* Create SFTP Connector - use host and credential from here https://test.rebex.net/ and name it outdoorsy-partner-feed
+* Create GCS Connector - for give your project name only and name it rentalvanwalkthrough
+* Import manage-reservation.json file in the application integration.
+* <b>We are using mail connector, make sure to change the email address in the integration after Importing.</b>
 
 
 
