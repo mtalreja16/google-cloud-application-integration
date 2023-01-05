@@ -10,17 +10,17 @@ API Trigger
 Cloud SQL Connector
 REST API Task
 Email Task 
-Approval Task
+Suspend Task
+Pub/Sub Connector
+Cloud Functions Task
 GCS Connector - coming soon...
-Pub/Sub Connector - comming soon...
 
 **Integration Pattern(s)**
 API Trigger
 Fire-n-Forget
-Scatter-Gather
 
 
-<h3>**Prerequisite**</h3>
+**Prerequisite**
 
 
 <h4>Create Database</h4>
