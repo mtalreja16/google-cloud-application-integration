@@ -46,31 +46,7 @@ chmod +x cloud_sql_proxy
 
 * Create Integration Connector for MySQL.
 * Import reservation-demov2-v10.json file in the application integration.
-* We are using approval and mail connector, make sure to change the email address in the integration after Importing.
+* We are using mail connector, make sure to change the email address in the integration after Importing.
 
-Use Following Input to test
-
-* Operation - "POST"
-* reservationId - ""
-* reservation-payload -
-  {
-  "pickupdate": "2022-10-28",
-  "dropoffdate": "2022-11-03",
-  "rate": "200",
-  "taxamount": "100",
-  "totalamount": "800",
-  "depositamount": "1000",
-  "sku_id": "Van-1234567",
-  "configuration": "Kitchen-Equipments, Vacuum Cleaner, GPS",
-  "card": "1234-5678-9101-1121",
-  "expiry": "2025-01-01",
-  "cvv": "123",
-  "email": "manojtrek@gmail.com",
-  "name": "John Doe",
-  "state": "CA",
-  "licenseid": "JS500GB",
-  "dob": "2000-01-01",
-  "gender": 1
-}
 
 
