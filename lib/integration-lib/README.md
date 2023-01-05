@@ -12,25 +12,39 @@ This is fairly straightforward, here are some commnds which will help you.
 
 <h4>KickOff Integration</h4>
 
+```sh
 export TOKEN=$(gcloud auth application-default print-access-token)
+export REGION=us-west1
+export PROJECT=integration-demo-364406
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST  https://us-west1-integrations.googleapis.com/v1/projects/integration-demo-364406/locations/us-west1/integrations/reservation-demo`:execute`
+curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo`:execute`
+```
 
 <h4>Resume Integration</h4>
 
+```sh
 export TOKEN=$(gcloud auth application-default print-access-token)
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST  https://us-west1-integrations.googleapis.com/v1/projects/integration-demo-364406/locations/us-west1/integrations/reservation-demo/executions/507585c6-c288-493b-b299-c4abbb404596/suspensions/e55b07b9-cd53-48b0-9765-3b3c5b7b374e:lift -d '{ "suspensionResult":"DONE"}'
+curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/507585c6-c288-493b-b299-c4abbb404596/suspensions/e55b07b9-cd53-48b0-9765-3b3c5b7b374e:lift \
+-d '{ "suspensionResult":"DONE"}'
 
-export TOKEN=$(gcloud auth application-default print-access-token)
-
-curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST  https://us-west1-integrations.googleapis.com/v1/projects/integration-demo-364406/locations/us-west1/integrations/reservation-demo/executions/39e1452a-1b67-4b07-ae24-82a725ae21a7/suspensions/-:lift -d '{ "suspensionResult":"DONE"}'
+curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" -X POST \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/39e1452a-1b67-4b07-ae24-82a725ae21a7/suspensions/-:lift \
+-d '{ "suspensionResult":"DONE"}'
+```
 
 <h4>Download Logs</h4>
 
+```sh
 export TOKEN=$(gcloud auth application-default print-access-token)
+export REGION=us-west1
+export PROJECT=integration-demo-364406
 
-curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json"  https://us-west1-integrations.googleapis.com/v1/projects/integration-demo-364406/locations/us-west1/integrations/reservation-demo/executions/cba2de38-4d3c-41ed-800f-9e16da017ef7
+curl -H "Authorization: Bearer $TOKEN" -H "Content-type: application/json" \
+https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGION/integrations/reservation-demo/executions/cba2de38-4d3c-41ed-800f-9e16da017ef7
+```
 
 <h3> Through go sdk ONLY</h3>
 
