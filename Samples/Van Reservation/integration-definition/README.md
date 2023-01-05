@@ -32,11 +32,11 @@ chmod +x cloud_sql_proxy
 
 <h4>Open 2 Cloud Shell</h4>
 
-**Cloud Shell Window 1**
+*Cloud Shell Window 1*
 
 ./cloud_sql_proxy -instances=integration-demo-364406:us-west1:integration-demo=tcp:3306
 
-**Cloud Shell Window 2**
+*Cloud Shell Window 2*
 
 * mysql -u root -p --host 127.0.0.1 --port 3306 
 * Create database name : catalog
