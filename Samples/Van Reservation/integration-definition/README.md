@@ -30,7 +30,7 @@ Scatter-Gather
 wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
 chmod +x cloud_sql_proxy
 
-**Open 2 Cloud Shell**
+<h4>Open 2 Cloud Shell</h4>
 
 **Cloud Shell Window 1**
 
