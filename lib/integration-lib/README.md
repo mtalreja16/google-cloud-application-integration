@@ -63,6 +63,14 @@ gcloud docker -- push gcr.io/{projectId}/integration-lib:latest
 ```
 
 
-* Now go and deploy this in cloud run </br>
-* You can also run this locally by doing cd ./integration-lib and then "go run integration.go" </br>
+* Now go and deploy this in cloud run, refer to this terraform script to spin up CloudRun with appropriate permission to integration </br>
+      cloud_run_integration_lin.tf
+      
+* You can also run this locally by doing 
+
+```sh
+ cd ./integration-lib
+ 
+ go run integration.go
+```
 
