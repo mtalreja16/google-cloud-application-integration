@@ -50,14 +50,16 @@ https://$REGION-integrations.googleapis.com/v1/projects/$PROJECT/locations/$REGI
 
 google.golang.org/api/integrations/v1alpha
 
-You can find functions like ExecuteIntegration.
+You can find functions like ExecuteIntegration and LiftIntegration
 
 <h3> Custom API wrapping up go sdk </h3>
 The code here shows you how to wrap go sdk into Go API, which can be run in cloudrun or in your local console, here is how you will compile. </br>
-* cd Integration-Demo/integration-lib </br>
-* docker build -t integration-lib:latest </br>
-* docker tag integration-lib:latest gcr.io/{projectId}/integration-lib:latest </br>
-* gcloud docker -- push gcr.io/{projectId}/integration-lib:latest </br>
+```sh
+cd Integration-Demo/integration-lib 
+docker build -t integration-lib:latest 
+docker tag integration-lib:latest gcr.io/{projectId}/integration-lib:latest 
+gcloud docker -- push gcr.io/{projectId}/integration-lib:latest 
+```
 * Now go and deploy this in cloud run </br>
 * You can also run this locally by doing cd ./integration-lib and then "go run integration.go" </br>
 
