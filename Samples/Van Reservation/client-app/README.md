@@ -29,6 +29,11 @@ Fill out the reservation form and click on **confirm**
 
 Once the reservation form is submitted, the notification will go to fullfilment center and they will confirm the availability of Van with configuration
 
+
+
+## Agent - Managing the reservation
+
+
 ![22](https://user-images.githubusercontent.com/93729562/210857915-8eb9ba73-48ec-4047-8659-e9e71ecc0e1a.jpg)
 
 
@@ -36,8 +41,6 @@ When Agents approve it, customer will receive the email notification
 
 ![23](https://user-images.githubusercontent.com/93729562/210858068-206ef3f8-54f7-417a-bf08-36fa63c47a31.jpg)
 
-
-## Agent - Managing the reservation
 
 Go to page /client-app/agent-search.html
 
