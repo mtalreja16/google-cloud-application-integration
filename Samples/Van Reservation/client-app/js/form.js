@@ -38,13 +38,13 @@ window.onload = function() {
   document.getElementById("expiry").value = "2025-01-01";
   document.getElementById("expiry2").value = "2025-01-01";
   document.getElementById("cvv").value = "123";
-  document.getElementById("email").value = "manojtrek@gmail.com";
-  document.getElementById("name").value = "Manoj Talreja";
+  document.getElementById("email").value = "mtalreja@google.com";
+  document.getElementById("name").value = "John Snow";
   document.getElementById("state").value = "CA";
   document.getElementById("licenseid").value = "JS500GB";
   document.getElementById("dob").value = "2000-01-01";
-  document.getElementById("full-name").value = "Manoj Talreja";  
-  document.getElementById("phone").value = "3479676660";
+  document.getElementById("full-name").value = "John Snow";  
+  document.getElementById("phone").value = "8478676660";
   document.getElementById("pickup-loc").value = "CA";
 }  
 
@@ -95,7 +95,7 @@ $form.submit(function(e) {
             ${out}
           </p>
         </div>`);
-
+       document.getElementById("fillform").style.display="none";
        $alertContainer.show();
        $alertContainer[0].scrollIntoView(); 
     }
@@ -115,7 +115,15 @@ $form.submit(function(e) {
     
   })
   .catch(err => {
-      
+    $alertContainer.append(
+      ` 
+      <div class="alert alert-danger mb-4" role="alert">
+      <h5 class="alert-heading">Ohhh no, we ran into issue, try later!</h5>
+        <p class="mb-0"></p>
+      </div>`);
+
+     $alertContainer.show();
+     $alertContainer[0].scrollIntoView(); 
   });
 
 });
