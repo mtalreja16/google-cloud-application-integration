@@ -1,0 +1,42 @@
+{
+    "integrations": [
+        {
+            "_comment": "Integrations are imported and deployed",
+            "name": "order-entry",
+            "publish": true,
+            "connectorName": "cloudsql-mysql",
+            "pubsubTopic": "integration-jam-pubsub-topic",
+            "bundle_url": "https://storage.googleapis.com/apigeexlabs/appjam-lab1/orderEntry-v1.json"
+        },
+        {
+            "_comment": "Integrations are imported and deployed",
+            "name": "phone-order-entry",
+            "publish": true,
+            "connectorName": "cloudsql-mysql",
+            "bundle_url": "https://storage.googleapis.com/apigeexlabs/appjam-lab1/phoneOrderEntry-v1.json"
+        }
+    ],
+    "databases": [
+        {
+            "_comment": "database required for the lab",
+            "type": "cloudsql",
+            "instance_name": "myinstance",
+            "version": "MYSQL_8_0",
+            "name": "reservationdb",
+            "instance_cpu": "1",
+            "instance_mem": "3840MB",
+            "sql_commands": [
+                    "CREATE TABLE orders (\r\n\torder_id int not null AUTO_INCREMENT,\r\n\tcreated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,\r\n\tcart_id VARCHAR(255),\r\norder_amount float(10,2) NOT NULL,\r\n\tcustomer_id VARCHAR(255),\r\n\tproduct_type VARCHAR(255), PRIMARY KEY(order_id))\r\nEngine=InnoDB;",
+                    "CREATE TABLE phone_orders (\r\nphone_order_id int NOT NULL AUTO_INCREMENT, \r\ncreated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \r\norder_id int NOT NULL, \r\nPRIMARY KEY(phone_order_id))\r\nEngine=InnoDB;",
+                    "CREATE TABLE internet_orders (\r\ninternet_order_id int NOT NULL AUTO_INCREMENT, \r\ncreated_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, \r\norder_id int NOT NULL, PRIMARY KEY(internet_order_id))\r\nEngine=InnoDB;",
+                    "ALTER TABLE orders AUTO_INCREMENT=10000;",
+                    "ALTER TABLE phone_orders AUTO_INCREMENT=30000;",
+                    "ALTER TABLE internet_orders AUTO_INCREMENT=50000;"
+
+            ]
+        }
+    ],
+    "pubsubTopics": [
+        { "name": "inventory" }
+    ]
+}
