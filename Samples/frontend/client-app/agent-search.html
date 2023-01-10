@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!-- Bootstrap first, custom second to override bootstrap-->
+  <title>Cymbal Van Rentals - Agent Portal</title>
+
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/agent-search.css">
+
+</head>
+
+<body>
+  <!-- navbar with a toggler -->
+  <nav class="navbar navbar-dark navbar-expand-md">
+    <div class="container-lg">
+      <a href="#" class="navbar-brand">Cymbal Van Rentals</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      </div>
+    </div>
+  </nav>
+
+    <div class="container mt-5">
+      <h1 class="mb-5">Find Reservation</h1>
+      <form>
+        <div class="container-lg mt-4">
+          <div class="alert-container ">
+          </div>
+        </div>
+    
+        <div class="form-group">
+          <label for="searchTerm">Enter Reservation #</label>
+          <input type="text" class="input" id="searchTerm" placeholder="Search...">
+          <button type="submit" class="btn btn-primary" id="searchButton">Search</button>
+        </div>
+       </form>
+
+       <!-- Modal -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="myModalLabel"> Reservation Details</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="modalContent">
+              <!-- Modal content will be added here -->
+            </div>
+            <div class="modal-footer" id="modelfooter">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="searchResults"></div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/agent-search.js"></script>
+  </body>
+</html>

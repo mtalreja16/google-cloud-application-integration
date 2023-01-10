@@ -1,0 +1,35 @@
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Roboto", Oxygen,
+    Ubuntu, Arial, sans-serif;
+}
+
+/********** NAVBAR styling **********/
+.navbar {
+  background-color:#157142;
+  min-height: 70px;
+}
+
+.custom-select {
+  width: 14rem;
+}
+
+/********** vand styling **********/
+.vand-img-top {
+  height: 30vh;
+  width: 100%;
+  object-fit: cover;
+}
+
+/********** Footer **********/
+footer {
+  font-size: 14px;
+  width: 100%;
+  background-color: rgb(235, 235, 235);
+}
+footer a {
+  color: rgb(0, 0, 0);
+}
+footer a:hover {
+  color: #157142;
+  text-decoration: underline;
+}
