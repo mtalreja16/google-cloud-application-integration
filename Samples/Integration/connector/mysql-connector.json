@@ -1,0 +1,35 @@
+{
+	"name": "reservationdb2",
+	"connectorDetails": {
+        "name": "cloudsql-mysql",
+        "version": 1 
+    },
+"configVariables": [
+	{
+		"key": "project_id",
+		"stringValue": "${project}"
+	},
+	{
+		"key": "database_region",
+		"stringValue": "${location}"
+	},
+	{
+		"key": "instance_id",
+		"stringValue": "${dbinstance}"
+	},
+	{
+		"key": "database_name",
+		"stringValue": "${dbname}"
+	}
+],
+"serviceAccount":"${service_account_name}@${project}.iam.gserviceaccount.com",
+"authConfig": {
+	"authType": "USER_PASSWORD",
+	"userPassword": {
+		"username": "${user}",
+		"password": {
+			"secretVersion": "projects/${projectnumber}/secrets/${secretid}/versions/1"
+			}
+		}
+	}
+}
