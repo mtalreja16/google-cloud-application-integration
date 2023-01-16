@@ -11,6 +11,7 @@ locals {
   cloudrun-app="reservation-app-2" # DONT CHANGE IT
   connectorname="reservationdb2" # DONT CHANGE IT
   secretid="secret-root2"
+  integration="manage-reservation"
 }
 
 provider "google" {
@@ -180,6 +181,8 @@ resource "local_file" "connector_file" {
   filename = "./Integration/connector/tmpconnector.json"
 }
 
+
+
 resource "null_resource" "oauth_provisioner" {
   provisioner "local-exec" {
     command = "export token=$(gcloud auth print-access-token) && echo integrationcli token cache -t $token"
@@ -195,5 +198,26 @@ resource "null_resource" "setintegrationApi" {
 resource "null_resource" "createconnectors" {
   provisioner "local-exec" {
     command = format("%s%s%s", "integrationcli connectors create -n ", local.connectorname, " -f ./Integration/connector/tmpconnector.json")
+  }
+}
+
+resource "local_file" "integration_file" {
+  content  = templatefile("Integration/manage-reservation.json", {
+    location = local.location, 
+    project = local.project,
+    projectnumber = local.projectnumber,
+    dbinstance=local.dbinstance,
+    user=local.user,
+    password=local.password,
+    service_account_name=local.service_account_name,
+    dbname=local.dbname,
+    connectorname=local.connectorname,
+    secretid=local.secretid,
+  })
+  filename = "./Integration/tmpintegration.json"
+}
+resource "null_resource" "createconnectors" {
+  provisioner "local-exec" {
+    command = format("%s%s%s", "integrationcli integrations upload -n ", local.integration, " -f ./Integration/tmpintegration.json")
   }
 }

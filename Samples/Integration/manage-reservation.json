@@ -1,0 +1,1541 @@
+{
+  "name": "projects/${projectnumber}/locations/${location}/integrations/manage-reservation",
+  "triggerConfigs": [{
+    "label": "rental return",
+    "startTasks": [{
+      "taskId": "41"
+    }],
+    "properties": {
+      "Trigger name": "returnVan"
+    },
+    "triggerType": "API",
+    "triggerNumber": "3",
+    "triggerId": "api_trigger/returnVan"
+  }, {
+    "label": "get reservation list",
+    "startTasks": [{
+      "taskId": "53"
+    }],
+    "properties": {
+      "Trigger name": "getReservation"
+    },
+    "triggerType": "API",
+    "triggerNumber": "6",
+    "triggerId": "api_trigger/getReservation"
+  }, {
+    "label": "get van inventory list",
+    "startTasks": [{
+      "taskId": "52"
+    }],
+    "properties": {
+      "Trigger name": "getInventory"
+    },
+    "triggerType": "API",
+    "triggerNumber": "5",
+    "triggerId": "api_trigger/getInventory"
+  }, {
+    "label": "create reservation",
+    "startTasks": [{
+      "taskId": "25"
+    }],
+    "properties": {
+      "Trigger name": "createReservation"
+    },
+    "triggerType": "API",
+    "triggerNumber": "7",
+    "triggerId": "api_trigger/createReservation"
+  }, {
+    "label": "rental pickup",
+    "startTasks": [{
+      "taskId": "39"
+    }],
+    "properties": {
+      "Trigger name": "pickupVan"
+    },
+    "triggerType": "API",
+    "triggerNumber": "2",
+    "triggerId": "api_trigger/pickupVan"
+  }],
+  "taskConfigs": [{
+    "task": "GenericConnectorTask",
+    "taskId": "51",
+    "parameters": {
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_51_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_51_connectorOutputPayload`$"
+        }
+      },
+      "actionName": {
+        "key": "actionName",
+        "value": {
+          "stringValue": "get_vanlist"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "54"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "get inventories"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "54",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_51_connectorOutputPayload`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$vanlist$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return vans list"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "53",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_30_connectorInputPayload`$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "30"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "set get paylod"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "52",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_51_connectorInputPayload`$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "51"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "set list map"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "30",
+    "parameters": {
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_30_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_30_connectorOutputPayload`$"
+        }
+      },
+      "actionName": {
+        "key": "actionName",
+        "value": {
+          "stringValue": "get_pending_reservation"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "56"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "get reservation list"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "56",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_30_connectorOutputPayload`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$reservations$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Data Mapping"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "48",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_49_connectorOutputPayload`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$reservation$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservationid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_50_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Returned\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_50_connectorInputPayload`.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation.van_id$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_57_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"{ \\\"reserved\\\": 0 }\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_57_connectorInputPayload`$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Available\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation.sku_id$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.sku_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation.rate$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.rate$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation.van_id$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.van_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation.configuration$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.configuration$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "50"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return reservation map"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "49",
+    "parameters": {
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_49_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_49_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "48"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return reservation details 2"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "25",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"baseFunction\": {\n            \"functionType\": {\n              \"baseFunction\": {\n                \"functionName\": \"GET_EXECUTION_ID\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$executionid$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "21"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "reservation input mapping"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "22",
+    "parameters": {
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_22_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"CREATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_22_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "36"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "create reservation in db"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "21",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.cvv$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.cvv$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.dropoffdate$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.dropoffdate$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.depositamount$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.depositamount$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.pickupdate$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.pickupdate$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.licenseid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.licenseid$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.sku_id$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.sku_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.totalamount$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.totalamount$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.rate$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.rate$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.dob$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.dob$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.name$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.name$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.expiry$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.expiry$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.state$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.state$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.card$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.card$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.email$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.email$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.configuration$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.configuration$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"DOUBLE_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.gender$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.gender$\",\n      \"fieldType\": \"DOUBLE_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$executionid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.execution_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Initiated\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.vanid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_22_connectorInputPayload`.van_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "22"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "prepare create reservation parameter"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "63",
+    "parameters": {
+      "filterClause": {
+        "key": "filterClause",
+        "value": {
+          "stringValue": "$`Task_63_filterClause`$"
+        }
+      },
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_63_connectorInputPayload`$"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_63_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_63_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "55"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "update reservation status"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "55",
+    "parameters": {
+      "filterClause": {
+        "key": "filterClause",
+        "value": {
+          "stringValue": "$`Task_55_filterClause`$"
+        }
+      },
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "vans"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_55_connectorInputPayload`$"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_55_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_55_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "35"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "update van availability"
+  }, {
+    "task": "EmailTask",
+    "taskId": "35",
+    "parameters": {
+      "Cc": {
+        "key": "Cc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "TextBody": {
+        "key": "TextBody",
+        "value": {
+          "stringValue": "Hi $reservation-payload.name$ , \nYour outdoor van rental is confirmed!!\n\nThanks, \nCymbal Van Rental"
+        }
+      },
+      "Bcc": {
+        "key": "Bcc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "AttachmentPath": {
+        "key": "AttachmentPath",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "To": {
+        "key": "To",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$reservation-payload.email$"]
+          }
+        }
+      },
+      "GmrEmailResponseOutput": {
+        "key": "GmrEmailResponseOutput",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_35_GmrEmailResponseOutput`$"]
+          }
+        }
+      },
+      "BodyFormat": {
+        "key": "BodyFormat",
+        "value": {
+          "stringValue": "text"
+        }
+      },
+      "EmailConfigInput": {
+        "key": "EmailConfigInput",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.EmailConfig\"\n}"
+        }
+      },
+      "Subject": {
+        "key": "Subject",
+        "value": {
+          "stringValue": "Your Reservation # $reservationoutput.id$ is confirmed!!"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "59"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "reservation confirmed"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "59",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$inventory-payload$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_58_connectorInputPayload`.message$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "58"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "inventory notification"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "58",
+    "parameters": {
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_58_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_58_connectorOutputPayload`$"
+        }
+      },
+      "actionName": {
+        "key": "actionName",
+        "value": {
+          "stringValue": "publishMessage"
+        }
+      }
+    },
+    "synchronousCallFailurePolicy": {
+      "retryStrategy": "NONE"
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Send Inventroy Notification"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "36",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_22_connectorOutputPayload`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$reservationoutput$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"{  \\\"reserved\\\": 1 }\"\n          }\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_55_connectorInputPayload`$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.vanid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_55_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Reserved\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.rate$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.rate$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.configuration$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.configuration$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.sku_id$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.sku_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservation-payload.vanid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$inventory-payload.van_id$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Reserved\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_63_connectorInputPayload`.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservationoutput.id$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"doubleFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_63_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "62"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "extract reservation id",
+    "description": "We need to extract reservation, and keep it handy so we can use this to update the status of reservation"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "39",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservationid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_46_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "46"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "pickup Input mapping"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "46",
+    "parameters": {
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_46_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_46_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "45"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "get reservation details"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "45",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"JSON_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$`Task_46_connectorOutputPayload`$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$reservation$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservationid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_31_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"Fulfilled\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_31_connectorInputPayload`.status$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "24"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "pickup reservation map"
+  }, {
+    "task": "GenericRestV2Task",
+    "taskId": "24",
+    "parameters": {
+      "throwError": {
+        "key": "throwError",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "responseBody": {
+        "key": "responseBody",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_24_responseBody`$"]
+          }
+        }
+      },
+      "disableSSLValidation": {
+        "key": "disableSSLValidation",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "httpParams": {
+        "key": "httpParams"
+      },
+      "responseHeader": {
+        "key": "responseHeader",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_24_responseHeader`$"]
+          }
+        }
+      },
+      "userAgent": {
+        "key": "userAgent",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "httpMethod": {
+        "key": "httpMethod",
+        "value": {
+          "stringValue": "GET"
+        }
+      },
+      "responseStatus": {
+        "key": "responseStatus",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_24_responseStatus`$"]
+          }
+        }
+      },
+      "url": {
+        "key": "url",
+        "value": {
+          "stringValue": "https://\napi-dev.thetaintegration.com/reservation"
+        }
+      },
+      "urlFetchingService": {
+        "key": "urlFetchingService",
+        "value": {
+          "stringValue": "HARPOON"
+        }
+      },
+      "useSSL": {
+        "key": "useSSL",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "requestorId": {
+        "key": "requestorId",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "urlQueryStrings": {
+        "key": "urlQueryStrings"
+      },
+      "requestBody": {
+        "key": "requestBody",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "followRedirects": {
+        "key": "followRedirects",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "additionalHeaders": {
+        "key": "additionalHeaders"
+      }
+    },
+    "nextTasks": [{
+      "taskId": "31"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "process credit card payment"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "31",
+    "parameters": {
+      "filterClause": {
+        "key": "filterClause",
+        "value": {
+          "stringValue": "$`Task_31_filterClause`$"
+        }
+      },
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_31_connectorInputPayload`$"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_31_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_31_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "27"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "update reservation status"
+  }, {
+    "task": "EmailTask",
+    "taskId": "27",
+    "parameters": {
+      "Cc": {
+        "key": "Cc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "TextBody": {
+        "key": "TextBody",
+        "value": {
+          "stringValue": "Hi $reservation.name$ , \nYou picked up the Van and your credit card is charged successfully, here is your   d5647278s8zggs is confirmed.\nDrive Safe!!!\n\nThanks, \nCymbal Van Rental"
+        }
+      },
+      "Bcc": {
+        "key": "Bcc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "AttachmentPath": {
+        "key": "AttachmentPath",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "To": {
+        "key": "To",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$reservation.email$"]
+          }
+        }
+      },
+      "BodyFormat": {
+        "key": "BodyFormat",
+        "value": {
+          "stringValue": "text"
+        }
+      },
+      "EmailConfigInput": {
+        "key": "EmailConfigInput",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.EmailConfig\"\n}"
+        }
+      },
+      "Subject": {
+        "key": "Subject",
+        "value": {
+          "stringValue": "Your credit card is charged!!"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "payment confirmation and email receipt"
+  }, {
+    "task": "SuspendTask",
+    "taskId": "62",
+    "parameters": {
+      "suspensionResult": {
+        "key": "suspensionResult",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_62_suspensionResult`$"]
+          }
+        }
+      },
+      "suspensionId": {
+        "key": "suspensionId",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_62_suspensionId`$"]
+          }
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "63"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "wait for cofirmation reservation request",
+    "successPolicy": {
+      "finalState": "SUSPENDED"
+    },
+    "description": "Workflow will suspend until reservation and its configuration can be met."
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "41",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$reservationid$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_49_entityId`$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$processclaim$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$claim$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "49"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return input mapping"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "57",
+    "parameters": {
+      "filterClause": {
+        "key": "filterClause",
+        "value": {
+          "stringValue": "$`Task_57_filterClause`$"
+        }
+      },
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "vans"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_57_connectorInputPayload`$"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_57_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_57_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "44"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return - update van availability"
+  }, {
+    "task": "EmailTask",
+    "taskId": "44",
+    "parameters": {
+      "Cc": {
+        "key": "Cc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "TextBody": {
+        "key": "TextBody",
+        "value": {
+          "stringValue": "Hi $reservation.name$ , \n\nThank you for choosing Cymbal Van rental, here the is the summary.\n\n\nThanks, \nCymbal Van Rental"
+        }
+      },
+      "Bcc": {
+        "key": "Bcc",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "AttachmentPath": {
+        "key": "AttachmentPath",
+        "value": {
+          "stringArray": {
+          }
+        }
+      },
+      "To": {
+        "key": "To",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$reservation.email$"]
+          }
+        }
+      },
+      "GmrEmailResponseOutput": {
+        "key": "GmrEmailResponseOutput",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_44_GmrEmailResponseOutput`$"]
+          }
+        }
+      },
+      "BodyFormat": {
+        "key": "BodyFormat",
+        "value": {
+          "stringValue": "text"
+        }
+      },
+      "EmailConfigInput": {
+        "key": "EmailConfigInput",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.EmailConfig\"\n}"
+        }
+      },
+      "Subject": {
+        "key": "Subject",
+        "value": {
+          "stringValue": "Thanks for choosing Cymbal Van Rental"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "60"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Thank You Email"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "60",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$inventory-payload$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"TO_STRING\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_61_connectorInputPayload`.message$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "61"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "inventory notification"
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "61",
+    "parameters": {
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_61_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_61_connectorOutputPayload`$"
+        }
+      },
+      "actionName": {
+        "key": "actionName",
+        "value": {
+          "stringValue": "publishMessage"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "return - send inventory notification"
+  }, {
+    "task": "GenericRestV2Task",
+    "taskId": "64",
+    "parameters": {
+      "throwError": {
+        "key": "throwError",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "responseBody": {
+        "key": "responseBody",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_64_responseBody`$"]
+          }
+        }
+      },
+      "disableSSLValidation": {
+        "key": "disableSSLValidation",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "httpParams": {
+        "key": "httpParams"
+      },
+      "responseHeader": {
+        "key": "responseHeader",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_64_responseHeader`$"]
+          }
+        }
+      },
+      "userAgent": {
+        "key": "userAgent",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "httpMethod": {
+        "key": "httpMethod",
+        "value": {
+          "stringValue": "GET"
+        }
+      },
+      "responseStatus": {
+        "key": "responseStatus",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_64_responseStatus`$"]
+          }
+        }
+      },
+      "url": {
+        "key": "url",
+        "value": {
+          "stringValue": "https://\napi-dev.thetaintegration.com/reservation"
+        }
+      },
+      "urlFetchingService": {
+        "key": "urlFetchingService",
+        "value": {
+          "stringValue": "HARPOON"
+        }
+      },
+      "useSSL": {
+        "key": "useSSL",
+        "value": {
+          "booleanValue": false
+        }
+      },
+      "requestorId": {
+        "key": "requestorId",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "urlQueryStrings": {
+        "key": "urlQueryStrings"
+      },
+      "requestBody": {
+        "key": "requestBody",
+        "value": {
+          "stringValue": ""
+        }
+      },
+      "followRedirects": {
+        "key": "followRedirects",
+        "value": {
+          "booleanValue": true
+        }
+      },
+      "additionalHeaders": {
+        "key": "additionalHeaders"
+      }
+    },
+    "nextTasks": [{
+      "taskId": "65"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "process claim"
+  }, {
+    "task": "SuspendTask",
+    "taskId": "65",
+    "parameters": {
+      "suspensionResult": {
+        "key": "suspensionResult",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_65_suspensionResult`$"]
+          }
+        }
+      },
+      "suspensionId": {
+        "key": "suspensionId",
+        "value": {
+          "stringArray": {
+            "stringValues": ["$`Task_65_suspensionId`$"]
+          }
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "suspend until claim processed",
+    "successPolicy": {
+      "finalState": "SUSPENDED"
+    }
+  }, {
+    "task": "GenericConnectorTask",
+    "taskId": "50",
+    "parameters": {
+      "filterClause": {
+        "key": "filterClause",
+        "value": {
+          "stringValue": "$`Task_50_filterClause`$"
+        }
+      },
+      "entityType": {
+        "key": "entityType",
+        "value": {
+          "stringValue": "reservation2"
+        }
+      },
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_50_connectorInputPayload`$"
+        }
+      },
+      "entityId": {
+        "key": "entityId",
+        "value": {
+          "stringValue": "$`Task_50_entityId`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/ ${project}/locations/${location}/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/ ${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_50_connectorOutputPayload`$"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "64",
+      "condition": "$claim$ \u003d Process",
+      "displayName": "Process Claims"
+    }, {
+      "taskId": "57",
+      "condition": "$claim$ !\u003d Process",
+      "displayName": "No Claim Process"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "update reservation status"
+  }],
+  "integrationParameters": [{
+    "key": "`Task_24_responseHeader`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_24_responseHeader`",
+    "isTransient": true,
+    "producer": "1_24"
+  }, {
+    "key": "`Task_24_responseBody`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_24_responseBody`",
+    "isTransient": true,
+    "producer": "1_24"
+  }, {
+    "key": "`Task_24_responseStatus`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_24_responseStatus`",
+    "isTransient": true,
+    "producer": "1_24"
+  }, {
+    "key": "status",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": "Created"
+    },
+    "displayName": "status"
+  }, {
+    "key": "`Task_31_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_31_connectorInputPayload`",
+    "producer": "1_31",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"taxamount\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_31_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_31_entityId`",
+    "producer": "1_31"
+  }, {
+    "key": "`Task_31_filterClause`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_31_filterClause`",
+    "producer": "1_31"
+  }, {
+    "key": "`Task_31_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_31_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_31"
+  }, {
+    "key": "`Task_35_GmrEmailResponseOutput`",
+    "dataType": "PROTO_VALUE",
+    "displayName": "`Task_35_GmrEmailResponseOutput`",
+    "isTransient": true,
+    "producer": "1_35"
+  }, {
+    "key": "reservationoutput",
+    "dataType": "JSON_VALUE",
+    "displayName": "reservationoutput",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_44_GmrEmailResponseOutput`",
+    "dataType": "PROTO_VALUE",
+    "displayName": "`Task_44_GmrEmailResponseOutput`",
+    "isTransient": true,
+    "producer": "1_44"
+  }, {
+    "key": "executionid",
+    "dataType": "STRING_VALUE",
+    "displayName": "executionid"
+  }, {
+    "key": "`Task_46_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_46_entityId`",
+    "producer": "1_46"
+  }, {
+    "key": "`Task_46_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_46_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_46",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"taxamount\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "emaladdress",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "emaladdress"
+  }, {
+    "key": "`Task_50_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_50_connectorInputPayload`",
+    "producer": "1_50",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"taxamount\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_50_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_50_entityId`",
+    "producer": "1_50"
+  }, {
+    "key": "`Task_50_filterClause`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_50_filterClause`",
+    "producer": "1_50"
+  }, {
+    "key": "`Task_50_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_50_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_50"
+  }, {
+    "key": "`Task_51_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_51_connectorInputPayload`",
+    "producer": "1_51",
+    "jsonSchema": "{\n  \"type\": \"object\"\n}"
+  }, {
+    "key": "`Task_51_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_51_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_51",
+    "jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\"\n  }\n}"
+  }, {
+    "key": "vanlist",
+    "dataType": "JSON_VALUE",
+    "displayName": "vanlist",
+    "inputOutputType": "OUT",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"rentpermonth\": {\n        \"type\": \"number\"\n      },\n      \"image\": {\n        \"type\": \"string\"\n      },\n      \"rentperday\": {\n        \"type\": \"number\"\n      },\n      \"reserved\": {\n        \"type\": \"number\"\n      },\n      \"description\": {\n        \"type\": \"string\"\n      },\n      \"model\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"number\"\n      },\n      \"type\": {\n        \"type\": \"string\"\n      },\n      \"brand\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}"
+  }, {
+    "key": "reservationid",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": "\"\""
+    },
+    "displayName": "reservationid",
+    "inputOutputType": "IN"
+  }, {
+    "key": "`Task_55_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_55_connectorInputPayload`",
+    "producer": "1_55",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"image\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"brand\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"model\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"type\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rentperday\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"description\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rentpermonth\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"reserved\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_55_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_55_entityId`",
+    "producer": "1_55"
+  }, {
+    "key": "`Task_55_filterClause`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_55_filterClause`",
+    "producer": "1_55"
+  }, {
+    "key": "`Task_55_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_55_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_55"
+  }, {
+    "key": "`Task_22_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_22_connectorInputPayload`",
+    "producer": "1_22",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"van_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_22_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_22_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_22"
+  }, {
+    "key": "`Task_49_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_49_entityId`",
+    "producer": "1_49"
+  }, {
+    "key": "`Task_49_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_49_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_49",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"van_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "reservation-payload",
+    "dataType": "JSON_VALUE",
+    "searchable": true,
+    "displayName": "reservation-payload",
+    "inputOutputType": "IN",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"cvv\": {\n      \"type\": \"string\"\n    },\n    \"gender\": {\n      \"type\": \"number\"\n    },\n    \"configuration\": {\n      \"type\": \"string\"\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\"\n    },\n    \"depositamount\": {\n      \"type\": \"string\"\n    },\n    \"pickupdate\": {\n      \"type\": \"string\"\n    },\n    \"sku_id\": {\n      \"type\": \"string\"\n    },\n    \"vanid\": {\n      \"type\": \"string\"\n    },\n    \"totalamount\": {\n      \"type\": \"string\"\n    },\n    \"rate\": {\n      \"type\": \"string\"\n    },\n    \"dob\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"taxamount\": {\n      \"type\": \"string\"\n    },\n    \"expiry\": {\n      \"type\": \"string\"\n    },\n    \"state\": {\n      \"type\": \"string\"\n    },\n    \"licenseid\": {\n      \"type\": \"string\"\n    },\n    \"card\": {\n      \"type\": \"string\"\n    },\n    \"email\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+  }, {
+    "key": "reservations",
+    "dataType": "JSON_VALUE",
+    "displayName": "reservations",
+    "inputOutputType": "OUT",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"cvv\": {\n        \"type\": \"string\"\n      },\n      \"gender\": {\n        \"type\": \"number\"\n      },\n      \"configuration\": {\n        \"type\": \"string\"\n      },\n      \"dropoffdate\": {\n        \"type\": \"string\"\n      },\n      \"depositamount\": {\n        \"type\": \"string\"\n      },\n      \"pickupdate\": {\n        \"type\": \"string\"\n      },\n      \"sku_id\": {\n        \"type\": \"string\"\n      },\n      \"execution_id\": {\n        \"type\": \"string\"\n      },\n      \"van_id\": {\n        \"type\": \"string\"\n      },\n      \"totalamount\": {\n        \"type\": \"string\"\n      },\n      \"rate\": {\n        \"type\": \"string\"\n      },\n      \"dob\": {\n        \"type\": \"string\"\n      },\n      \"name\": {\n        \"type\": \"string\"\n      },\n      \"id\": {\n        \"type\": \"number\"\n      },\n      \"state\": {\n        \"type\": \"string\"\n      },\n      \"expiry\": {\n        \"type\": \"string\"\n      },\n      \"licenseid\": {\n        \"type\": \"string\"\n      },\n      \"email\": {\n        \"type\": \"string\"\n      },\n      \"card\": {\n        \"type\": \"string\"\n      },\n      \"status\": {\n        \"type\": \"string\"\n      }\n    }\n  }\n}"
+  }, {
+    "key": "`Task_30_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_30_connectorInputPayload`",
+    "producer": "1_30",
+    "jsonSchema": "{\n  \"type\": \"object\"\n}"
+  }, {
+    "key": "`Task_30_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_30_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_30",
+    "jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\"\n  }\n}"
+  }, {
+    "key": "`Task_57_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_57_connectorInputPayload`",
+    "producer": "1_57",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"image\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"brand\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"model\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"type\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rentperday\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"description\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rentpermonth\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"reserved\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_57_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_57_entityId`",
+    "producer": "1_57"
+  }, {
+    "key": "`Task_57_filterClause`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_57_filterClause`",
+    "producer": "1_57"
+  }, {
+    "key": "`Task_57_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_57_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_57"
+  }, {
+    "key": "reservation",
+    "dataType": "JSON_VALUE",
+    "displayName": "reservation",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"cvv\": {\n      \"type\": \"string\"\n    },\n    \"gender\": {\n      \"type\": \"number\"\n    },\n    \"configuration\": {\n      \"type\": \"string\"\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\"\n    },\n    \"depositamount\": {\n      \"type\": \"string\"\n    },\n    \"pickupdate\": {\n      \"type\": \"string\"\n    },\n    \"sku_id\": {\n      \"type\": \"string\"\n    },\n    \"execution_id\": {\n      \"type\": \"string\"\n    },\n    \"van_id\": {\n      \"type\": \"string\"\n    },\n    \"totalamount\": {\n      \"type\": \"string\"\n    },\n    \"rate\": {\n      \"type\": \"string\"\n    },\n    \"dob\": {\n      \"type\": \"string\"\n    },\n    \"name\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"number\"\n    },\n    \"state\": {\n      \"type\": \"string\"\n    },\n    \"expiry\": {\n      \"type\": \"string\"\n    },\n    \"licenseid\": {\n      \"type\": \"string\"\n    },\n    \"email\": {\n      \"type\": \"string\"\n    },\n    \"card\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_58_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_58_connectorInputPayload`",
+    "producer": "1_58",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message\": {\n      \"type\": \"string\",\n      \"readOnly\": false,\n      \"description\": \"Message to publish to Cloud PubSub.\",\n      \"default\": \"\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_58_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_58_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_58",
+    "jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"messageId\": {\n        \"type\": \"string\",\n        \"readOnly\": true,\n        \"description\": \"Message ID of the published message.\"\n      }\n    }\n  }\n}"
+  }, {
+    "key": "inventory-payload",
+    "dataType": "JSON_VALUE",
+    "displayName": "inventory-payload",
+    "jsonSchema": "{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"type\": \"object\",\n  \"properties\": {\n    \"execution_id\": {\n      \"type\": \"string\"\n    },\n    \"van_id\": {\n      \"type\": \"string\"\n    },\n    \"rate\": {\n      \"type\": \"string\"\n    },\n    \"configuration\": {\n      \"type\": \"string\"\n    },\n    \"sku_id\": {\n      \"type\": \"string\"\n    },\n    \"status\": {\n      \"type\": \"string\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_61_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_61_connectorInputPayload`",
+    "producer": "1_61",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"message\": {\n      \"type\": \"string\",\n      \"readOnly\": false,\n      \"description\": \"Message to publish to Cloud PubSub.\",\n      \"default\": \"\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_61_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_61_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_61",
+    "jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\",\n    \"properties\": {\n      \"messageId\": {\n        \"type\": \"string\",\n        \"readOnly\": true,\n        \"description\": \"Message ID of the published message.\"\n      }\n    }\n  }\n}"
+  }, {
+    "key": "`Task_62_suspensionResult`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_62_suspensionResult`",
+    "isTransient": true,
+    "producer": "1_62"
+  }, {
+    "key": "`Task_62_suspensionId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_62_suspensionId`",
+    "isTransient": true,
+    "producer": "1_62"
+  }, {
+    "key": "`Task_63_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_63_connectorInputPayload`",
+    "producer": "1_63",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"id\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"email\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"name\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"state\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"licenseid\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dob\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"gender\": {\n      \"type\": \"number\",\n      \"readOnly\": false\n    },\n    \"pickupdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"dropoffdate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"rate\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"totalamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"depositamount\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"sku_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"configuration\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false\n    },\n    \"card\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"expiry\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"cvv\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"execution_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"status\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    },\n    \"van_id\": {\n      \"type\": \"string\",\n      \"readOnly\": false\n    }\n  }\n}"
+  }, {
+    "key": "`Task_63_entityId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_63_entityId`",
+    "producer": "1_63"
+  }, {
+    "key": "`Task_63_filterClause`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_63_filterClause`",
+    "producer": "1_63"
+  }, {
+    "key": "`Task_63_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_63_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_63"
+  }, {
+    "key": "`Task_64_responseHeader`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_64_responseHeader`",
+    "isTransient": true,
+    "producer": "1_64"
+  }, {
+    "key": "`Task_64_responseBody`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_64_responseBody`",
+    "isTransient": true,
+    "producer": "1_64"
+  }, {
+    "key": "`Task_64_responseStatus`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_64_responseStatus`",
+    "isTransient": true,
+    "producer": "1_64"
+  }, {
+    "key": "`Task_65_suspensionResult`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_65_suspensionResult`",
+    "isTransient": true,
+    "producer": "1_65"
+  }, {
+    "key": "`Task_65_suspensionId`",
+    "dataType": "STRING_VALUE",
+    "displayName": "`Task_65_suspensionId`",
+    "isTransient": true,
+    "producer": "1_65"
+  }, {
+    "key": "processclaim",
+    "dataType": "STRING_VALUE",
+    "displayName": "processclaim",
+    "inputOutputType": "IN"
+  }, {
+    "key": "claim",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "claim"
+  }]
+}
