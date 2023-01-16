@@ -4,11 +4,11 @@ function setup_cloudsql_components() {
     set -e
     echo "Downloading Cloud SQL Auth proxy ..."
     
-    mkdir ./Integration/connector/cloudsql 
+    mkdir ./cloudsql 
     
     wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
     
-    chmod +x ./Integration/connector/cloud_sql_proxy
+    sudo chmod +x ./cloud_sql_proxy
 
    )
   return $?
@@ -30,7 +30,7 @@ function setup_cloudsql_database() {
     
     echo "*** Starting Cloud SQL Proxy for instance $CLOUDSQL_INSTANCE_ID ***"
     
-    ./cloud_sql_proxy -dir ./Integration/connector/cloudsql -instances=${CLOUDSQL_INSTANCE_ID}=tcp:3306 &
+    ./cloud_sql_proxy -dir cloudsql -instances=${CLOUDSQL_INSTANCE_ID}=tcp:3306 &
     sql_proxy_pid=$!
     sleep 10
     sql_len=$(echo ${db_info} | jq '.sql_commands | length')

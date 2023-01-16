@@ -115,7 +115,11 @@ resource "google_sql_user" "root" {
   name     = local.user
   instance = local.dbinstance	
   password = local.password
+  depends_on = [
+    google_sql_database.database
+  ]
 }
+
 
 
 resource "google_secret_manager_secret" "secret-basic" {
@@ -130,6 +134,9 @@ resource "google_secret_manager_secret" "secret-basic" {
       }
     }
     }
+    depends_on = [
+    google_sql_database.database
+  ]
 }
 
 resource "google_secret_manager_secret_version" "secret-version-basic" {
@@ -153,16 +160,16 @@ resource "local_file" "resource_file" {
     secretid=local.secretid,
   
   })
-  filename = "./Integration/connector/tmpresources.json"
+  filename = "./tmpresources.json"
 }
 
 
 resource "null_resource" "createschemas" {
   provisioner "local-exec" {
-    command = "./Integration/connector/mysql-setup.sh"
+    command = "./mysql-setup.sh"
   }
   depends_on = [
-    local_file.resource_file
+    google_sql_database.database
   ]
 }
 
@@ -180,7 +187,7 @@ resource "local_file" "connector_file" {
     connectorname=local.connectorname,
     secretid=local.secretid,
   })
-  filename = "./Integration/connector/tmpconnector.json"
+  filename = "./tmpconnector.json"
 }
 
 
@@ -199,7 +206,7 @@ resource "null_resource" "setintegrationApi" {
 
 resource "null_resource" "createconnectors" {
   provisioner "local-exec" {
-    command = format("%s%s%s", "integrationcli connectors create -n ", local.connectorname, " -f ./Integration/connector/tmpconnector.json")
+    command = format("%s%s%s", "integrationcli connectors create -n ", local.connectorname, " -f ./tmpconnector.json")
   }
 }
 
@@ -217,9 +224,9 @@ resource "local_file" "integration_file" {
     secretid=local.secretid,
     integration=local.integration
   })
-  filename = "./Integration/tmpintegration.json"
+  filename = "./tmpintegration.json"
 }
-resource "null_resource" "createconnectors" {
+resource "null_resource" "createintegration" {
   provisioner "local-exec" {
     command = format("%s%s%s", "integrationcli integrations upload -n ", local.integration, " -f ./Integration/tmpintegration.json")
   }
