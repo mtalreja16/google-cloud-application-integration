@@ -54,6 +54,7 @@ resource "google_project_iam_member" "member-role" {
   ])
   role = each.key
   member = format("%s%s@%s%s", "serviceAccount:", local.service_account_name, local.project, ".iam.gserviceaccount.com")
+  project = local.project
 }
 
 data "google_iam_policy" "noauth" {
