@@ -3,10 +3,14 @@ function setup_cloudsql_components() {
   (
     set -e
     echo "Downloading Cloud SQL Auth proxy ..."
+    
     mkdir ./Integration/connector/cloudsql 
-    curl https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64 -o cloud_sql_proxy 
-    chmod +x cloud_sql_proxy
-  )
+    
+    wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
+    
+    chmod +x ./Integration/connector/cloud_sql_proxy
+
+   )
   return $?
 }
 
