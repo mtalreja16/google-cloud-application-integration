@@ -92,6 +92,9 @@ resource "google_cloud_run_service" "service" {
       }
     }
   }
+  depends_on = [
+    google_cloud_run_service_iam_policy.noauth
+  ]
 }
 
 
@@ -109,6 +112,9 @@ name = local.dbname
 instance = "${google_sql_database_instance.integration-demo.name}"
 charset = "utf8"
 collation = "utf8_general_ci"
+depends_on = [
+    google_sql_database.database
+  ]
 }
 
 resource "google_sql_user" "root" {
@@ -142,6 +148,9 @@ resource "google_secret_manager_secret" "secret-basic" {
 resource "google_secret_manager_secret_version" "secret-version-basic" {
   secret = google_secret_manager_secret.secret-basic.id
   secret_data = local.password
+  depends_on = [
+    google_sql_database.database
+  ]
 }
 
  
@@ -161,6 +170,9 @@ resource "local_file" "resource_file" {
   
   })
   filename = "./tmpresources.json"
+  depends_on = [
+    google_sql_database.database
+  ]
 }
 
 
@@ -173,42 +185,25 @@ resource "null_resource" "createschemas" {
   ]
 }
 
-
-resource "local_file" "connector_file" {
-  content  = templatefile("Integration/connector/mysql-connector.json", {
-    location = local.location, 
-    project = local.project,
-    projectnumber = local.projectnumber,
-    dbinstance=local.dbinstance,
-    user=local.user,
-    password=local.password,
-    service_account_name=local.service_account_name,
-    dbname=local.dbname,
-    connectorname=local.connectorname,
-    secretid=local.secretid,
-  })
-  filename = "./tmpconnector.json"
-}
-
-
-
-resource "null_resource" "oauth_provisioner" {
+resource "null_resource" "createconnector" {
   provisioner "local-exec" {
-    command = "export token=$(gcloud auth print-access-token) && echo integrationcli token cache -t $token"
+    command = <<EOF
+    curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
+    sleep 5 &&
+    export PATH=$PATH:$HOME/.integrationcli/bin &&
+    sleep 2 &&
+    export token=$(gcloud auth application-default print-access-token) && 
+    sleep 2 &&
+    integrationcli token cache -t $token &&
+    sleep 2 &&
+    integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
+    sleep 2 &&
+    integrationcli connectors create -n ${local.connectorname} -f ./tmpconnector.json &&
+    sleep 2
+    EOF
   }
 }
 
-resource "null_resource" "setintegrationApi" {
-  provisioner "local-exec" {
-    command = format("%s%s%s%s", "integrationcli prefs set -p " , local.project,  " -r " , local.location )
-  }
-}
-
-resource "null_resource" "createconnectors" {
-  provisioner "local-exec" {
-    command = format("%s%s%s", "integrationcli connectors create -n ", local.connectorname, " -f ./tmpconnector.json")
-  }
-}
 
 resource "local_file" "integration_file" {
   content  = templatefile("Integration/manage-reservation.json", {
@@ -228,6 +223,10 @@ resource "local_file" "integration_file" {
 }
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
-    command = format("%s%s%s", "integrationcli integrations upload -n ", local.integration, " -f ./Integration/tmpintegration.json")
+    command = format("%s%s%s", "integrationcli integrations upload -n ", local.integration, " -f ./tmpintegration.json")
   }
+
+ depends_on = [
+    null_resource.createconnector
+  ]
 }
