@@ -1,5 +1,5 @@
 {
-  "name": "projects/${projectnumber}/locations/${location}/integrations/manage-reservation",
+  "name": "projects/${projectnumber}/locations/${location}/integrations/${integration}",
   "triggerConfigs": [{
     "label": "rental return",
     "startTasks": [{

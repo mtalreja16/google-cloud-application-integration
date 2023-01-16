@@ -3,15 +3,15 @@ locals {
   project = "integration-demo-364406"
   projectnumber = "901962132371"
   image = "gcr.io/integration-demo-364406/reservation-app:latest"
-  dbinstance="integration-demo3"
+  dbinstance="integration-demo"
   user="root"
   password="welcome!1" 
-  service_account_name="reservation-demo2"
+  secretid="secret-root"
+  service_account_name="reservation-demo"
   dbname="catalog" # DONT CHANGE IT
-  cloudrun-app="reservation-app-2" # DONT CHANGE IT
-  connectorname="reservationdb2" # DONT CHANGE IT
-  secretid="secret-root2"
-  integration="manage-reservation"
+  cloudrun-app="reservation-app" # DONT CHANGE IT
+  connectorname="reservationdb" # DONT CHANGE IT
+  integration="manage-reservation" # DONT CHANGE IT
 }
 
 provider "google" {
@@ -49,7 +49,8 @@ resource "google_project_iam_member" "member-role" {
     "roles/iam.serviceAccountTokenCreator",
     "roles/secretmanager.secretAccessor",
     "roles/datastore.owner",
-    "roles/integrations.integrationAdmin"
+    "roles/integrations.integrationAdmin",
+    "roles/secretmanager.admin"
   ])
   role = each.key
   member = format("%s%s@%s%s", "serviceAccount:", local.service_account_name, local.project, ".iam.gserviceaccount.com")
@@ -213,6 +214,7 @@ resource "local_file" "integration_file" {
     dbname=local.dbname,
     connectorname=local.connectorname,
     secretid=local.secretid,
+    integration=local.integration
   })
   filename = "./Integration/tmpintegration.json"
 }
