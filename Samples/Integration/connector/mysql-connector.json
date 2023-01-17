@@ -1,5 +1,5 @@
 {
-	"name": "reservationdb2",
+	"name": "${connectorname}",
 	"connectorDetails": {
         "name": "cloudsql-mysql",
         "version": 1 

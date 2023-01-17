@@ -3,15 +3,15 @@ locals {
   project = "integration-demo-364406"
   projectnumber = "901962132371"
   image = "gcr.io/integration-demo-364406/reservation-app:latest"
-  dbinstance="integration-demo"
+  dbinstance="integration-demo-v2"
   user="root"
-  password="welcome!1" 
-  secretid="secret-root"
-  service_account_name="reservation-demo"
+  password="welcome@1" 
+  secretid="secret-root-v2"
+  service_account_name="reservation-demo-v2"
   dbname="catalog" # DONT CHANGE IT
-  cloudrun-app="reservation-app" # DONT CHANGE IT
-  connectorname="reservationdb" # DONT CHANGE IT
-  integration="manage-reservation" # DONT CHANGE IT
+  cloudrun-app="reservation-app-v2" # DONT CHANGE IT
+  connectorname="reservationdb-v2" # DONT CHANGE IT
+  integration="manage-reservation-v2" # DONT CHANGE IT
 }
 
 provider "google" {
@@ -153,37 +153,32 @@ resource "google_secret_manager_secret_version" "secret-version-basic" {
   ]
 }
 
- 
-resource "local_file" "resource_file" {
-  content  = templatefile("Integration/connector/mysql-resources.json", 
-  {
-    location = local.location, 
-    project = local.project,
-    projectnumber = local.projectnumber,
-    dbinstance=local.dbinstance,
-    user=local.user,
-    password=local.password,
-    service_account_name=local.service_account_name,
-    dbname=local.dbname,
-    connectorname=local.connectorname,
-    secretid=local.secretid,
-  
-  })
-  filename = "./tmpresources.json"
-  depends_on = [
-    google_sql_database.database
-  ]
-}
-
-
-resource "null_resource" "createschemas" {
+resource "null_resource" "downloadproxy" {
   provisioner "local-exec" {
-    command = "./mysql-setup.sh"
+    command = <<EOF
+      mkdir ./cloudsql  &&
+      curl https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64 -o ./cloud_sql_proxy  && 
+      sudo chmod +x ./cloud_sql_proxy 
+    EOF
+  }
+ }
+
+resource "null_resource" "openmysql" {
+  provisioner "local-exec" {
+    command = <<EOF
+     ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
+     sql_proxy_pid=$! && 
+     sleep 10 && 
+     mysql -u root --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
+     kill $sql_proxy_pid
+    EOF
   }
   depends_on = [
-    google_sql_database.database
+    null_resource.downloadproxy
   ]
-}
+ }
+
+
 
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {

@@ -68,7 +68,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -147,7 +147,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -216,7 +216,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -266,7 +266,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"CREATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"CREATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -328,7 +328,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -374,7 +374,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -489,7 +489,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -562,7 +562,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"GET_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -727,7 +727,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -879,7 +879,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -994,7 +994,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/inventory\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -1172,7 +1172,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/reservationdb\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${connectorname}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/cloudsql-mysql/versions/1\"\n  },\n  \"operation\": \"UPDATE_ENTITY\"\n}"
         }
       },
       "connectorOutputPayload": {
