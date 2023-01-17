@@ -59,10 +59,12 @@ You can find functions like ExecuteIntegration and LiftIntegration
 The code here shows you how to wrap go sdk into Go API, which can be run in cloudrun or in your local console, here is how you will compile.
 
 ```sh
-cd Integration-Demo/integration-lib 
-docker build -t integration-lib:latest 
-docker tag integration-lib:latest gcr.io/{projectId}/integration-lib:latest 
-gcloud docker -- push gcr.io/{projectId}/integration-lib:latest 
+export REGION=us-west1
+export PROJECT=integration-demo-364406
+cd frontend
+docker build . -t reservation-app:latest 
+docker tag reservation-app:latest gcr.io/{projectId}/reservation-app:latest
+gcloud docker -- push gcr.io/{projectId}/reservation-app:latest 
 ```
 
 
@@ -72,7 +74,7 @@ gcloud docker -- push gcr.io/{projectId}/integration-lib:latest
 * You can also run this locally by doing 
 
 ```sh
- cd ./integration-lib
+ cd ./reservation-app
  
  go run integration.go
 ```

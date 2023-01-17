@@ -1,11 +1,11 @@
 const $alertContainer = $('.alert-container');
-const $url = 'https://' + window.location.hostname + '/run?name=manage-reservation'
-const $resumeurl = 'https://' + window.location.hostname + '/resume?name=manage-reservation'
+const $url = 'https://' + window.location.hostname + '/run'
+const $resumeurl = 'https://' + window.location.hostname + '/resume'
 
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     console.log(data)
-   fetch($url + '&trigger=pickupVan', {
+   fetch($url + '?trigger=pickupVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -52,7 +52,7 @@ function submitVanPickedup(id) {
         claim = 'Process'
       }
       // Prevent the form from submitting and refreshing the page
-    fetch($url + '&trigger=returnVan', {
+    fetch($url + '?trigger=returnVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -93,7 +93,7 @@ function submitVanPickedup(id) {
   function submitApproveRequest(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     // Prevent the form from submitting and refreshing the page
-    fetch($resumeurl + '&executionId=' + data.execution_id, {
+    fetch($resumeurl + '?executionId=' + data.execution_id, {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -133,7 +133,7 @@ function submitVanPickedup(id) {
   $('#searchButton').click(function(e) {
     // Prevent the form from submitting and refreshing the page
     e.preventDefault();
-    fetch($url + '&trigger=getReservation', {
+    fetch($url + '?trigger=getReservation', {
     method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}"

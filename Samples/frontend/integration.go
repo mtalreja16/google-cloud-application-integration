@@ -37,18 +37,13 @@ func main() {
 		}
 		// Set the body to a variable
 
-		name := r.URL.Query().Get("name")
-		if name == "" {
-			http.Error(w, "Missing parameter name", http.StatusBadRequest)
-			return
-		}
 		trigger := "api_trigger/" + r.URL.Query().Get("trigger")
 		if trigger == "" {
 			http.Error(w, "Missing parameter trigger", http.StatusBadRequest)
 			return
 		}
 
-		jsonBody, err = execIntegration(integrationsService, name, trigger, string(body))
+		jsonBody, err = execIntegration(integrationsService, trigger, string(body))
 
 		if err != nil {
 			json.NewEncoder(w).Encode(err)
@@ -64,18 +59,14 @@ func main() {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		name := r.URL.Query().Get("name")
-		if name == "" {
-			http.Error(w, "Missing parameter name", http.StatusBadRequest)
-			return
-		}
+
 		executionId := r.URL.Query().Get("executionId")
 		if executionId == "" {
 			http.Error(w, "Missing parameter executionId", http.StatusBadRequest)
 			return
 		}
 
-		jsonBody, err = liftIntegration(integrationsService, name, executionId)
+		jsonBody, err = liftIntegration(integrationsService, executionId)
 		if err != nil {
 			json.NewEncoder(w).Encode(err)
 		}
@@ -98,11 +89,12 @@ func setupCorsResponse(w *http.ResponseWriter, r *http.Request) {
 	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Authorization")
 }
 
-func execIntegration(integrationsService *integrations.Service, name string, triggerId string, body string) ([]byte, error) {
+func execIntegration(integrationsService *integrations.Service, triggerId string, body string) ([]byte, error) {
 	//construct the parent
 
 	var project = os.Getenv("project")
 	var location = os.Getenv("location")
+	var name = os.Getenv("name")
 
 	parent := fmt.Sprintf("projects/%s/locations/%s/integrations/%s", project, location, name)
 	request := integrations.GoogleCloudIntegrationsV1alphaExecuteIntegrationsRequest{}
@@ -133,10 +125,11 @@ func execIntegration(integrationsService *integrations.Service, name string, tri
 	return jsonBody, nil
 }
 
-func liftIntegration(integrationsService *integrations.Service, name string, executionId string) ([]byte, error) {
+func liftIntegration(integrationsService *integrations.Service, executionId string) ([]byte, error) {
 
 	var project = os.Getenv("project")
 	var location = os.Getenv("location")
+	var name = os.Getenv("name")
 
 	parent := fmt.Sprintf("projects/%s/locations/%s/products/%s/integrations/%s/executions/%s/suspensions/-", project, location, "apigee", name, executionId)
 

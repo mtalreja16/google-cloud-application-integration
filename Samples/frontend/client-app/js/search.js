@@ -1,6 +1,6 @@
 window.onload = function(e) {
 const $vandCollection = $('.vand-collection');
-fetch('https://' + window.location.hostname + '/run?name=manage-reservation&trigger=getInventory', {
+fetch('https://' + window.location.hostname + '/run?trigger=getInventory', {
    method: 'POST',
    body: JSON.stringify({
     "reservation-payload": "{}",
