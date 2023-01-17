@@ -30,12 +30,3 @@ Submit reservation. <br />
 Customer Picks up the van while agent taking notes/images. <br />
 Customer returns the van after trip while agent taking notes/images and confirm the return. <br />
 
-[https://lucid.app/lucidchart/458708b6-3b25-4f54-9933-09aa35f6d725/edit?invitationId=inv_d1836b95-c30e-4e5d-acf7-ca3b1071ba88&page=0_0#](https://lucid.app/lucidchart/458708b6-3b25-4f54-9933-09aa35f6d725/edit?invitationId=inv_d1836b95-c30e-4e5d-acf7-ca3b1071ba88&page=0_0#)
-
-<h2>Please follow the steps </h2>
-
-[Integration Setup](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/Samples/Van%20Reservation/integration-definition)
-
-[Integration Management API](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/lib/integration-lib)
-
-[Reservaton App](https://github.com/mtalreja16/google-cloud-application-integration/tree/main/Samples/Van%20Reservation/client-app)
