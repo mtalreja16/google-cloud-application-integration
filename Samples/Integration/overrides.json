@@ -1,0 +1,88 @@
+{
+    "connection_overrides": [
+        {
+            "taskId": "51",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "30",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "49",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "22",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "63",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "55",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "58",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "46",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "31",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "57",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "61",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        },
+        {
+            "taskId": "50",
+            "task": "GenericConnectorTask",
+            "parameters": {
+                "connectionName": "reservationdb"
+            }
+        }
+    ]
+}

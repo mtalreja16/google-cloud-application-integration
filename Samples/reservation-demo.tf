@@ -223,7 +223,7 @@ resource "local_file" "integration_file" {
 }
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
-    command = format("%s%s%s", "integrationcli integrations upload -n ", local.integration, " -f ./tmpintegration.json")
+    command = format("%s%s%s", "integrationcli integrations create -n ", local.integration, " -f ./tmpintegration.json")
   }
 
  depends_on = [
