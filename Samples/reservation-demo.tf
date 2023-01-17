@@ -92,9 +92,6 @@ resource "google_cloud_run_service" "service" {
       }
     }
   }
-  depends_on = [
-    google_cloud_run_service_iam_policy.noauth
-  ]
 }
 
 
@@ -163,6 +160,9 @@ resource "null_resource" "downloadproxy" {
       sudo chmod +x ./cloud_sql_proxy 
     EOF
   }
+    depends_on = [
+    google_sql_database.database
+  ]
  }
 
 resource "null_resource" "openmysql" {
@@ -177,6 +177,7 @@ resource "null_resource" "openmysql" {
   }
   depends_on = [
     null_resource.downloadproxy
+   
   ]
  }
 
@@ -199,6 +200,9 @@ resource "null_resource" "createconnector" {
     sleep 2
     EOF
   }
+  depends_on = [
+    null_resource.downloadproxy
+   ]
 }
 
 
