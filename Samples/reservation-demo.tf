@@ -181,7 +181,22 @@ resource "null_resource" "openmysql" {
   ]
  }
 
-
+resource "local_file" "integration_file" {
+  content  = templatefile("Integration/connector/mysql-connector.json", {
+    location = local.location, 
+    project = local.project,
+    projectnumber = local.projectnumber,
+    dbinstance=local.dbinstance,
+    user=local.user,
+    password=local.password,
+    service_account_name=local.service_account_name,
+    dbname=local.dbname,
+    connectorname=local.connectorname,
+    secretid=local.secretid,
+    integration=local.integration
+  })
+  filename = "./tmpconnector.json"
+}
 
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {
@@ -201,7 +216,8 @@ resource "null_resource" "createconnector" {
     EOF
   }
   depends_on = [
-    null_resource.downloadproxy
+    null_resource.downloadproxy,
+    local_file.integration_file
    ]
 }
 
@@ -228,6 +244,7 @@ resource "null_resource" "createintegration" {
   }
 
  depends_on = [
-    null_resource.createconnector
+    null_resource.createconnector,
+    local_file.integration_file
   ]
 }
