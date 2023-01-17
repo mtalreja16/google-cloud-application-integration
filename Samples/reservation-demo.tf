@@ -153,11 +153,13 @@ resource "google_secret_manager_secret_version" "secret-version-basic" {
   ]
 }
 
+#curl https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64 -o ./cloud_sql_proxy  && 
+
 resource "null_resource" "downloadproxy" {
   provisioner "local-exec" {
     command = <<EOF
       mkdir ./cloudsql  &&
-      curl https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64 -o ./cloud_sql_proxy  && 
+      wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy &&
       sudo chmod +x ./cloud_sql_proxy 
     EOF
   }
