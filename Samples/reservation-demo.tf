@@ -2,16 +2,16 @@ locals {
   location = "us-west1"
   project = "integration-demo-364406"
   projectnumber = "901962132371"
-  image = "gcr.io/integration-demo-364406/reservation-app:latest"
+  image = "gcr.io/integration-demo-364406/reservation-app:latest" # DONT CHANGE IT, this is public image needed to create the cloud run app
   dbinstance="integration-demo-v2"
   user="root"
   password="welcome@1" 
   secretid="secret-root-v2"
   service_account_name="reservation-demo-v2"
-  dbname="catalog" # DONT CHANGE IT
-  cloudrun-app="reservation-app-v2" # DONT CHANGE IT
-  connectorname="reservationdb-v2" # DONT CHANGE IT
-  integration="manage-reservation-v2" # DONT CHANGE IT
+  dbname="catalog"
+  cloudrun-app="reservation-app-v2"
+  connectorname="reservationdb-v2" 
+  integration="manage-reservation-v2" 
 }
 
 provider "google" {
@@ -53,7 +53,7 @@ resource "google_project_iam_member" "member-role" {
     "roles/secretmanager.admin"
   ])
   role = each.key
-  member = format("%s%s@%s%s", "serviceAccount:", local.service_account_name, local.project, ".iam.gserviceaccount.com")
+  member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", local.service_account_name, local.project)
   project = local.project
 }
 
@@ -95,7 +95,7 @@ resource "google_cloud_run_service" "service" {
 }
 
 
-resource "google_sql_database_instance" "integration-demo" {
+resource "google_sql_database_instance" "demo" {
   name          = local.dbinstance
   database_version = "MYSQL_8_0"
   region        = local.location
@@ -106,7 +106,7 @@ resource "google_sql_database_instance" "integration-demo" {
 
 resource "google_sql_database" "database" {
 name = local.dbname
-instance = "${google_sql_database_instance.integration-demo.name}"
+instance = "${google_sql_database_instance.demo.name}"
 charset = "utf8"
 collation = "utf8_general_ci"
 depends_on = [
@@ -114,7 +114,7 @@ depends_on = [
   ]
 }
 
-resource "google_sql_user" "root" {
+resource "google_sql_user" "user" {
   name     = local.user
   instance = local.dbinstance	
   password = local.password
@@ -171,7 +171,7 @@ resource "null_resource" "openmysql" {
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
-     mysql -u root --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
+     mysql -u {local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
   }
@@ -181,7 +181,7 @@ resource "null_resource" "openmysql" {
   ]
  }
 
-resource "local_file" "integration_file" {
+resource "local_file" "connector_file" {
   content  = templatefile("Integration/connector/mysql-connector.json", {
     location = local.location, 
     project = local.project,
@@ -195,56 +195,37 @@ resource "local_file" "integration_file" {
     secretid=local.secretid,
     integration=local.integration
   })
-  filename = "./tmpconnector.json"
+    filename = format("./%s.json", local.connectorname)
 }
 
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {
     command = <<EOF
-    curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
-    sleep 5 &&
-    export PATH=$PATH:$HOME/.integrationcli/bin &&
-    sleep 2 &&
-    export token=$(gcloud auth application-default print-access-token) && 
-    sleep 2 &&
-    integrationcli token cache -t $token &&
-    sleep 2 &&
-    integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-    sleep 2 &&
-    integrationcli connectors create -n ${local.connectorname} -f ./tmpconnector.json &&
-    sleep 2
+      curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
+      export PATH=$PATH:$HOME/.integrationcli/bin &&
+      export token=$(gcloud auth application-default print-access-token) && 
+      integrationcli token cache -t $token &&
+      sleep 2 &&
+      integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
+      integrationcli connectors create -n ${local.connectorname} -f ${local_file.connector_file.filename} 
     EOF
   }
-  depends_on = [
-    null_resource.downloadproxy,
-    local_file.integration_file
-   ]
 }
-
 
 resource "local_file" "integration_file" {
   content  = templatefile("Integration/manage-reservation.json", {
-    location = local.location, 
-    project = local.project,
-    projectnumber = local.projectnumber,
-    dbinstance=local.dbinstance,
-    user=local.user,
-    password=local.password,
-    service_account_name=local.service_account_name,
-    dbname=local.dbname,
     connectorname=local.connectorname,
-    secretid=local.secretid,
-    integration=local.integration
+    location = local.location, 
+    project = local.project
   })
-  filename = "./tmpintegration.json"
+  filename = format("./%s.json", local.integration)
 }
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
-    command = format("%s%s%s", "integrationcli integrations create -n ", local.integration, " -f ./tmpintegration.json")
+    command = format("%s%s%s%s", "integrationcli integrations create -n ", local.integration, " -f ", local_file.integration_file.filename)
   }
 
  depends_on = [
-    null_resource.createconnector,
-    local_file.integration_file
+    null_resource.createconnector
   ]
 }
