@@ -38,7 +38,7 @@ resource "google_project_service" "gcp_services" {
   service = each.key
 }
 
-resource "google_service_account" "integration-admin" {
+resource "google_service_account" "service_account" {
   account_id   = local.service_account_name
   display_name = local.service_account_name
 }
@@ -55,11 +55,8 @@ resource "google_project_iam_member" "member-role" {
     "roles/pubsub.admin"
   ])
   role = each.key
-  member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", local.service_account_name, local.project)
+  member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
   project = local.project
-   depends_on = [
-    google_project_service.gcp_services
-  ]
 }
 
 data "google_iam_policy" "noauth" {
@@ -86,7 +83,7 @@ resource "google_cloud_run_service" "service" {
   location     = local.location
   template {
     spec {
-      service_account_name = google_service_account.integration-admin.email
+      service_account_name = google_service_account.service_account.email
       containers {
         image = local.image
         env {
