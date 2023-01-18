@@ -3,7 +3,7 @@ locals {
   project = "integration-demo-364406"
   projectnumber = "901962132371"
   image = "gcr.io/integration-demo-364406/reservation-app:latest" # DONT CHANGE IT, this is public image needed to create the cloud run app
-  dbinstance="integration-demo-v2"
+  dbinstance="reservation-demo-v2"
   user="root"
   password="welcome@1" 
   secretid="secret-root-v2"
@@ -137,8 +137,6 @@ resource "google_sql_user" "user" {
   ]
 }
 
-
-
 resource "google_secret_manager_secret" "secret-basic" {
   secret_id = local.secretid
   labels = {
@@ -169,8 +167,7 @@ resource "google_secret_manager_secret_version" "secret-version-basic" {
 resource "null_resource" "downloadproxy" {
   provisioner "local-exec" {
     command = <<EOF
-      if [ ! -d ./cloudsql ]; then
-      mkdir ./cloudsql  &&
+      mkdir ./cloudsql
       wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy &&
       sudo chmod +x ./cloud_sql_proxy 
     EOF
@@ -215,18 +212,9 @@ resource "local_file" "connector_file" {
 
 resource "local_file" "pubsubconnector_file" {
   content  = templatefile("Integration/connector/pubsub-connector.json", {
-    location = local.location, 
     project = local.project,
-    projectnumber = local.projectnumber,
-    dbinstance=local.dbinstance,
-    user=local.user,
-    password=local.password,
     service_account_name=local.service_account_name,
-    dbname=local.dbname,
     pubsubconnector=local.pubsubconnector,
-    secretid=local.secretid,
-    integration=local.integration
-
   })
     filename = format("./%s.json", local.pubsubconnector)
 }
@@ -263,9 +251,9 @@ resource "local_file" "integration_file" {
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
     command = <<EOF
-    integrationcli integrations create -n manage-reservation-v23  -f  ./manage-reservation-v20.json > ./output.txt &&
+    integrationcli integrations create -n ${local.integration} -f  ./${local.integration}.json > ./output.txt &&
     export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
-    integrationcli integrations versions publish -n manage-reservation-v23 -v $version
+    integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
     EOF
   }
  depends_on = [

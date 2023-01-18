@@ -4,18 +4,15 @@
         "name": "pubsub",
         "version": 1 
     },
-        "configVariables": [
+    "configVariables": [
         {
-                "key": "project_id",
-                "stringValue": "${project}"
-            
+            "key": "project_id",
+            "stringValue": "${project}"
         },
         {
             "key": "topic_id",
-            "stringValue": "{topic}"
+            "stringValue": "${pubsubconnector}"
         }
     ],
-    "serviceAccount":"${service_account_name}@${project}.iam.gserviceaccount.com",
-    "authConfig": {}
-    
+    "serviceAccount":"${service_account_name}@${project}.iam.gserviceaccount.com"
 }

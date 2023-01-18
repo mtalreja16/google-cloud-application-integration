@@ -489,7 +489,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connection/${pubsubconnector}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${pubsubconnector}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
@@ -994,7 +994,7 @@
       "config": {
         "key": "config",
         "value": {
-          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connection/${pubsubconnector}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/${project}/locations/${location}/connections/${pubsubconnector}\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/${location}/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/${project}/locations/global/providers/gcp/connectors/pubsub/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
         }
       },
       "connectorOutputPayload": {
