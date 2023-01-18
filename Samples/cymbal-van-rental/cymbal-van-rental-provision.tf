@@ -28,7 +28,8 @@ variable "gcp_service_list" {
     "secretmanager.googleapis.com",
     "pubsub.googleapis.com",
     "connectors.googleapis.com",
-    "integrations.googleapis.com"
+    "integrations.googleapis.com",
+    "run.googleapis.com"
   ]
 }
 
