@@ -51,7 +51,8 @@ resource "google_project_iam_member" "member-role" {
     "roles/secretmanager.secretAccessor",
     "roles/datastore.owner",
     "roles/integrations.integrationAdmin",
-    "roles/secretmanager.admin"
+    "roles/secretmanager.admin",
+    "roles/pubsub.admin"
   ])
   role = each.key
   member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", local.service_account_name, local.project)
