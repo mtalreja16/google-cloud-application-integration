@@ -57,6 +57,9 @@ resource "google_project_iam_member" "member-role" {
   role = each.key
   member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", local.service_account_name, local.project)
   project = local.project
+   depends_on = [
+    google_project_service.gcp_services
+  ]
 }
 
 data "google_iam_policy" "noauth" {
@@ -73,6 +76,9 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   project     = local.project
   service     = google_cloud_run_service.service.name
   policy_data = data.google_iam_policy.noauth.policy_data
+  depends_on = [
+    google_project_iam_member.member-role
+  ]
 }
 
 resource "google_cloud_run_service" "service" {
@@ -98,16 +104,26 @@ resource "google_cloud_run_service" "service" {
       }
     }
   }
+   depends_on = [
+    google_project_iam_member.member-role
+  ]
+
 }
 
 resource "google_pubsub_topic" "inventory" {
   name = local.pubsubconnector
+   depends_on = [
+    google_project_iam_member.member-role
+  ]
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
   name          = "sub-inventory"
   topic         = google_pubsub_topic.inventory.name
   ack_deadline_seconds = 10
+  depends_on = [
+    google_project_iam_member.member-role
+  ]
 }
 
 resource "google_sql_database_instance" "demo" {
@@ -117,6 +133,9 @@ resource "google_sql_database_instance" "demo" {
   settings {
     tier = "db-f1-micro"
   }
+  depends_on = [
+    google_project_iam_member.member-role
+  ]
 }
 
 resource "google_sql_database" "database" {
