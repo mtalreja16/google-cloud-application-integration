@@ -195,7 +195,7 @@ resource "null_resource" "openmysql" {
  }
 
 resource "local_file" "connector_file" {
-  content  = templatefile("Integration/connector/mysql-connector.json", {
+  content  = templatefile("manage-reservation/connector/mysql-connector.json", {
     location = local.location, 
     project = local.project,
     projectnumber = local.projectnumber,
@@ -212,7 +212,7 @@ resource "local_file" "connector_file" {
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content  = templatefile("Integration/connector/pubsub-connector.json", {
+  content  = templatefile("manage-reservation/connector/pubsub-connector.json", {
     project = local.project,
     service_account_name=local.service_account_name,
     pubsubconnector=local.pubsubconnector,
@@ -252,6 +252,11 @@ resource "local_file" "integration_file" {
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
     command = <<EOF
+    export PATH=$PATH:$HOME/.integrationcli/bin &&
+    export token=$(gcloud auth application-default print-access-token) && 
+    integrationcli token cache -t $token &&
+    sleep 2 &&
+    integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
     integrationcli integrations create -n ${local.integration} -f  ./${local.integration}.json > ./output.txt &&
     export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
     integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
