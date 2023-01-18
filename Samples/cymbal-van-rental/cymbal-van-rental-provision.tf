@@ -265,6 +265,15 @@ resource "local_file" "integration_file" {
   filename = format("./%s.json", local.integration)
 }
 
+resource "local_file" "overrides" {
+  content  = templatefile("overrides/overrides.json", {
+    mysqlconnector=local.mysqlconnector,
+    pubsubconnector=local.pubsubconnector
+  })
+  filename = format("./%s.json", "overrides.json")
+}
+
+
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
     command = <<EOF
@@ -273,7 +282,7 @@ resource "null_resource" "createintegration" {
     integrationcli token cache -t $token &&
     sleep 2 &&
     integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-    integrationcli integrations create -n ${local.integration} -f  -o ./overrides/overrides.json ./${local.integration}.json > ./output.txt &&
+    integrationcli integrations create -n ${local.integration} -f  -o ./overrides.json ./${local.integration}.json > ./output.txt &&
     export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
     integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
     EOF

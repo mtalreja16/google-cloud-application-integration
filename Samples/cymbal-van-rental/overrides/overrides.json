@@ -4,84 +4,84 @@
             "taskId": "51",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "30",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "49",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "22",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "63",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "55",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "58",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "inventory"
+                "connectionName": "${pubsubconnector}"
             }
         },
         {
             "taskId": "46",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "31",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "57",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         },
         {
             "taskId": "61",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "inventory"
+                "connectionName": "${pubsubconnector}"
             }
         },
         {
             "taskId": "50",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "${mysqlconnector}"
             }
         }
     ]
