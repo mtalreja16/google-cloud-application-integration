@@ -248,11 +248,12 @@ resource "local_file" "pubsubconnector_file" {
     filename = format("./%s.json", local.pubsubconnector)
 }
 
- #curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
+ 
      
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {
     command = <<EOF
+      curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
       export PATH=$PATH:$HOME/.integrationcli/bin &&
       export token=$(gcloud auth application-default print-access-token) && 
       integrationcli token cache -t $token &&
