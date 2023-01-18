@@ -1,16 +1,16 @@
 locals {
-  location = "us-west1"
-  project = "integration-demo-364406"
-  projectnumber = "901962132371"
+  location = "-----" # Add region
+  project = "----" # Add ProjectId
+  projectnumber = "---" # Add Project Number
   dbinstance="reservation-demo-v131"
   user="root"
-  secretid="secret-root-v131"
-  service_account_name="reservation-demo-v131"
+  secretid="secret-sql"
   dbname="catalog"
-  cloudrun-app="reservation-app-v131"
-  mysqlconnector="reservationdb-v131" 
   pubsubconnector="inventory"
-  integration="manage-reservation-v131" 
+  service_account_name="reservation-demo"
+  cloudrun-app="reservation-app"
+  mysqlconnector="reservationdb" 
+  integration="manage-reservation" 
 }
 
 provider "google" {
