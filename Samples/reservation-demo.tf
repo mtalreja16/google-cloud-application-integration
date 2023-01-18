@@ -211,7 +211,7 @@ resource "null_resource" "openmysql" {
  }
 
 resource "local_file" "connector_file" {
-  content  = templatefile("manage-reservation/connector/mysql-connector.json", {
+  content  = templatefile("Integration/connector/mysql-connector.json", {
     location = local.location, 
     project = local.project,
     projectnumber = local.projectnumber,
@@ -228,7 +228,7 @@ resource "local_file" "connector_file" {
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content  = templatefile("manage-reservation/connector/pubsub-connector.json", {
+  content  = templatefile("Integration/connector/pubsub-connector.json", {
     project = local.project,
     service_account_name=local.service_account_name,
     pubsubconnector=local.pubsubconnector,
