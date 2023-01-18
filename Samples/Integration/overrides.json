@@ -46,7 +46,7 @@
             "taskId": "58",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "inventory"
             }
         },
         {
@@ -74,7 +74,7 @@
             "taskId": "61",
             "task": "GenericConnectorTask",
             "parameters": {
-                "connectionName": "reservationdb"
+                "connectionName": "inventory"
             }
         },
         {

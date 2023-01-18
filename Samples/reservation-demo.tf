@@ -10,7 +10,8 @@ locals {
   service_account_name="reservation-demo-v2"
   dbname="catalog"
   cloudrun-app="reservation-app-v2"
-  connectorname="reservationdb-v2" 
+  mysqlconnector="reservationdb-v2" 
+  pubsubconnector="inventory"
   integration="manage-reservation-v2" 
 }
 
@@ -98,6 +99,15 @@ resource "google_cloud_run_service" "service" {
   }
 }
 
+resource "google_pubsub_topic" "inventory" {
+  name = local.pubsubconnector
+}
+
+resource "google_pubsub_subscription" "sub_inventory" {
+  name          = "sub-inventory"
+  topic         = google_pubsub_topic.inventory.name
+  ack_deadline_seconds = 10
+}
 
 resource "google_sql_database_instance" "demo" {
   name          = local.dbinstance
@@ -196,11 +206,28 @@ resource "local_file" "connector_file" {
     password=local.password,
     service_account_name=local.service_account_name,
     dbname=local.dbname,
-    connectorname=local.connectorname,
+    mysqlconnector=local.mysqlconnector,
     secretid=local.secretid,
     integration=local.integration
   })
-    filename = format("./%s.json", local.connectorname)
+    filename = format("./%s.json", local.mysqlconnector)
+}
+
+resource "local_file" "pubsubconnector_file" {
+  content  = templatefile("Integration/connector/mysql-connector.json", {
+    location = local.location, 
+    project = local.project,
+    projectnumber = local.projectnumber,
+    dbinstance=local.dbinstance,
+    user=local.user,
+    password=local.password,
+    service_account_name=local.service_account_name,
+    dbname=local.dbname,
+    mysqlconnector=local.mysqlconnector,
+    secretid=local.secretid,
+    integration=local.integration
+  })
+    filename = format("./%s.json", local.pubsubconnector)
 }
 
 resource "null_resource" "createconnector" {
@@ -212,7 +239,8 @@ resource "null_resource" "createconnector" {
       integrationcli token cache -t $token &&
       sleep 2 &&
       integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-      integrationcli connectors create -n ${local.connectorname} -f ${local_file.connector_file.filename} --wait=true
+      integrationcli connectors create -n ${local.mysqlconnector} -f ${local_file.connector_file.filename} --wait=true
+      integrationcli connectors create -n ${local.pubsubconnector} -f ${local_file.pubsubconnector_file.filename} --wait=true
     EOF
   }
   depends_on = [
@@ -222,7 +250,7 @@ resource "null_resource" "createconnector" {
 
 resource "local_file" "integration_file" {
   content  = templatefile("Integration/manage-reservation.json", {
-    connectorname=local.connectorname,
+    mysqlconnector=local.mysqlconnector,
     location = local.location, 
     project = local.project
   })

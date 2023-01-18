@@ -1,0 +1,21 @@
+{
+    "name": "inventory",
+    "connectorDetails": {
+        "name": "pubsub",
+        "version": 1 
+    },
+        "configVariables": [
+        {
+                "key": "project_id",
+                "stringValue": "${project}"
+            
+        },
+        {
+            "key": "topic_id",
+            "stringValue": "{topic}"
+        }
+    ],
+    "serviceAccount":"${service_account_name}@${project}.iam.gserviceaccount.com",
+    "authConfig": {}
+    
+}
