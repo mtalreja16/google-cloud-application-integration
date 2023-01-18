@@ -200,7 +200,7 @@ resource "null_resource" "openmysql" {
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
-     mysql -u ${local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
+     mysql -u ${local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
   }
@@ -211,7 +211,7 @@ resource "null_resource" "openmysql" {
  }
 
 resource "local_file" "connector_file" {
-  content  = templatefile("Integration/connector/mysql-connector.json", {
+  content  = templatefile("connector/mysql-connector.json", {
     location = local.location, 
     project = local.project,
     projectnumber = local.projectnumber,
@@ -228,7 +228,7 @@ resource "local_file" "connector_file" {
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content  = templatefile("Integration/connector/pubsub-connector.json", {
+  content  = templatefile("connector/pubsub-connector.json", {
     project = local.project,
     service_account_name=local.service_account_name,
     pubsubconnector=local.pubsubconnector,
@@ -256,7 +256,7 @@ resource "null_resource" "createconnector" {
 }
 
 resource "local_file" "integration_file" {
-  content  = templatefile("Integration/manage-reservation.json", {
+  content  = templatefile("src/manage-reservation.json", {
     mysqlconnector=local.mysqlconnector,
     pubsubconnector=local.pubsubconnector
     location = local.location, 
@@ -264,6 +264,15 @@ resource "local_file" "integration_file" {
   })
   filename = format("./%s.json", local.integration)
 }
+
+resource "local_file" "overrides" {
+  content  = templatefile("overrides/overrides.json", {
+    mysqlconnector=local.mysqlconnector,
+    pubsubconnector=local.pubsubconnector
+  })
+  filename = format("./%s.json", "overrides.json")
+}
+
 
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
@@ -273,7 +282,7 @@ resource "null_resource" "createintegration" {
     integrationcli token cache -t $token &&
     sleep 2 &&
     integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-    integrationcli integrations create -n ${local.integration} -f  ./${local.integration}.json > ./output.txt &&
+    integrationcli integrations create -n ${local.integration} -f  -o ./overrides.json ./${local.integration}.json > ./output.txt &&
     export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
     integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
     EOF
