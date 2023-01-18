@@ -2,17 +2,15 @@ locals {
   location = "us-west1"
   project = "integration-demo-364406"
   projectnumber = "901962132371"
-  image = "gcr.io/integration-demo-364406/reservation-app:latest" # DONT CHANGE IT, this is public image needed to create the cloud run app
-  dbinstance="reservation-demo-v2"
+  dbinstance="reservation-demo-v131"
   user="root"
-  password="welcome@1" 
-  secretid="secret-root-v2"
-  service_account_name="reservation-demo-v2"
+  secretid="secret-root-v131"
+  service_account_name="reservation-demo-v131"
   dbname="catalog"
-  cloudrun-app="reservation-app-v2"
-  mysqlconnector="reservationdb-v2" 
+  cloudrun-app="reservation-app-v131"
+  mysqlconnector="reservationdb-v131" 
   pubsubconnector="inventory"
-  integration="manage-reservation-v2" 
+  integration="manage-reservation-v131" 
 }
 
 provider "google" {
@@ -32,6 +30,21 @@ variable "gcp_service_list" {
     "run.googleapis.com"
   ]
 }
+
+resource "null_resource" "reservation_app" {
+  provisioner "local-exec" {
+    command = <<EOF
+    docker build -t gcr.io/${local.project}/reservation-app:latest ./src/frontend
+    docker push gcr.io/${local.project}/reservation-app:latest
+    EOF
+  }
+}
+
+resource "random_password" "password" {
+    length           = 16
+    special          = true
+    override_special = "!#$%&*()-_=+[]{}<>:?"
+  }
 
 resource "google_project_service" "gcp_services" {
   for_each = toset(var.gcp_service_list)
@@ -86,7 +99,7 @@ resource "google_cloud_run_service" "service" {
     spec {
       service_account_name = google_service_account.service_account.email
       containers {
-        image = local.image
+        image = "gcr.io/${local.project}/reservation-app:latest"
         env {
           name  = "project"
           value = local.project
@@ -103,11 +116,9 @@ resource "google_cloud_run_service" "service" {
     }
   }
    depends_on = [
-    google_project_iam_member.member-role
+    null_resource.reservation_app
   ]
-
 }
-
 resource "google_pubsub_topic" "inventory" {
   name = local.pubsubconnector
    depends_on = [
@@ -149,7 +160,7 @@ depends_on = [
 resource "google_sql_user" "user" {
   name     = local.user
   instance = local.dbinstance	
-  password = local.password
+  password = random_password.password.result
   depends_on = [
     google_sql_database.database
   ]
@@ -174,7 +185,7 @@ resource "google_secret_manager_secret" "secret-basic" {
 
 resource "google_secret_manager_secret_version" "secret-version-basic" {
   secret = google_secret_manager_secret.secret-basic.id
-  secret_data = local.password
+  secret_data = random_password.password.result
   depends_on = [
     google_sql_database.database
   ]
@@ -201,7 +212,7 @@ resource "null_resource" "openmysql" {
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
-     mysql -u ${local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
+     mysql -u ${local.user} --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
   }
@@ -218,7 +229,7 @@ resource "local_file" "connector_file" {
     projectnumber = local.projectnumber,
     dbinstance=local.dbinstance,
     user=local.user,
-    password=local.password,
+    password=random_password.password,
     service_account_name=local.service_account_name,
     dbname=local.dbname,
     mysqlconnector=local.mysqlconnector,
@@ -271,7 +282,7 @@ resource "local_file" "overrides" {
     mysqlconnector=local.mysqlconnector,
     pubsubconnector=local.pubsubconnector
   })
-  filename = format("./%s.json", "overrides.json")
+  filename = "overrides.json"
 }
 
 
