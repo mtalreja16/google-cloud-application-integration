@@ -28,7 +28,8 @@
 	"userPassword": {
 		"username": "${user}",
 		"password": {
-			"secret": "projects/${projectnumber}/secrets/${secretid}"
+			"secret": "projects/${projectnumber}/secrets/${secretid}",
+			"secretVersion" : "projects/${projectnumber}/secrets/${secretid}/versions/1"
 			}
 		}
 	}

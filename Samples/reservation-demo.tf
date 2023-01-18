@@ -159,6 +159,7 @@ resource "google_secret_manager_secret_version" "secret-version-basic" {
 resource "null_resource" "downloadproxy" {
   provisioner "local-exec" {
     command = <<EOF
+      if [ ! -d ./cloudsql ]; then
       mkdir ./cloudsql  &&
       wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy &&
       sudo chmod +x ./cloud_sql_proxy 
@@ -175,7 +176,7 @@ resource "null_resource" "openmysql" {
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
-     mysql -u {local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
+     mysql -u ${local.user} --password=${local.password} --host 127.0.0.1 --database=${local.dbname} <reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
   }
@@ -211,9 +212,12 @@ resource "null_resource" "createconnector" {
       integrationcli token cache -t $token &&
       sleep 2 &&
       integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-      integrationcli connectors create -n ${local.connectorname} -f ${local_file.connector_file.filename} 
+      integrationcli connectors create -n ${local.connectorname} -f ${local_file.connector_file.filename} --wait=true
     EOF
   }
+  depends_on = [
+    null_resource.openmysql
+   ]
 }
 
 resource "local_file" "integration_file" {
@@ -224,11 +228,15 @@ resource "local_file" "integration_file" {
   })
   filename = format("./%s.json", local.integration)
 }
+
 resource "null_resource" "createintegration" {
   provisioner "local-exec" {
-    command = format("%s%s%s%s", "integrationcli integrations create -n ", local.integration, " -f ", local_file.integration_file.filename)
+    command = <<EOF
+    integrationcli integrations create -n manage-reservation-v23  -f  ./manage-reservation-v20.json > ./output.txt &&
+    export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
+    integrationcli integrations versions publish -n manage-reservation-v23 -v $version
+    EOF
   }
-
  depends_on = [
     null_resource.createconnector
   ]

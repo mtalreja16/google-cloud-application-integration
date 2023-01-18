@@ -64,7 +64,7 @@ export PROJECT=integration-demo-364406
 cd frontend
 docker build . -t reservation-app:latest 
 docker tag reservation-app:latest gcr.io/{projectId}/reservation-app:latest
-gcloud docker -- push gcr.io/{projectId}/reservation-app:latest 
+docker -- push gcr.io/{projectId}/reservation-app:latest 
 ```
 
 
