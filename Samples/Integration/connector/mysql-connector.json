@@ -1,5 +1,5 @@
 {
-	"name": "${connectorname}",
+	"name": "${mysqlconnector}",
 	"connectorDetails": {
         "name": "cloudsql-mysql",
         "version": 1 

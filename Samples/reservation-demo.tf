@@ -214,7 +214,7 @@ resource "local_file" "connector_file" {
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content  = templatefile("Integration/connector/mysql-connector.json", {
+  content  = templatefile("Integration/connector/pubsub-connector.json", {
     location = local.location, 
     project = local.project,
     projectnumber = local.projectnumber,
@@ -223,17 +223,19 @@ resource "local_file" "pubsubconnector_file" {
     password=local.password,
     service_account_name=local.service_account_name,
     dbname=local.dbname,
-    mysqlconnector=local.mysqlconnector,
+    pubsubconnector=local.pubsubconnector,
     secretid=local.secretid,
     integration=local.integration
+
   })
     filename = format("./%s.json", local.pubsubconnector)
 }
 
+ #curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
+     
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {
     command = <<EOF
-      curl -L https://raw.githubusercontent.com/srinandan/integrationcli/master/downloadLatest.sh | sh - &&
       export PATH=$PATH:$HOME/.integrationcli/bin &&
       export token=$(gcloud auth application-default print-access-token) && 
       integrationcli token cache -t $token &&
@@ -251,6 +253,7 @@ resource "null_resource" "createconnector" {
 resource "local_file" "integration_file" {
   content  = templatefile("Integration/manage-reservation.json", {
     mysqlconnector=local.mysqlconnector,
+    pubsubconnector=local.pubsubconnector
     location = local.location, 
     project = local.project
   })
