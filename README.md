@@ -9,7 +9,6 @@ Organization policies is set to (this is need to access cloud run app)
 
 ```
 cd google-cloud-application-integration/Samples/cymbal-van-rental
-
 ```
 
 open cymbal-van-rental-provision.tf
@@ -21,7 +20,7 @@ update the local values for your choice of
 
 save cymbal-van-rental-provision.tf
 
-on command line 
+on terminal run 
  
 ```
  terraform init
