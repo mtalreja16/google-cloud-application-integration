@@ -7,14 +7,16 @@ Organization policies is set to (this is need to access cloud run app)
 2. Domain restricted contacts - Allowed All
 3. Enable integration, setup region, KMS etc...
 
+sh''
 cd google-cloud-application-integration/Samples/cymbal-van-rental
+''sh
 
 open cymbal-van-rental-provision.tf
 
 update the local values for your choice of 
-  location = "-----" # Add region
-  project = "----" # Add ProjectId
-  projectnumber = "---" # Add Project Number
+1. location = "-----" # Add region
+2. project = "----" # Add ProjectId
+3. projectnumber = "---" # Add Project Number
 
 save cymbal-van-rental-provision.tf
 
