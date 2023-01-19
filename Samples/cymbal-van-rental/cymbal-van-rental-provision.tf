@@ -296,7 +296,7 @@ resource "null_resource" "createintegration" {
     integrationcli token cache -t $token &&
     sleep 2 &&
     integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-    integrationcli integrations create -n ${local.integration} -f  -o ./overrides.json ./${local.integration}.json > ./output.txt &&
+    integrationcli integrations create -n ${local.integration} -o ./overrides.json -f ./${local.integration}.json > ./output.txt &&
     export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
     integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
     EOF
