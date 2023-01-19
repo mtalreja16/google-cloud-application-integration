@@ -27,7 +27,7 @@ variable "gcp_service_list" {
     "pubsub.googleapis.com",
     "connectors.googleapis.com",
     "integrations.googleapis.com",
-    "run.googleapis.com"
+    "run.googleapis.com",
     "containerregistry.googleapis.com"
   ]
 }
