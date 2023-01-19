@@ -23,11 +23,13 @@ save cymbal-van-rental-provision.tf
 
 on command line 
  
+```
  terraform init
  
  terraform plan 
  
  terraform apply.
- 
+
+``` 
 And wait for 20 min
 navigate to cloudrun app "reservation-app" find the url and you shoudl see the app running which is interacting with app integration
