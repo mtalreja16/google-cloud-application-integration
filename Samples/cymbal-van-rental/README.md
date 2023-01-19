@@ -14,18 +14,13 @@ Go to your google cloud console, open google cloud shell, run following commands
 ```
 git clone https://github.com/mtalreja16/google-cloud-application-integration.git
 cd google-cloud-application-integration/Samples/cymbal-van-rental
-vi ./cymbal-van-rental-provision.tf
-i
 ```
-Update values for
+Open cymbal-van-rental-provision.tf and update the following settings.
 1. location = "-----" # Add region
 2. project = "----" # Add ProjectId
 3. projectnumber = "---" # Add Project Number
-press escape and type
-```
-!wq!
-```
- This will save the cymbal-van-rental-provision.tf
+
+save the cymbal-van-rental-provision.tf
 
 
  
