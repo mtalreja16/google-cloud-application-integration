@@ -10,6 +10,7 @@ Make sure you Integration is enabled and ready with all the settings, refer link
 https://cloud.google.com/application-integration/docs/setup-integration
 
 # Setup Integration 
+Go to your google cloud console, open google cloud shell, run following commands one after another.
 ```
 git clone https://github.com/mtalreja16/google-cloud-application-integration.git
 cd google-cloud-application-integration/Samples/cymbal-van-rental
