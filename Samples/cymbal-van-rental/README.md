@@ -6,7 +6,7 @@ Since we are deploying an app on cloud run, make sure your Organization policies
 1. Domain Restricted sharing - Allowed All 
 2. Domain restricted contacts - Allowed All
 
-Make sure you Integration is enabled and ready with all the settings, refer link below
+Make sure you Integration is enabled and provisioned with all the settings, refer link below
 https://cloud.google.com/application-integration/docs/setup-integration
 
 # Setup Integration 
