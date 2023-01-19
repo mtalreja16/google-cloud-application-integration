@@ -5,6 +5,7 @@
 Organization policies is set to (this is need to access cloud run app)
 1. Domain Restricted sharing - Allowed All 
 2. Domain restricted contacts - Allowed All
+3. Enable integration, setup region, KMS etc...
 
 cd google-cloud-application-integration/Samples/cymbal-van-rental
 
