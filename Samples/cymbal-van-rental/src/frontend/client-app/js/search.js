@@ -43,8 +43,18 @@ fetch('https://' + window.location.hostname + '/run?trigger=getInventory', {
             </div>
           </div>
         </div>`);}
-        )});
-      }
+        )})
+        .catch(err => {
+          $alertContainer.append(
+            `<div class="alert alert-danger mb-4" role="alert">
+            <h5 class="alert-heading">Ohhh no, we ran into issue, try later!</h5>
+              <p class="mb-0">${JSON.stringify(err)}</p>
+            </div>`);
+      
+           $alertContainer.show();
+           $alertContainer[0].scrollIntoView(); 
+        });;
+}
 
 //Code that adds the vans in the above array to the vand-collection
 

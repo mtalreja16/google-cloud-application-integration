@@ -202,22 +202,22 @@ function submitVanPickedup(id) {
   function viewDetails(pickup, id) {
         // Parse data object from string
         var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
-        let html = '<table>';
+        let html = '<table class="table table-bordered"><tbody>';
         // Add table rows
         Object.entries(data).forEach(([key, value]) => {
-          html += `<tr><td>${key}:</td><td>${value}</td></tr>`;
+          html += `<tr><th>${key}:</th><td>${value}</td></tr>`;
         });
         if(pickup == 'Reserved')
         {
-          html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
-          html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
+          html += `<tr><th>Add Notes: </th><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
+          html += `<tr><th>Upload Pictures: </th><td><input type=file></input></td></tr>`;
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanPickedup('${id}')" id="vanpickup">Van Pickedup</button>`
         }
         else if(pickup == 'Fulfilled')
         {
-          html += `<tr><td>Add Notes: </td><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
-          html += `<tr><td>Upload Pictures: </td><td><input type=file></input></td></tr>`;
-          html += `<tr><td>Process for Claims </td><td><div class="bootstrap-switch-square">
+          html += `<tr><th>Add Notes: </th><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
+          html += `<tr><th>Upload Pictures: </th><td><input type=file></input></td></tr>`;
+          html += `<tr><th>Process for Claims </th><td><div class="bootstrap-switch-square">
                     <input type="checkbox" data-toggle="switch" name="Resend" id="Resend" />
                   </div></td></tr>`;
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitVanReturned('${id}')" id="vanreturn">Van Returned</button>`
@@ -226,7 +226,7 @@ function submitVanPickedup(id) {
         {
           footerhtml =  `<button type="button" class="btn btn-secondary"  data-dismiss="modal" onclick="submitApproveRequest('${id}')" id="reservationconfirm">Reservation Confirmed</button>`
         }
-        html += '</table>';
+        html += '</tbody></table>';
         // Set modal content
         $('#modalContent').html(html);
         $('#modelfooter').html(footerhtml);

@@ -13,6 +13,15 @@ body {
   width: 14rem;
 }
 
+.image-container{
+  display: inline-block;
+  margin: 0 auto;
+}
+img{
+  width: 60px;
+  height: 60px;
+}
+
 /********** vand styling **********/
 .vand-img-top {
   height: 30vh;

@@ -1,0 +1,25 @@
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .agent-button,
+  .customer-button {
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-size: 20px;
+    margin: 0 10px;
+  }
+  
+  .agent-button {
+    background-color: #157142;
+
+  }
+  
+  .customer-button {
+        background-color: #0055FF;
+  }
+  
