@@ -908,7 +908,7 @@
       "TextBody": {
         "key": "TextBody",
         "value": {
-          "stringValue": "Hi $reservation.name$ , \n\nThank you for choosing Cymbal Van rental, here the is the summary.\n\n\nThanks, \nCymbal Van Rental"
+          "stringValue": "Hi $reservation.name$ , \n\nThank you for choosing Cymbal Van Rentals, here the is the summary.\n\n\nThanks, \nCymbal Van Rental"
         }
       },
       "Bcc": {
