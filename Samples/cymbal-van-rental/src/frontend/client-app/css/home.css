@@ -109,4 +109,12 @@ footer a:hover {
   .ico {
     font-size: 3em;
   }
+}img{
+  width: 30px;
+  height: 30px;
+}
+
+.img2{
+  width: 60px;
+  height: 60px;
 }

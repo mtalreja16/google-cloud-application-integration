@@ -15,9 +15,14 @@ body {
 
 .image-container{
   display: inline-block;
-  margin: 0 auto;
+  margin:0 10px 0 10px;
 }
 img{
+  width: 30px;
+  height: 30px;
+}
+
+.img2{
   width: 60px;
   height: 60px;
 }
