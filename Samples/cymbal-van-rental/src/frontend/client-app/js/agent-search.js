@@ -205,7 +205,38 @@ function submitVanPickedup(id) {
         let html = '<table class="table table-bordered"><tbody>';
         // Add table rows
         Object.entries(data).forEach(([key, value]) => {
-          html += `<tr><th>${key}:</th><td>${value}</td></tr>`;
+          if(key=="execution_id" || key=="card" || key=="expiry" || key=="cvv" || key=="van_id" || key=="id"){
+           //do nothing 
+          }
+          else
+          {
+            if(key=="email")
+            html += `<tr><th>Email:</th><td>${value}</td></tr>`;
+            if(key=="name")
+            html += `<tr><th>Full Name:</th><td>${value}</td></tr>`;
+            if(key=="state")
+            html += `<tr><th>Issued State:</th><td>${value}</td></tr>`;
+            if(key=="licenseid")
+            html += `<tr><th>License Id:</th><td>${value}</td></tr>`;
+            if(key=="gender")
+            html += `<tr><th>Gender:</th><td>${value}</td></tr>`;
+            if(key=="pickupdate")
+            html += `<tr><th>Pickup Date:</th><td>${value}</td></tr>`;
+            if(key=="dropoffdate")
+            html += `<tr><th>Drop Offdate:</th><td>${value}</td></tr>`;
+            if(key=="rate")
+            html += `<tr><th>Daily Rate:</th><td>${value}</td></tr>`;
+            if(key=="totalamount")
+            html += `<tr><th>Total Amount:</th><td>${value}</td></tr>`;
+            if(key=="depost")
+            html += `<tr><th>Deposit Amount:</th><td>${value}</td></tr>`;
+            if(key=="sku_id")
+            html += `<tr><th>Requested Van:</th><td>${value}</td></tr>`;
+            if(key=="configuration")
+            html += `<tr><th>Requested Conifuration:</th><td>${value}</td></tr>`;
+            if(key=="status")
+            html += `<tr><th>Reservation Status:</th><td>${value}</td></tr>`;
+          }
         });
         if(pickup == 'Reserved')
         {
