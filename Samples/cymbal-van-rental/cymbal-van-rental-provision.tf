@@ -1,16 +1,16 @@
 locals {
-  location = "-----" # Add region
-  project = "----" # Add ProjectId
-  projectnumber = "---" # Add Project Number
-  dbinstance="reservation-demo-v131"
-  user="root"
-  secretid="secret-sql"
-  dbname="catalog"
-  pubsubconnector="inventory"
-  service_account_name="reservation-demo"
-  cloudrun-app="reservation-app"
-  mysqlconnector="reservationdb" 
-  integration="manage-reservation" 
+  location             = "-----" # Add region
+  project              = "----"  # Add ProjectId
+  projectnumber        = "---"   # Add Project Number
+  dbinstance           = "reservation-demo"
+  user                 = "root"
+  secretid             = "secret-sql"
+  dbname               = "catalog"
+  pubsubconnector      = "inventory"
+  service_account_name = "reservation-demo"
+  cloudrun-app         = "reservation-app"
+  mysqlconnector       = "reservationdb"
+  integration          = "manage-reservation"
 }
 
 provider "google" {
@@ -19,8 +19,8 @@ provider "google" {
 }
 
 variable "gcp_service_list" {
-  description ="The list of apis necessary for the project"
-  type = list(string)
+  description = "The list of apis necessary for the project"
+  type        = list(string)
   default = [
     "sqladmin.googleapis.com",
     "secretmanager.googleapis.com",
@@ -42,15 +42,15 @@ resource "null_resource" "reservation_app" {
 }
 
 resource "random_password" "password" {
-    length           = 16
-    special          = true
-    override_special = "!#$%&*()-_=+[]{}<>:?"
-  }
+  length           = 16
+  special          = true
+  override_special = "!#$%&*()-_=+[]{}<>:?"
+}
 
 resource "google_project_service" "gcp_services" {
   for_each = toset(var.gcp_service_list)
-  project = local.project
-  service = each.key
+  project  = local.project
+  service  = each.key
 }
 
 resource "google_service_account" "service_account" {
@@ -60,7 +60,7 @@ resource "google_service_account" "service_account" {
 
 # Grant the service account the "Integration Admin" role
 resource "google_project_iam_member" "member-role" {
-   for_each = toset([
+  for_each = toset([
     "roles/cloudsql.admin",
     "roles/iam.serviceAccountTokenCreator",
     "roles/secretmanager.secretAccessor",
@@ -69,8 +69,8 @@ resource "google_project_iam_member" "member-role" {
     "roles/secretmanager.admin",
     "roles/pubsub.admin"
   ])
-  role = each.key
-  member = format("serviceAccount:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
+  role    = each.key
+  member  = format("serviceAccount:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
   project = local.project
 }
 
@@ -94,8 +94,8 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
 }
 
 resource "google_cloud_run_service" "service" {
-  name         = local.cloudrun-app
-  location     = local.location
+  name     = local.cloudrun-app
+  location = local.location
   template {
     spec {
       service_account_name = google_service_account.service_account.email
@@ -116,20 +116,20 @@ resource "google_cloud_run_service" "service" {
       }
     }
   }
-   depends_on = [
+  depends_on = [
     null_resource.reservation_app
   ]
 }
 resource "google_pubsub_topic" "inventory" {
   name = local.pubsubconnector
-   depends_on = [
+  depends_on = [
     google_project_iam_member.member-role
   ]
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
-  name          = "sub-inventory"
-  topic         = google_pubsub_topic.inventory.name
+  name                 = "sub-inventory"
+  topic                = google_pubsub_topic.inventory.name
   ack_deadline_seconds = 10
   depends_on = [
     google_project_iam_member.member-role
@@ -137,9 +137,9 @@ resource "google_pubsub_subscription" "sub_inventory" {
 }
 
 resource "google_sql_database_instance" "demo" {
-  name          = local.dbinstance
+  name             = local.dbinstance
   database_version = "MYSQL_8_0"
-  region        = local.location
+  region           = local.location
   settings {
     tier = "db-f1-micro"
   }
@@ -149,18 +149,18 @@ resource "google_sql_database_instance" "demo" {
 }
 
 resource "google_sql_database" "database" {
-name = local.dbname
-instance = "${google_sql_database_instance.demo.name}"
-charset = "utf8"
-collation = "utf8_general_ci"
-depends_on = [
+  name      = local.dbname
+  instance  = google_sql_database_instance.demo.name
+  charset   = "utf8"
+  collation = "utf8_general_ci"
+  depends_on = [
     google_sql_database.database
   ]
 }
 
 resource "google_sql_user" "user" {
   name     = local.user
-  instance = local.dbinstance	
+  instance = local.dbinstance
   password = random_password.password.result
   depends_on = [
     google_sql_database.database
@@ -172,20 +172,20 @@ resource "google_secret_manager_secret" "secret-basic" {
   labels = {
     label = "sqlpassword"
   }
-    replication {
+  replication {
     user_managed {
       replicas {
         location = local.location
       }
     }
-    }
-    depends_on = [
+  }
+  depends_on = [
     google_sql_database.database
   ]
 }
 
 resource "google_secret_manager_secret_version" "secret-version-basic" {
-  secret = google_secret_manager_secret.secret-basic.id
+  secret      = google_secret_manager_secret.secret-basic.id
   secret_data = random_password.password.result
   depends_on = [
     google_sql_database.database
@@ -202,10 +202,10 @@ resource "null_resource" "downloadproxy" {
       sudo chmod +x ./cloud_sql_proxy 
     EOF
   }
-    depends_on = [
+  depends_on = [
     google_sql_database.database
   ]
- }
+}
 
 resource "null_resource" "openmysql" {
   provisioner "local-exec" {
@@ -219,38 +219,38 @@ resource "null_resource" "openmysql" {
   }
   depends_on = [
     null_resource.downloadproxy
-   
+
   ]
- }
+}
 
 resource "local_file" "connector_file" {
-  content  = templatefile("connector/mysql-connector.json", {
-    location = local.location, 
-    project = local.project,
-    projectnumber = local.projectnumber,
-    dbinstance=local.dbinstance,
-    user=local.user,
-    password=random_password.password,
-    service_account_name=local.service_account_name,
-    dbname=local.dbname,
-    mysqlconnector=local.mysqlconnector,
-    secretid=local.secretid,
-    integration=local.integration
+  content = templatefile("connector/mysql-connector.json", {
+    location             = local.location,
+    project              = local.project,
+    projectnumber        = local.projectnumber,
+    dbinstance           = local.dbinstance,
+    user                 = local.user,
+    password             = random_password.password,
+    service_account_name = local.service_account_name,
+    dbname               = local.dbname,
+    mysqlconnector       = local.mysqlconnector,
+    secretid             = local.secretid,
+    integration          = local.integration
   })
-    filename = format("./%s.json", local.mysqlconnector)
+  filename = format("./%s.json", local.mysqlconnector)
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content  = templatefile("connector/pubsub-connector.json", {
-    project = local.project,
-    service_account_name=local.service_account_name,
-    pubsubconnector=local.pubsubconnector,
+  content = templatefile("connector/pubsub-connector.json", {
+    project              = local.project,
+    service_account_name = local.service_account_name,
+    pubsubconnector      = local.pubsubconnector,
   })
-    filename = format("./%s.json", local.pubsubconnector)
+  filename = format("./%s.json", local.pubsubconnector)
 }
 
- 
-     
+
+
 resource "null_resource" "createconnector" {
   provisioner "local-exec" {
     command = <<EOF
@@ -266,23 +266,23 @@ resource "null_resource" "createconnector" {
   }
   depends_on = [
     null_resource.openmysql
-   ]
+  ]
 }
 
 resource "local_file" "integration_file" {
-  content  = templatefile("src/manage-reservation.json", {
-    mysqlconnector=local.mysqlconnector,
-    pubsubconnector=local.pubsubconnector
-    location = local.location, 
-    project = local.project
+  content = templatefile("src/manage-reservation.json", {
+    mysqlconnector  = local.mysqlconnector,
+    pubsubconnector = local.pubsubconnector
+    location        = local.location,
+    project         = local.project
   })
   filename = format("./%s.json", local.integration)
 }
 
 resource "local_file" "overrides" {
-  content  = templatefile("overrides/overrides.json", {
-    mysqlconnector=local.mysqlconnector,
-    pubsubconnector=local.pubsubconnector
+  content = templatefile("overrides/overrides.json", {
+    mysqlconnector  = local.mysqlconnector,
+    pubsubconnector = local.pubsubconnector
   })
   filename = "overrides.json"
 }
@@ -301,7 +301,7 @@ resource "null_resource" "createintegration" {
     integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
     EOF
   }
- depends_on = [
+  depends_on = [
     null_resource.createconnector
   ]
 }
