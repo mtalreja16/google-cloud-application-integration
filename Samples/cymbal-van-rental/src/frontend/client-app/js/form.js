@@ -1,4 +1,4 @@
-const $hostname =  window.location.hostname ;
+const $hostname = window.location.hostname;
 const $alertContainer = $('.alert-container');
 const $form = $('form');
 const $visaComponents = $(".visaComponents");
@@ -13,7 +13,7 @@ $alertContainer.hide();
 $vanModel[0].innerText += ` ${sessionStorage.getItem('vanTitle')}`;
 $vanDRent[0].innerText += sessionStorage.getItem('vanDRent') + "$/day";
 
-if(sessionStorage.getItem('vanTitle') === null) {
+if (sessionStorage.getItem('vanTitle') === null) {
   $('form').remove();
 
   $('footer').before(`
@@ -25,13 +25,13 @@ if(sessionStorage.getItem('vanTitle') === null) {
   </div>`);
 }
 
-$("#visaRBTN").click(function() { 
+$("#visaRBTN").click(function () {
   $(this).addClass('active'); //Act as radio buttons
   $visaComponents.slideDown('slow');
 });
 
 
-window.onload = function() {
+window.onload = function () {
   document.getElementById("pickupdate").value = "2022-10-28";
   document.getElementById("dropoffdate").value = "2022-11-03";
   document.getElementById("configuration").value = "GPS";
@@ -39,17 +39,17 @@ window.onload = function() {
   document.getElementById("expiry").value = "2025-01-01";
   document.getElementById("expiry2").value = "2025-01-01";
   document.getElementById("cvv").value = "123";
-  document.getElementById("email").value = "mtalreja@google.com";
+  document.getElementById("email").value = "";
   document.getElementById("name").value = "John Snow";
   document.getElementById("state").value = "CA";
   document.getElementById("licenseid").value = "JS500GB";
   document.getElementById("dob").value = "2000-01-01";
-  document.getElementById("full-name").value = "John Snow";  
+  document.getElementById("full-name").value = "John Snow";
   document.getElementById("phone").value = "8478676660";
   document.getElementById("pickup-loc").value = "CA";
-}  
+}
 
-$form.submit(function(e) {
+$form.submit(function (e) {
   e.preventDefault();
   var data = {};
   // Collect field data
@@ -64,7 +64,7 @@ $form.submit(function(e) {
   data.state = document.getElementById("state").value;
   data.licenseid = document.getElementById("licenseid").value;
   data.dob = document.getElementById("dob").value;
-  data.sku_id =  ` ${sessionStorage.getItem('vanTitle')}`;
+  data.sku_id = ` ${sessionStorage.getItem('vanTitle')}`;
   data.rate = sessionStorage.getItem('vanDRent');
   data.taxamount = sessionStorage.getItem('vanDRent');
   data.totalamount = sessionStorage.getItem('vanDRent');
@@ -83,48 +83,45 @@ $form.submit(function(e) {
       'Content-Type': 'application/json'
     }
   }).then(response => response.json())
-  .then(data => {
-    var out = JSON.stringify(data);
-    if(data.executionId!=null)
-    {
-        
-      $alertContainer.append(
-        `<div class="alert alert-success mb-4" role="alert">
+    .then(data => {
+      var out = JSON.stringify(data);
+      if (data.executionId != null) {
+
+        $alertContainer.append(
+          `<div class="alert alert-success mb-4" role="alert">
           <h5 class="alert-heading">Order Successful!</h5>
           <p class="mb-0">An email will be sent to you within 30 minutes with the order details. <br>
             Thank you for choosing Cymbal Van Rentals.
             ${out}
           </p>
         </div>`);
-       document.getElementById("fillform").style.display="none";
-       $alertContainer.show();
-       $alertContainer[0].scrollIntoView(); 
-    }
-    else
-    {
-      $alertContainer.append(
-        ` 
+        document.getElementById("fillform").style.display = "none";
+        $alertContainer.show();
+        $alertContainer[0].scrollIntoView();
+      }
+      else {
+        $alertContainer.append(
+          ` 
         <div class="alert alert-danger mb-4" role="alert">
         <h5 class="alert-heading">Ohhh no, we ran into issue, try later!</h5>
           <p class="mb-0">${out}</p>
         </div>`);
 
-       $alertContainer.show();
-       $alertContainer[0].scrollIntoView(); 
+        $alertContainer.show();
+        $alertContainer[0].scrollIntoView();
 
-    }
-    
-  })
-  .catch(err => {
-    $alertContainer.append(
-      ` 
-      <div class="alert alert-danger mb-4" role="alert">
+      }
+
+    })
+    .catch(err => {
+      $alertContainer.append(
+        `<div class="alert alert-danger mb-4" role="alert">
       <h5 class="alert-heading">Ohhh no, we ran into issue, try later!</h5>
-        <p class="mb-0"></p>
+        <p class="mb-0">${JSON.stringify(err)}</p>
       </div>`);
 
-     $alertContainer.show();
-     $alertContainer[0].scrollIntoView(); 
-  });
+      $alertContainer.show();
+      $alertContainer[0].scrollIntoView();
+    });
 
 });
