@@ -202,7 +202,7 @@ function submitVanPickedup(id) {
   function viewDetails(pickup, id) {
         // Parse data object from string
         var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
-        let html = '<table class="table table-bordered"><tbody>';
+        let html = '<table class="table table-sm"><tbody>';
         // Add table rows
         Object.entries(data).forEach(([key, value]) => {
           if(key=="execution_id" || key=="card" || key=="expiry" || key=="cvv" || key=="van_id" || key=="id"){
