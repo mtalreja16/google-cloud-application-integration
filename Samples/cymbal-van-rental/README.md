@@ -1,10 +1,11 @@
 # Setup guide
 
 # Prerequisite
-[TODO] - What permissions customer needs it
+The scripts are ONLY tested on Argolis project and on Application Integration feature (Apigee Integration may or may not work havent test.), Assumption is that you will have owner access to Project.
 
 
 Since we are deploying an app on cloud run, make sure your Organization policies is set to allow "UnAuthenticated User Access"
+
 1. Domain Restricted sharing - Allowed All 
 2. Domain restricted contacts - Allowed All
 
