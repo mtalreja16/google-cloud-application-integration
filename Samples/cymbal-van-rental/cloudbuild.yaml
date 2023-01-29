@@ -16,35 +16,6 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/$PROJECT_ID/reservation-app:latest', './src/frontend']
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/$PROJECT_ID/reservation-app:latest']
-
-- id: 'Create connections if not present'
-  name: ghcr.io/srinandan/integrationcli-builder:latest
-  entrypoint: 'bash'
-  args:
-    - -c
-    - |
-      gcloud auth print-access-token > /tmp/token
-      #setup preferences
-      /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
-      /tmp/integrationcli token cache -t $(cat /tmp/token)
-      #find connection
-      for connection in ./connectors/*.json
-      do
-        /tmp/integrationcli connectors get -n  $(basename -s .json $connection) 2>&1 >/dev/null
-        echo $? > /tmp/result
-        if [ $(cat /tmp/result) -ne 0 ]; then
-          echo "Connector does not exist, creating connector $connection"
-          set -e
-          #create the connection
-          /tmp/integrationcli connectors create -n $(basename -s .json $connection) -f $connection -g=true -k locations/$LOCATION/keyRings/${_KMS_RING_NAME}/cryptoKeys/${_KMS_KEY_NAME} --sa ${_SERVICE_ACCOUNT_NAME} > /tmp/response
-          echo "connector response: " $(cat /tmp/response)
-        fi
-      done
-
 - id: 'Create and publish the integration version'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
@@ -53,31 +24,30 @@ steps:
     - |
       set -e
       gcloud auth print-access-token > /tmp/token
-
-      ls -A src | sed 's/\.json'$// > /tmp/name
-      echo "./src/"$(ls -A src) > /tmp/filename
-
-      echo "name: " $(cat /tmp/name)
-      echo "filename: " $(cat /tmp/filename)
-
-      #setup preferences
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
 
-      #create the integration version
-      /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o ./overrides/overrides.json -u $SHORT_SHA > /tmp/response
-      echo "integration response: " $(cat /tmp/response)
-      basename $(cat /tmp/response | jq -r .name) > /tmp/version
-      echo "integration version: " $(cat /tmp/version)
+      for file in $(find ./src/Integration/* -type f ! -name overrides.json);
+      do 
 
-      #publish the integration version
-      /tmp/integrationcli integrations versions publish -n $(cat /tmp/name) -v $(cat /tmp/version)
+        echo $(basename "$(dirname "$file")") > /tmp/name
+        echo $file > /tmp/filename
 
+        /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o ./src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA > /tmp/response
+
+        echo "integration response: " $(cat /tmp/response)
+        basename $(cat /tmp/response | jq -r .name) > /tmp/version
+        echo "integration version: " $(cat /tmp/version)
+
+        #publish the integration version
+        /tmp/integrationcli integrations versions publish -n $(cat /tmp/name) -v $(cat /tmp/version)
+
+      done;
 #the name of the service account  to use when setting up the connector
 substitutions:
-  _SERVICE_ACCOUNT_NAME: "connectors"
-  _KMS_RING_NAME: "app-integration"
-  _KMS_KEY_NAME: "integration"
+  _SERVICE_ACCOUNT_NAME: "reservation-demo"
+  _KMS_RING_NAME: "test"
+  _KMS_KEY_NAME: "test"
 
 options:
   logging: CLOUD_LOGGING_ONLY
