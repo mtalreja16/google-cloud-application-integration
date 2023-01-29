@@ -1,0 +1,15 @@
+{
+    "name": "partner-feed",
+    "description": "This is google cloud storage conenctor  used to demo application integration",
+    "connectorDetails": {
+        "name": "gcs",
+        "version": 1
+    },
+    "configVariables": [
+            {
+                    "key": "project_id",
+                    "stringValue": "integration-golden-demo"
+            }
+    ],
+    "serviceAccount":"reservation-demo@integration-golden-demo.iam.gserviceaccount.com"
+}
