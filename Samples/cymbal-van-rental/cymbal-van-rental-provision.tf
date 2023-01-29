@@ -2,15 +2,17 @@ locals {
   location             = "-----" # Add region
   project              = "----"  # Add ProjectId
   projectnumber        = "---"   # Add Project Number
-  dbinstance           = "reservation-demo"
-  user                 = "root"
-  secretid             = "secret-sql"
-  dbname               = "catalog"
-  pubsubconnector      = "inventory"
-  service_account_name = "reservation-demo"
-  cloudrun-app         = "reservation-app"
-  mysqlconnector       = "reservationdb"
-  integration          = "manage-reservation"
+  dbinstance           = "reservation-demo" # DO NOT CHANGE
+  user                 = "root" # DO NOT CHANGE
+  secretid             = "secret-sql" # DO NOT CHANGE
+  dbname               = "catalog" # DO NOT CHANGE
+  service_account_name = "reservation-demo" # DO NOT CHANGE
+  cloudrun-app         = "reservation-app" # DO NOT CHANGE
+
+  mysqlconnector       = "reservationdb" # DO NOT CHANGE
+  pubsubconnector      = "inventory" # DO NOT CHANGE
+  gcsconnector         = "partner-feed" # DO NOT CHANGE
+  integration          = "manage-reservation" # DO NOT CHANGE
 }
 
 provider "google" {
@@ -220,7 +222,7 @@ resource "null_resource" "openmysql" {
 }
 
 resource "local_file" "connector_file" {
-  content = templatefile("connector/mysql-connector.json", {
+  content = templatefile("template/mysql-connector.json", {
     location             = local.location,
     project              = local.project,
     projectnumber        = local.projectnumber,
@@ -231,18 +233,26 @@ resource "local_file" "connector_file" {
     dbname               = local.dbname,
     mysqlconnector       = local.mysqlconnector,
     secretid             = local.secretid,
-    integration          = local.integration
   })
   filename = format("./%s.json", local.mysqlconnector)
 }
 
 resource "local_file" "pubsubconnector_file" {
-  content = templatefile("connector/pubsub-connector.json", {
+  content = templatefile("template/pubsub-connector.json", {
     project              = local.project,
     service_account_name = local.service_account_name,
     pubsubconnector      = local.pubsubconnector,
   })
   filename = format("./%s.json", local.pubsubconnector)
+}
+
+resource "local_file" "gcs_file" {
+  content = templatefile("template/gcs-connector.json", {
+    project              = local.project,
+    service_account_name = local.service_account_name,
+    gcsconnector      = local.gcsconnector,
+  })
+  filename = format("./%s.json", local.gcsconnector)
 }
 
 
@@ -258,29 +268,12 @@ resource "null_resource" "createconnector" {
       integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
       integrationcli connectors create -n ${local.mysqlconnector} -f ${local_file.connector_file.filename} --wait=true
       integrationcli connectors create -n ${local.pubsubconnector} -f ${local_file.pubsubconnector_file.filename} --wait=true
+      integrationcli connectors create -n ${local.gcsconnector} -f ${local_file.gcs_file.filename} --wait=true
     EOF
   }
   depends_on = [
     null_resource.openmysql
   ]
-}
-
-resource "local_file" "integration_file" {
-  content = templatefile("src/manage-reservation.json", {
-    mysqlconnector  = local.mysqlconnector,
-    pubsubconnector = local.pubsubconnector
-    location        = local.location,
-    project         = local.project
-  })
-  filename = format("./%s.json", local.integration)
-}
-
-resource "local_file" "overrides" {
-  content = templatefile("overrides/overrides.json", {
-    mysqlconnector  = local.mysqlconnector,
-    pubsubconnector = local.pubsubconnector
-  })
-  filename = "overrides.json"
 }
 
 
