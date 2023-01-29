@@ -16,6 +16,11 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/reservation-app:latest', './src/frontend']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/reservation-app:latest']
+
 - id: 'Create connections if not present'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
