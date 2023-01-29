@@ -48,7 +48,7 @@ steps:
       done;
 #the name of the service account  to use when setting up the connector
 substitutions:
-  _SERVICE_ACCOUNT_NAME: "reservation-demo"
+  _SERVICE_ACCOUNT_NAME: "reservation-demo@integration-golden-demo.iam.gserviceaccount.com"
   _KMS_RING_NAME: "test"
   _KMS_KEY_NAME: "test"
 
