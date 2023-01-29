@@ -75,7 +75,7 @@ $form.submit(function (e) {
   var play = JSON.stringify(data);
 
 
-  fetch('http://' + $hostname + '/run?name=customer-reservation-process&trigger=createReservation', {
+  fetch('https://' + $hostname + '/run?name=customer-reservation-process&trigger=createReservation', {
     method: 'POST',
     body: JSON.stringify({
       "reservation-payload": play

@@ -1,6 +1,6 @@
 const $alertContainer = $('.alert-container');
-const $runurl = 'http://' + window.location.hostname + '/run?'
-const $resumeurl = 'http://' + window.location.hostname + '/resume?'
+const $runurl = 'https://' + window.location.hostname + '/run?'
+const $resumeurl = 'https://' + window.location.hostname + '/resume?'
 
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
