@@ -1,11 +1,11 @@
 const $alertContainer = $('.alert-container');
-const $url = 'https://' + window.location.hostname + '/run'
-const $resumeurl = 'https://' + window.location.hostname + '/resume'
+const $runurl = 'http://' + window.location.hostname + '/run?'
+const $resumeurl = 'http://' + window.location.hostname + '/resume?'
 
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     console.log(data)
-   fetch($url + '?trigger=pickupVan', {
+   fetch($runurl + 'name=manage-reservations-process&trigger=pickupVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -43,7 +43,6 @@ function submitVanPickedup(id) {
       
     }
 
-
   function submitVanReturned(id) {
       var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
       var claim = 'NA';
@@ -52,7 +51,7 @@ function submitVanPickedup(id) {
         claim = 'Process'
       }
       // Prevent the form from submitting and refreshing the page
-    fetch($url + '?trigger=returnVan', {
+    fetch($runurl + 'name=manage-reservations-process&trigger=returnVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -93,7 +92,7 @@ function submitVanPickedup(id) {
   function submitApproveRequest(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     // Prevent the form from submitting and refreshing the page
-    fetch($resumeurl + '?executionId=' + data.execution_id, {
+    fetch($resumeurl + 'name=customer-reservation-process&executionId=' + data.execution_id, {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -133,7 +132,7 @@ function submitVanPickedup(id) {
   $('#searchButton').click(function(e) {
     // Prevent the form from submitting and refreshing the page
     e.preventDefault();
-    fetch($url + '?trigger=getReservation', {
+    fetch($runurl + 'name=manage-reservations-process&trigger=getReservation', {
     method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}"
@@ -263,4 +262,4 @@ function submitVanPickedup(id) {
         $('#modelfooter').html(footerhtml);
         // Open Bootstrap modal
         $('#myModal').modal('show');
-    }
+}

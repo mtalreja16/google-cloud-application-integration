@@ -109,10 +109,6 @@ resource "google_cloud_run_service" "service" {
           name  = "location"
           value = local.location
         }
-        env {
-          name  = "name"
-          value = local.integration
-        }
       }
     }
   }

@@ -1,0 +1,25 @@
+{
+	"task_overrides": [
+		{
+			"task": "CloudFunctionTask",
+			"taskId": "1",
+			"parameters": {
+				"TriggerUrl": {
+					"key": "TriggerUrl",
+					"value": {
+						"stringValue": "https://us-central1-integration-demo-364406.cloudfunctions.net/pullmessages"
+					}
+				}
+			}
+		}
+	],
+	"connection_overrides": [
+		{
+			"taskId": "4",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "partner-feed"
+			}
+		}
+	]
+}

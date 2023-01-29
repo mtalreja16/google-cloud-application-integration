@@ -1,0 +1,79 @@
+{
+	"task_overrides": [
+		{
+			"task": "GenericRestV2Task",
+			"taskId": "24",
+			"parameters": {
+				"url": {
+					"key": "url",
+					"value": {
+						"stringValue": "https://\napi-dev.thetaintegration.com/reservation"
+					}
+				}
+			}
+		},
+		{
+			"task": "GenericRestV2Task",
+			"taskId": "64",
+			"parameters": {
+				"url": {
+					"key": "url",
+					"value": {
+						"stringValue": "https://\napi-dev.thetaintegration.com/reservation"
+					}
+				}
+			}
+		}
+	],
+	"connection_overrides": [
+		{
+			"taskId": "30",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "49",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "46",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "31",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "50",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "57",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "61",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "inventory"
+			}
+		}
+	]
+}

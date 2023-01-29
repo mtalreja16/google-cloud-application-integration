@@ -1,3 +1,4 @@
+
 const $hostname = window.location.hostname;
 const $alertContainer = $('.alert-container');
 const $form = $('form');
@@ -74,7 +75,7 @@ $form.submit(function (e) {
   var play = JSON.stringify(data);
 
 
-  fetch('https://' + $hostname + '/run?trigger=createReservation', {
+  fetch('http://' + $hostname + '/run?name=customer-reservation-process&trigger=createReservation', {
     method: 'POST',
     body: JSON.stringify({
       "reservation-payload": play

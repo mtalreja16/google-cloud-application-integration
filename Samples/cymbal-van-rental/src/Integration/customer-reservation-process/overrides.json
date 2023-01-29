@@ -1,0 +1,39 @@
+{
+	"connection_overrides": [
+		{
+			"taskId": "22",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "51",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "63",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "55",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "reservationdb"
+			}
+		},
+		{
+			"taskId": "58",
+			"task": "GenericConnectorTask",
+			"parameters": {
+				"connectionName": "inventory"
+			}
+		}
+	]
+}
