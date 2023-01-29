@@ -16,6 +16,9 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
+- id: 'pull the code'
+  name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/mtalreja16/google-cloud-application-integration.git']
 - id: 'Create and publish the integration version'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
