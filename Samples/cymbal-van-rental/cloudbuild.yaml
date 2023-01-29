@@ -30,7 +30,7 @@ steps:
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
       #find connection
-      for connection in google-cloud-application-integration/Samples/cymbal-van-rental/src/connectors/*.json
+      for connection in $(find Samples/cymbal-van-rental/connectors/* -type f)
       do
         /tmp/integrationcli connectors get -n  $(basename -s .json $connection) 2>&1 >/dev/null
         echo $? > /tmp/result
