@@ -19,6 +19,29 @@ steps:
 - id: 'pull the code'
   name: 'gcr.io/cloud-builders/git'
   args: ['clone', 'https://github.com/mtalreja16/google-cloud-application-integration.git']
+- id: 'Create connections if not present'
+  name: ghcr.io/srinandan/integrationcli-builder:latest
+  entrypoint: 'bash'
+  args:
+    - -c
+    - |
+      gcloud auth print-access-token > /tmp/token
+      #setup preferences
+      /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
+      /tmp/integrationcli token cache -t $(cat /tmp/token)
+      #find connection
+      for connection in google-cloud-application-integration/Samples/cymbal-van-rental/src/connectors/*.json
+      do
+        /tmp/integrationcli connectors get -n  $(basename -s .json $connection) 2>&1 >/dev/null
+        echo $? > /tmp/result
+        if [ $(cat /tmp/result) -ne 0 ]; then
+          echo "Connector does not exist, creating connector $connection"
+          set -e
+          #create the connection
+          /tmp/integrationcli connectors create -n $(basename -s .json $connection) -f $connection --wait=true > /tmp/response
+          echo "connector response: " $(cat /tmp/response)
+        fi
+      done
 - id: 'Create and publish the integration version'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
