@@ -36,7 +36,7 @@ steps:
         echo $(basename "$(dirname "$file")") > /tmp/name
         echo $file > /tmp/filename
 
-        /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o ./src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA > /tmp/response
+        /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA > /tmp/response
 
         echo "integration response: " $(cat /tmp/response)
         basename $(cat /tmp/response | jq -r .name) > /tmp/version
