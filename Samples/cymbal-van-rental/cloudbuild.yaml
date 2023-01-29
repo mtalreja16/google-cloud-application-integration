@@ -30,7 +30,7 @@ steps:
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
 
-      for file in $(find ./src/Integration/* -type f ! -name overrides.json);
+      for file in $(find google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/* -type f ! -name overrides.json);
       do 
 
         echo $(basename "$(dirname "$file")") > /tmp/name
