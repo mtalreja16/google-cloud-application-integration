@@ -34,7 +34,7 @@ steps:
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
         conname=$(basename ${connection%.*})
-        /tmp/integrationcli connectors get -n  $(basename -s .json $connection) 2>&1 >/dev/null
+        /tmp/integrationcli connectors get -n conname 2>&1 >/dev/null
         echo $? >/tmp/result
         echo $(cat /tmp/result)
         if [ $(cat /tmp/result) -ne 0 ]; then       
