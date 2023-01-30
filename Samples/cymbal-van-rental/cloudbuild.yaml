@@ -29,19 +29,26 @@ steps:
       gcloud auth print-access-token > /tmp/token
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
+      /tmp/integrationcli connectors list > jsondoc
+      json_data=$(cat jsondoc)
+      existing_connections=$(jq -r '.connections[] | .name' <<< "$json_data")
 
-      #find connection
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
         conname=$(basename ${connection%.*})
-        echo "Connector does not exist, creating connector $connection"
-        set -e
-        #create the connection
-        /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
-        if [$exit_status -ne 0]; then
-           echo "connector exist"
+        found=false
+        for existing_connection in "${existing_connections[@]}"; do
+          if [[ "$existing_connection" == *"/$conname" ]]; then
+            found=true
+            break
+          fi
+        done
+        if [ "$found" = false ]; then
+          echo "$connection"
         fi
-      done;
+      done
+
+    
 - id: 'Create and publish the integration version'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
