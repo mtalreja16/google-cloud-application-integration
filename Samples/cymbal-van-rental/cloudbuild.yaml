@@ -31,9 +31,8 @@ steps:
       /tmp/integrationcli token cache -t $(cat /tmp/token)
 
       #find connection
-      for file in $(find google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/* -type f ! -name overrides.json);
-      do 
-      echo $file
+      for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);      do 
+      echo $connection
       done;
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
