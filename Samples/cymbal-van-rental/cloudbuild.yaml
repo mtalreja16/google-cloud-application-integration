@@ -33,14 +33,13 @@ steps:
       #find connection
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
-        echo "$(basename ${connection%.*})"> /tmp/conname
-        echo $connection > /tmp/confilename
-        /tmp/integrationcli connectors get -n $(cat /tmp/conname) > /tmp/result
-        if [ $(cat /tmp/result) -ne 0 ]; then
+        conname=$(basename ${connection%.*})
+        /tmp/integrationcli connectors get -n $conname 
+        if [ $? -ne 0 ]; then
           echo "Connector does not exist, creating connector $connection"
           set -e
           #create the connection
-          /tmp/integrationcli connectors create -n $(cat /tmp/conname) -f $connection --wait=true > /tmp/response
+          /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
           echo "connector response: " $(cat /tmp/response)
         fi
       done;
