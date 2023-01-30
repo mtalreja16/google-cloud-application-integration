@@ -25,7 +25,6 @@ steps:
   args:
     - -c
     - |
-      set -e
       gcloud auth print-access-token > /tmp/token
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
@@ -40,9 +39,10 @@ steps:
         echo $? >/tmp/$conname
         
         echo "status_code_content" $(cat /tmp/$conname)
-        
+   
         if [ $(cat /tmp/$conname) -ne 0 ]; then       
           echo "create connector"
+          set -e
           /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
         fi
       done;
