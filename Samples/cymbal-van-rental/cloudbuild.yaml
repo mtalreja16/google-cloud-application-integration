@@ -25,6 +25,7 @@ steps:
   args:
     - -c
     - |
+      set -e
       gcloud auth print-access-token > /tmp/token
       #setup preferences
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
