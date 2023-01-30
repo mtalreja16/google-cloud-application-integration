@@ -32,7 +32,7 @@ steps:
 
       #find connection
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);      do 
-      echo $(basename -s .json $connection)
+      echo "$(basename ${connection%.*})"
       done;
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
