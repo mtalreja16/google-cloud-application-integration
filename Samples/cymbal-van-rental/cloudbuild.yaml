@@ -31,12 +31,9 @@ steps:
       /tmp/integrationcli token cache -t $(cat /tmp/token)
 
       #find connection
-      for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);      do 
-      echo "$(basename ${connection%.*})"
-      done;
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
-        echo $(basename -s .json $connection) > /tmp/conname
+        echo "$(basename ${connection%.*})"> /tmp/conname
         echo $connection > /tmp/confilename
         /tmp/integrationcli connectors get -n $(cat /tmp/conname) > /tmp/result
         if [ $(cat /tmp/result) -ne 0 ]; then
