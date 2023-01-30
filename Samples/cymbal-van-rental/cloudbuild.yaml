@@ -34,6 +34,7 @@ steps:
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
         conname=$(basename ${connection%.*})
+        echo "processing connector" $conname
         /tmp/integrationcli connectors get -n $conname
         echo $? > /tmp/status
         echo $(cat /tmp/status)
