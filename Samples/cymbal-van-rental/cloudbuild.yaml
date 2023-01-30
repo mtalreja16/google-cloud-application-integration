@@ -36,7 +36,9 @@ steps:
         conname=$(basename ${connection%.*})
         /tmp/integrationcli connectors get -n $conname
         echo $? > /tmp/status
+        echo $(cat /tmp/status)
         if [ $(cat /tmp/status) -ne 0 ]; then       
+          echo "create connector"
           /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
         fi
       done;
