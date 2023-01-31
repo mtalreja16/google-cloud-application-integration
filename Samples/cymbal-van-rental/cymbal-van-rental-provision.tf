@@ -69,7 +69,8 @@ resource "google_project_iam_member" "member-role" {
     "roles/datastore.owner",
     "roles/integrations.integrationAdmin",
     "roles/secretmanager.admin",
-    "roles/pubsub.admin"
+    "roles/pubsub.admin", 
+    "roles/storage.admin",
   ])
   role    = each.key
   member  = format("serviceAccount:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
@@ -123,6 +124,12 @@ resource "google_pubsub_topic" "inventory" {
   depends_on = [
     google_project_iam_member.member-role
   ]
+}
+
+resource "google_storage_bucket" "bucket_name" {
+  name     = "inte-partnerfeed"
+  project  = local.project
+  location = local.location
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
@@ -283,11 +290,14 @@ resource "null_resource" "createintegration" {
     export PATH=$PATH:$HOME/.integrationcli/bin &&
     export token=$(gcloud auth application-default print-access-token) && 
     integrationcli token cache -t $token &&
-    sleep 2 &&
     integrationcli prefs set --reg ${local.location} --proj ${local.project} &&
-    integrationcli integrations create -n ${local.integration} -o ./overrides.json -f ./${local.integration}.json > ./output.txt &&
-    export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
-    integrationcli integrations versions publish -n ${local.integration}  -v $version - t $token
+    sleep 2 &&
+    for file in $(find ./src/Integration/* -type f ! -name overrides.json);
+      do 
+        integrationcli integrations create -n $(basename "$(dirname "$file")") -o ./src/Integration/$(cat /tmp/name)/overrides.json -f ./$file.json > ./output.txt &&
+        export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
+        integrationcli integrations versions publish -n $(basename "$(dirname "$file")")  -v $version - t $token
+      done;
     EOF
   }
   depends_on = [
