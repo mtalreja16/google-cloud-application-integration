@@ -29,7 +29,8 @@ variable "gcp_service_list" {
     "connectors.googleapis.com",
     "integrations.googleapis.com",
     "run.googleapis.com",
-    "containerregistry.googleapis.com"
+    "containerregistry.googleapis.com", 
+    "cloudfunctions.googleapis.com",
   ]
 }
 
@@ -96,9 +97,15 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   ]
 }
 
+resource "random_id" "rand" {
+  byte_length = 4
+}
+
+
 
 resource "google_storage_bucket" "bucket_name" {
-  name     = "cf-source"
+  name     = lower("cfsource-${random_id.rand.hex}")
+  uniform_bucket_level_access = true
   project  = local.project
   location = local.location
 }
@@ -106,7 +113,7 @@ resource "google_storage_bucket" "bucket_name" {
 
 resource "google_storage_bucket_object" "zip_file" {
   name   = "function-source.zip"
-  bucket = "cf-source"
+  bucket = google_storage_bucket.bucket_name.name
   source = "./src/cf/function-source.zip"
    depends_on = [
     google_storage_bucket.bucket_name
@@ -116,9 +123,9 @@ resource "google_storage_bucket_object" "zip_file" {
 
 
 
-resource "google_storage_bucket_iam_binding" "example" {
-  bucket = "cf-source"
-  role   = "roles/storage.objectCreator"
+resource "google_storage_bucket_iam_binding" "cf-source" {
+  bucket = google_storage_bucket.bucket_name.name
+  role   = "roles/storage.admin"
   members = [
     google_service_account.service_account.email
   ]
@@ -132,12 +139,25 @@ resource "google_cloudfunctions_function" "pullMessages" {
   name     = "pullMessages"
   entry_point = "pullMessages"
   runtime = "nodejs16"
-  source_archive_bucket = "cf-source"
+  source_archive_bucket = google_storage_bucket.bucket_name.name
   source_archive_object = "function-source.zip"
+  ingress_settings = "ALLOW_INTERNAL_ONLY"
+  https_trigger_security_level = "SECURE_ALWAYS"
+  timeout                      = 60
+
   trigger_http = true
      depends_on = [
     google_storage_bucket_object.zip_file
   ]
+}
+
+resource "google_cloudfunctions_function_iam_member" "invoker" {
+  project        = google_cloudfunctions_function.pullMessages.project
+  region         = google_cloudfunctions_function.pullMessages.region
+  cloud_function = google_cloudfunctions_function.pullMessages.name
+
+  role   = "roles/cloudfunctions.invoker"
+  member =  format("user:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
 }
 
 resource "google_cloud_run_service" "service" {
@@ -171,16 +191,19 @@ resource "google_pubsub_topic" "inventory" {
   ]
 }
 
+
 resource "google_storage_bucket" "integration_bucket_name" {
-  name     = "inte-partnerfeed"
+  name     =  lower("inte-feed-${random_id.rand.hex}")
+  uniform_bucket_level_access = true
   project  = local.project
   location = local.location
 }
 
 
-resource "google_storage_bucket_iam_binding" "example" {
-  bucket = "inte-partnerfeed"
-  role   = "roles/storage.objectCreator"
+resource "google_storage_bucket_iam_binding" "inte-partnerfeed" {
+  bucket = google_storage_bucket.integration_bucket_name.name
+  role   = "roles/storage.admin"
+  
   members = [
     google_service_account.service_account.email
   ]
