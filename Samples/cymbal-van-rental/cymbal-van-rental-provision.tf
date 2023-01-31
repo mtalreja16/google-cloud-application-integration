@@ -1,7 +1,7 @@
 locals {
-  location             = "-----" # Add region
-  project              = "----"  # Add ProjectId
-  projectnumber        = "---"   # Add Project Number
+  location             = "us-west1" # Add region
+  project              = "integration-golden-demo"  # Add ProjectId
+  projectnumber        = "405431248697"   # Add Project Number
   dbinstance           = "reservation-demo" # DO NOT CHANGE
   user                 = "root" # DO NOT CHANGE
   secretid             = "secret-sql" # DO NOT CHANGE
@@ -12,7 +12,6 @@ locals {
   mysqlconnector       = "reservationdb" # DO NOT CHANGE
   pubsubconnector      = "inventory" # DO NOT CHANGE
   gcsconnector         = "partner-feed" # DO NOT CHANGE
-  integration          = "manage-reservation" # DO NOT CHANGE
 }
 
 provider "google" {
@@ -71,6 +70,7 @@ resource "google_project_iam_member" "member-role" {
     "roles/secretmanager.admin",
     "roles/pubsub.admin", 
     "roles/storage.admin",
+    "roles/cloudfunctions.admin"
   ])
   role    = each.key
   member  = format("serviceAccount:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
@@ -93,6 +93,35 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
   policy_data = data.google_iam_policy.noauth.policy_data
   depends_on = [
     google_project_iam_member.member-role
+  ]
+}
+
+
+resource "google_storage_bucket" "bucket_name" {
+  name     = "cf-source"
+  project  = local.project
+  location = local.location
+}
+
+
+resource "google_storage_bucket_object" "zip_file" {
+  name   = "function-source.zip"
+  bucket = "cf-source"
+  source = "./src/cf/function-source.zip"
+   depends_on = [
+    google_storage_bucket.bucket_name
+  ]
+}
+
+resource "google_cloudfunctions_function" "pullMessages" {
+  name     = "pullMessages"
+  entry_point = "pullMessages"
+  runtime = "nodejs16"
+  source_archive_bucket = "cf-source"
+  source_archive_object = "function-source.zip"
+  trigger_http = true
+     depends_on = [
+    google_storage_bucket_object.zip_file
   ]
 }
 
@@ -119,6 +148,7 @@ resource "google_cloud_run_service" "service" {
     null_resource.reservation_app
   ]
 }
+
 resource "google_pubsub_topic" "inventory" {
   name = local.pubsubconnector
   depends_on = [
@@ -126,7 +156,7 @@ resource "google_pubsub_topic" "inventory" {
   ]
 }
 
-resource "google_storage_bucket" "bucket_name" {
+resource "google_storage_bucket" "integration_bucket_name" {
   name     = "inte-partnerfeed"
   project  = local.project
   location = local.location
