@@ -5,10 +5,10 @@ The scripts are ONLY tested on Argolis project and on Application Integration fe
 Assumption is that you will have owner access to Project.
 
 
-Since we are deploying an app on cloud run, make sure your Organization policies is set to allow "UnAuthenticated User Access"
+Since we are deploying an app on cloud run, make sure your *Organization policies* is set to allow "UnAuthenticated User Access"
 
 1. Domain Restricted sharing - Allowed All 
-2. Domain restricted contacts - Allowed All
+2. 
 3. Make sure you Integration is enabled and provisioned with all the settings, refer link below
 https://cloud.google.com/application-integration/docs/setup-integration
 
