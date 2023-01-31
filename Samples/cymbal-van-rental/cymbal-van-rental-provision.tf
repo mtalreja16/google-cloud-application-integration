@@ -350,7 +350,7 @@ resource "null_resource" "createintegration" {
     sleep 2 &&
     for file in $(find ./src/Integration/* -type f ! -name overrides.json);
       do 
-        integrationcli integrations create -n $(basename "$(dirname "$file")") -o ./src/Integration/$(cat /tmp/name)/overrides.json -f ./$file.json > ./output.txt &&
+        integrationcli integrations create -n $(basename "$(dirname "$file")") -o ./src/Integration/$(cat /tmp/name)/overrides.json -f ./$file > ./output.txt &&
         export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
         integrationcli integrations versions publish -n $(basename "$(dirname "$file")")  -v $version - t $token
       done;
