@@ -1,7 +1,7 @@
 locals {
   location             = "us-west1" # Add region
-  project              = "----"  # Add ProjectId
-  projectnumber        = "----"   # Add Project Number
+  project              = "integration-dev-376418"  # Add ProjectId
+  projectnumber        = "1062729755558"   # Add Project Number
   dbinstance           = "reservation-demo" # DO NOT CHANGE
   user                 = "root" # DO NOT CHANGE
   secretid             = "secret-sql" # DO NOT CHANGE
