@@ -122,16 +122,6 @@ resource "google_storage_bucket_object" "zip_file" {
   
 }
 
-resource "google_storage_bucket_iam_binding" "cf-source" {
-  bucket = google_storage_bucket.bucket_name.name
-  role   = "roles/storage.admin"
-  members = [
-    google_service_account.service_account.email
-  ]
-  depends_on = [
-    google_storage_bucket.bucket_name
-  ]
-}
 
 
 resource "google_cloudfunctions_function" "pullMessages" {
@@ -196,19 +186,6 @@ resource "google_storage_bucket" "integration_bucket_name" {
   uniform_bucket_level_access = true
   project  = local.project
   location = local.location
-}
-
-
-resource "google_storage_bucket_iam_binding" "inte-partnerfeed" {
-  bucket = google_storage_bucket.integration_bucket_name.name
-  role   = "roles/storage.admin"
-  
-  members = [
-    google_service_account.service_account.email
-  ]
-  depends_on = [
-    google_storage_bucket.integration_bucket_name
-  ]
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
