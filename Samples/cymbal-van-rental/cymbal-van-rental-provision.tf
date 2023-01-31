@@ -1,7 +1,7 @@
 locals {
   location             = "us-west1" # Add region
-  project              = "integration-golden-demo"  # Add ProjectId
-  projectnumber        = "405431248697"   # Add Project Number
+  project              = "integration-dev-376407"  # Add ProjectId
+  projectnumber        = "381979930692"   # Add Project Number
   dbinstance           = "reservation-demo" # DO NOT CHANGE
   user                 = "root" # DO NOT CHANGE
   secretid             = "secret-sql" # DO NOT CHANGE
@@ -120,8 +120,6 @@ resource "google_storage_bucket_object" "zip_file" {
   ]
   
 }
-
-
 
 resource "google_storage_bucket_iam_binding" "cf-source" {
   bucket = google_storage_bucket.bucket_name.name
