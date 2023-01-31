@@ -111,7 +111,22 @@ resource "google_storage_bucket_object" "zip_file" {
    depends_on = [
     google_storage_bucket.bucket_name
   ]
+  
 }
+
+
+
+resource "google_storage_bucket_iam_binding" "example" {
+  bucket = "cf-source"
+  role   = "roles/storage.objectCreator"
+  members = [
+    google_service_account.service_account.email
+  ]
+  depends_on = [
+    google_storage_bucket.bucket_name
+  ]
+}
+
 
 resource "google_cloudfunctions_function" "pullMessages" {
   name     = "pullMessages"
@@ -160,6 +175,18 @@ resource "google_storage_bucket" "integration_bucket_name" {
   name     = "inte-partnerfeed"
   project  = local.project
   location = local.location
+}
+
+
+resource "google_storage_bucket_iam_binding" "example" {
+  bucket = "inte-partnerfeed"
+  role   = "roles/storage.objectCreator"
+  members = [
+    google_service_account.service_account.email
+  ]
+  depends_on = [
+    google_storage_bucket.integration_bucket_name
+  ]
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
