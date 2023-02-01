@@ -19,6 +19,41 @@ provider "google" {
   region  = local.location
 }
 
+resource "google_organization_policy" "cloudfunctions_allowedIngressSettings" {
+  org_id     = local.projectnumber
+  constraint = "cloudfunctions.allowedIngressSettings"
+
+  list_policy {
+    allow {
+      all = true
+    }
+  }
+}
+
+resource "google_organization_policy" "run_allowedIngress" {
+  org_id     = local.projectnumber
+  constraint = "run.allowedIngress"
+
+  list_policy {
+    allow {
+      all = true
+    }
+  }
+}
+
+resource "google_organization_policy" "iam_allowedPolicyMemberDomains" {
+  org_id     = local.projectnumber
+  constraint = "iam.allowedPolicyMemberDomains"
+
+  list_policy {
+    allow {
+      all = true
+    }
+  }
+}
+
+
+
 variable "gcp_service_list" {
   description = "The list of apis necessary for the project"
   type        = list(string)
