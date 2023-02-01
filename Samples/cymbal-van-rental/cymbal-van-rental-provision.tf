@@ -122,8 +122,6 @@ resource "google_storage_bucket_object" "zip_file" {
   
 }
 
-
-
 resource "google_cloudfunctions_function" "pullMessages" {
   name     = "pullMessages"
   entry_point = "pullMessages"
@@ -133,6 +131,7 @@ resource "google_cloudfunctions_function" "pullMessages" {
   ingress_settings = "ALLOW_INTERNAL_ONLY"
   https_trigger_security_level = "SECURE_ALWAYS"
   timeout                      = 60
+  service_account_email =  google_service_account.service_account.email
 
   trigger_http = true
      depends_on = [
@@ -140,14 +139,6 @@ resource "google_cloudfunctions_function" "pullMessages" {
   ]
 }
 
-resource "google_cloudfunctions_function_iam_member" "invoker" {
-  project        = google_cloudfunctions_function.pullMessages.project
-  region         = google_cloudfunctions_function.pullMessages.region
-  cloud_function = google_cloudfunctions_function.pullMessages.name
-
-  role   = "roles/cloudfunctions.invoker"
-  member =  format("user:%s@%s.iam.gserviceaccount.com", google_service_account.service_account.account_id, local.project)
-}
 
 resource "google_cloud_run_service" "service" {
   name     = local.cloudrun-app
@@ -271,6 +262,7 @@ resource "null_resource" "downloadproxy" {
 resource "null_resource" "openmysql" {
   provisioner "local-exec" {
     command = <<EOF
+     sleep 120 
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
