@@ -1,7 +1,7 @@
 locals {
   location             = "us-west1"               # Add region
-  project              = "integration-dev-376418" # Add ProjectId
-  projectnumber        = "1062729755558"          # Add Project Number
+  project              = "app-integration-dev"    # Add ProjectId
+  projectnumber        = "512571553134"           # Add Project Number
   dbinstance           = "reservation-demo"       # DO NOT CHANGE
   user                 = "root"                   # DO NOT CHANGE
   secretid             = "secret-sql"             # DO NOT CHANGE
@@ -246,7 +246,7 @@ resource "google_secret_manager_secret_version" "secret-version-basic" {
 
 #curl https://dl.google.com/cloudsql/cloud_sql_proxy.darwin.amd64 -o ./cloud_sql_proxy  && 
 
-resource "null_resource" "downloadproxy" {
+resource "null_resource" "download_proxy" {
   provisioner "local-exec" {
     command = <<EOF
       mkdir ./cloudsql
@@ -259,13 +259,30 @@ resource "null_resource" "downloadproxy" {
   ]
 }
 
-resource "null_resource" "openmysql" {
+resource "null_resource" "cloud_sql_proxy" {
+  depends_on = [null_resource.cloud_sql_proxy]
+  provisioner "local-exec" {
+    command = "./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$!"
+  }
+}
+
+resource "null_resource" "cloud_sql_import" {
+  depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
     command = <<EOF
-     sleep 60 && 
+      mysql -u ${local.user}  --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql
+      kill $(cat sql_proxy_pid)
+    EOF
+  }
+}
+
+/*resource "null_resource" "openmysql" {
+  provisioner "local-exec" {
+    command = <<EOF
+    set -e
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
-     sleep 90 && 
+     sleep 2 && 
      mysql -u ${local.user} --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
@@ -274,7 +291,7 @@ resource "null_resource" "openmysql" {
     null_resource.downloadproxy
 
   ]
-}
+}*/
 
 resource "local_file" "connector_file" {
   content = templatefile("template/mysql-connector.json", {
