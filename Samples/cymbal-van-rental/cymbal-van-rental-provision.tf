@@ -85,10 +85,11 @@ resource "null_resource" "reservation_app" {
   }
 }
 
-resource "random_password" "password" {
+
+resource "random_string" "password" {
   length           = 16
   special          = true
-  override_special = "!#$%&*()-_=+[]{}<>:?"
+  override_special = "@"
 }
 
 resource "google_project_service" "gcp_services" {
@@ -169,7 +170,7 @@ resource "google_cloudfunctions_function" "pullMessages" {
   runtime                      = "nodejs16"
   source_archive_bucket        = google_storage_bucket.bucket_name.name
   source_archive_object        = "function-source.zip"
-  ingress_settings             = "ALLOW_INTERNAL_ONLY"
+  ingress_settings             = "ALLOW_INTERNAL_AND_GCLB"
   https_trigger_security_level = "SECURE_ALWAYS"
   timeout                      = 60
   service_account_email        = google_service_account.service_account.email
@@ -254,7 +255,7 @@ resource "google_sql_database" "database" {
 resource "google_sql_user" "user" {
   name     = local.user
   instance = local.dbinstance
-  password = random_password.password.result
+  password = random_string.password.result
   depends_on = [
     google_sql_database.database
   ]
@@ -279,7 +280,7 @@ resource "google_secret_manager_secret" "secret-basic" {
 
 resource "google_secret_manager_secret_version" "secret-version-basic" {
   secret      = google_secret_manager_secret.secret-basic.id
-  secret_data = random_password.password.result
+  secret_data = random_string.password.result
   depends_on = [
     google_sql_database.database
   ]
@@ -312,7 +313,7 @@ resource "null_resource" "cloud_sql_import" {
   provisioner "local-exec" {
     command = <<EOF
       sleep 20
-      mysql -u ${local.user}  --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql
+      mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql
       kill $(cat sql_proxy_pid)
     EOF
   }
@@ -327,7 +328,7 @@ resource "null_resource" "cloud_sql_import" {
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 2 && 
-     mysql -u ${local.user} --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
+     mysql -u ${local.user} --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
      kill $sql_proxy_pid
     EOF
   }
@@ -344,7 +345,7 @@ resource "local_file" "connector_file" {
     projectnumber        = local.projectnumber,
     dbinstance           = local.dbinstance,
     user                 = local.user,
-    password             = random_password.password,
+    password             = random_string.password,
     service_account_name = local.service_account_name,
     dbname               = local.dbname,
     mysqlconnector       = local.mysqlconnector,
