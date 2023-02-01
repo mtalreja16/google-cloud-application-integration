@@ -1,17 +1,19 @@
 locals {
   location             = "us-west1"               # Add region
   project              = "app-integration-dev"    # Add ProjectId
-  projectnumber        = "512571553134"           # Add Project Number
   dbinstance           = "reservation-demo"       # DO NOT CHANGE
   user                 = "root"                   # DO NOT CHANGE
   secretid             = "secret-sql"             # DO NOT CHANGE
   dbname               = "catalog"                # DO NOT CHANGE
   service_account_name = "reservation-demo"       # DO NOT CHANGE
   cloudrun-app         = "reservation-app"        # DO NOT CHANGE
+  organizationid       = "708323357409"           # Add Organization ID
 
   mysqlconnector  = "reservationdb" # DO NOT CHANGE
   pubsubconnector = "inventory"     # DO NOT CHANGE
   gcsconnector    = "partner-feed"  # DO NOT CHANGE
+
+  
 }
 
 provider "google" {
@@ -19,8 +21,19 @@ provider "google" {
   region  = local.location
 }
 
+resource "google_project" "project" {
+  name       = local.project
+  project_id = local.project
+  org_id     = local.organizationid
+}
+
+data "google_project" "project" {
+  project_id = local.project
+}
+
+
 resource "google_organization_policy" "cloudfunctions_allowedIngressSettings" {
-  org_id     = local.projectnumber
+  org_id     = local.organizationid
   constraint = "cloudfunctions.allowedIngressSettings"
 
   list_policy {
@@ -31,7 +44,7 @@ resource "google_organization_policy" "cloudfunctions_allowedIngressSettings" {
 }
 
 resource "google_organization_policy" "run_allowedIngress" {
-  org_id     = local.projectnumber
+  org_id     = local.organizationid
   constraint = "run.allowedIngress"
 
   list_policy {
@@ -41,8 +54,10 @@ resource "google_organization_policy" "run_allowedIngress" {
   }
 }
 
+
+
 resource "google_organization_policy" "iam_allowedPolicyMemberDomains" {
-  org_id     = local.projectnumber
+  org_id     = local.organizationid
   constraint = "iam.allowedPolicyMemberDomains"
 
   list_policy {
@@ -332,7 +347,7 @@ resource "local_file" "connector_file" {
   content = templatefile("template/mysql-connector.json", {
     location             = local.location,
     project              = local.project,
-    projectnumber        = local.projectnumber,
+    projectnumber        = data.google_project.project.number,
     dbinstance           = local.dbinstance,
     user                 = local.user,
     password             = random_password.password,
