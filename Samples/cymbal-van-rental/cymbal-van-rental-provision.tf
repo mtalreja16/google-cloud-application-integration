@@ -1,15 +1,15 @@
 locals {
-  location             = ""               # Add region
-  project              = ""    # Add ProjectId
-  projectnumber        = ""    # Add ProjectId
+  location             = ""                 # Add region
+  project              = ""                 # Add ProjectId
+  projectnumber        = ""                 # Add ProjectId
+  organizationid       = ""                 # Add OrganizationId
+  dbinstance           = "reservation-demo" # DO NOT CHANGE
+  user                 = "root"             # DO NOT CHANGE
+  secretid             = "secret-sql"       # DO NOT CHANGE
+  dbname               = "catalog"          # DO NOT CHANGE
+  service_account_name = "reservation-demo" # DO NOT CHANGE
+  cloudrun-app         = "reservation-app"  # DO NOT CHANGE
 
-  dbinstance           = "reservation-demo"       # DO NOT CHANGE
-  user                 = "root"                   # DO NOT CHANGE
-  secretid             = "secret-sql"             # DO NOT CHANGE
-  dbname               = "catalog"                # DO NOT CHANGE
-  service_account_name = "reservation-demo"       # DO NOT CHANGE
-  cloudrun-app         = "reservation-app"        # DO NOT CHANGE
-  
   mysqlconnector  = "reservationdb" # DO NOT CHANGE
   pubsubconnector = "inventory"     # DO NOT CHANGE
   gcsconnector    = "partner-feed"  # DO NOT CHANGE
@@ -22,19 +22,9 @@ provider "google" {
   region  = local.location
 }
 
-/*resource "google_project" "project" {
-  name       = local.project
-  project_id = local.project
-  org_id     = local.organizationid
-}
 
-data "google_project" "project" {
-  project_id = local.project
-}*/
-
-
-/*resource "google_organization_policy" "cloudfunctions_allowedIngressSettings" {
-  org_id  =  data.google_project.project.number
+resource "google_project_organization_policy" "cloudfunctions_allowedIngressSettings" {
+  project = local.project
   constraint = "cloudfunctions.allowedIngressSettings"
 
   list_policy {
@@ -44,8 +34,9 @@ data "google_project" "project" {
   }
 }
 
-resource "google_organization_policy" "run_allowedIngress" {
-org_id  =  data.google_project.project.number
+resource "google_project_organization_policy" "run_allowedIngress" {
+  project = local.project
+
   constraint = "run.allowedIngress"
 
   list_policy {
@@ -57,8 +48,8 @@ org_id  =  data.google_project.project.number
 
 
 
-resource "google_organization_policy" "iam_allowedPolicyMemberDomains" {
-org_id  =  data.google_project.project.number
+resource "google_project_organization_policy" "iam_allowedPolicyMemberDomains" {
+  project = local.project
   constraint = "iam.allowedPolicyMemberDomains"
 
   list_policy {
@@ -66,7 +57,7 @@ org_id  =  data.google_project.project.number
       all = true
     }
   }
-}*/
+}
 
 
 
