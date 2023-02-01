@@ -2,7 +2,6 @@ locals {
   location             = ""                 # Add region
   project              = ""                 # Add ProjectId
   projectnumber        = ""                 # Add ProjectId
-  organizationid       = ""                 # Add OrganizationId
   dbinstance           = "reservation-demo" # DO NOT CHANGE
   user                 = "root"             # DO NOT CHANGE
   secretid             = "secret-sql"       # DO NOT CHANGE
