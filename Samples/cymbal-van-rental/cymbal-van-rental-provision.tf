@@ -344,7 +344,7 @@ resource "null_resource" "createconnector" {
     EOF
   }
   depends_on = [
-    null_resource.openmysql
+    null_resource.cloud_sql_import
   ]
 }
 
