@@ -1,17 +1,17 @@
 locals {
-  location             = "us-west1" # Add region
-  project              = "integration-dev-376418"  # Add ProjectId
-  projectnumber        = "1062729755558"   # Add Project Number
-  dbinstance           = "reservation-demo" # DO NOT CHANGE
-  user                 = "root" # DO NOT CHANGE
-  secretid             = "secret-sql" # DO NOT CHANGE
-  dbname               = "catalog" # DO NOT CHANGE
-  service_account_name = "reservation-demo" # DO NOT CHANGE
-  cloudrun-app         = "reservation-app" # DO NOT CHANGE
+  location             = "us-west1"               # Add region
+  project              = "integration-dev-376418" # Add ProjectId
+  projectnumber        = "1062729755558"          # Add Project Number
+  dbinstance           = "reservation-demo"       # DO NOT CHANGE
+  user                 = "root"                   # DO NOT CHANGE
+  secretid             = "secret-sql"             # DO NOT CHANGE
+  dbname               = "catalog"                # DO NOT CHANGE
+  service_account_name = "reservation-demo"       # DO NOT CHANGE
+  cloudrun-app         = "reservation-app"        # DO NOT CHANGE
 
-  mysqlconnector       = "reservationdb" # DO NOT CHANGE
-  pubsubconnector      = "inventory" # DO NOT CHANGE
-  gcsconnector         = "partner-feed" # DO NOT CHANGE
+  mysqlconnector  = "reservationdb" # DO NOT CHANGE
+  pubsubconnector = "inventory"     # DO NOT CHANGE
+  gcsconnector    = "partner-feed"  # DO NOT CHANGE
 }
 
 provider "google" {
@@ -29,7 +29,7 @@ variable "gcp_service_list" {
     "connectors.googleapis.com",
     "integrations.googleapis.com",
     "run.googleapis.com",
-    "containerregistry.googleapis.com", 
+    "containerregistry.googleapis.com",
     "cloudfunctions.googleapis.com",
     "cloudbuild.googleapis.com"
   ]
@@ -70,7 +70,7 @@ resource "google_project_iam_member" "member-role" {
     "roles/datastore.owner",
     "roles/integrations.integrationAdmin",
     "roles/secretmanager.admin",
-    "roles/pubsub.admin", 
+    "roles/pubsub.admin",
     "roles/storage.admin",
     "roles/cloudfunctions.admin"
   ])
@@ -105,10 +105,10 @@ resource "random_id" "rand" {
 
 
 resource "google_storage_bucket" "bucket_name" {
-  name     = lower("cfsource-${random_id.rand.hex}")
+  name                        = lower("cfsource-${random_id.rand.hex}")
   uniform_bucket_level_access = true
-  project  = local.project
-  location = local.location
+  project                     = local.project
+  location                    = local.location
 }
 
 
@@ -116,25 +116,25 @@ resource "google_storage_bucket_object" "zip_file" {
   name   = "function-source.zip"
   bucket = google_storage_bucket.bucket_name.name
   source = "./src/cf/function-source.zip"
-   depends_on = [
+  depends_on = [
     google_storage_bucket.bucket_name
   ]
-  
+
 }
 
 resource "google_cloudfunctions_function" "pullMessages" {
-  name     = "pullMessages"
-  entry_point = "pullMessages"
-  runtime = "nodejs16"
-  source_archive_bucket = google_storage_bucket.bucket_name.name
-  source_archive_object = "function-source.zip"
-  ingress_settings = "ALLOW_INTERNAL_ONLY"
+  name                         = "pullMessages"
+  entry_point                  = "pullMessages"
+  runtime                      = "nodejs16"
+  source_archive_bucket        = google_storage_bucket.bucket_name.name
+  source_archive_object        = "function-source.zip"
+  ingress_settings             = "ALLOW_INTERNAL_ONLY"
   https_trigger_security_level = "SECURE_ALWAYS"
   timeout                      = 60
-  service_account_email =  google_service_account.service_account.email
+  service_account_email        = google_service_account.service_account.email
 
   trigger_http = true
-     depends_on = [
+  depends_on = [
     google_storage_bucket_object.zip_file
   ]
 }
@@ -173,10 +173,10 @@ resource "google_pubsub_topic" "inventory" {
 
 
 resource "google_storage_bucket" "integration_bucket_name" {
-  name     =  lower("inte-feed-${random_id.rand.hex}")
+  name                        = lower("inte-feed-${random_id.rand.hex}")
   uniform_bucket_level_access = true
-  project  = local.project
-  location = local.location
+  project                     = local.project
+  location                    = local.location
 }
 
 resource "google_pubsub_subscription" "sub_inventory" {
@@ -305,7 +305,7 @@ resource "local_file" "gcs_file" {
   content = templatefile("template/gcs-connector.json", {
     project              = local.project,
     service_account_name = local.service_account_name,
-    gcsconnector      = local.gcsconnector,
+    gcsconnector         = local.gcsconnector,
   })
   filename = format("./%s.json", local.gcsconnector)
 }
