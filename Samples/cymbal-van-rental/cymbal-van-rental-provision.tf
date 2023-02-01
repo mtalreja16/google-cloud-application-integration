@@ -262,7 +262,7 @@ resource "null_resource" "downloadproxy" {
 resource "null_resource" "openmysql" {
   provisioner "local-exec" {
     command = <<EOF
-     sleep 120 
+     sleep 120 && 
      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
      sql_proxy_pid=$! && 
      sleep 10 && 
