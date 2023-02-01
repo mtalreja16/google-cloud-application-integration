@@ -5,7 +5,7 @@ const $resumeurl = 'https://' + window.location.hostname + '/resume?'
 function submitVanPickedup(id) {
     var data = JSON.parse( ` ${sessionStorage.getItem(id)} `)
     console.log(data)
-   fetch($runurl + 'name=manage-reservations-process&trigger=pickupVan', {
+   fetch($runurl + 'name=manage-reservation-process&trigger=pickupVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -51,7 +51,7 @@ function submitVanPickedup(id) {
         claim = 'Process'
       }
       // Prevent the form from submitting and refreshing the page
-    fetch($runurl + 'name=manage-reservations-process&trigger=returnVan', {
+    fetch($runurl + 'name=manage-reservation-process&trigger=returnVan', {
       method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}",
@@ -132,7 +132,7 @@ function submitVanPickedup(id) {
   $('#searchButton').click(function(e) {
     // Prevent the form from submitting and refreshing the page
     e.preventDefault();
-    fetch($runurl + 'name=manage-reservations-process&trigger=getReservation', {
+    fetch($runurl + 'name=manage-reservation-process&trigger=getReservation', {
     method: 'POST',
       body: JSON.stringify({
         "reservation-payload": "{}"

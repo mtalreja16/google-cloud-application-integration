@@ -1,7 +1,7 @@
 locals {
-  location             = "us-west1"               # Add region
-  project              = "app-integration-final"    # Add ProjectId
-  projectnumber        = "771068648092"    # Add ProjectId
+  location             = ""               # Add region
+  project              = ""    # Add ProjectId
+  projectnumber        = ""    # Add ProjectId
 
   dbinstance           = "reservation-demo"       # DO NOT CHANGE
   user                 = "root"                   # DO NOT CHANGE
