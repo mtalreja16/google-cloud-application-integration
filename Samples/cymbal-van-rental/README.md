@@ -12,18 +12,7 @@ Make sure to go through following setting to deploy app integration successfully
 2. Under the top level Argolis organization, assign Organization Administrator and  Organization Policy Administrator to your argolis admin User 
 <img width="1224" alt="org policy adminitrator" src="https://user-images.githubusercontent.com/93729562/215848116-d1ce44c1-78fe-4a69-b852-481213e1ab6c.png">
 
-3. For the application integration project, open you Organization Policy and make exception to allow ingress for cloud run to call app unauthenticated.
-
-<img width="661" alt="domain-restricted" src="https://user-images.githubusercontent.com/93729562/215848114-8659d947-44ea-4d82-98bf-d62f49619b6c.png">
-
-<img width="688" alt="allowingress cloud run " src="https://user-images.githubusercontent.com/93729562/215848099-93b00d28-80c3-402e-8309-25df9071f782.png">
-
-4. Also, for the application integration project, change the org policy for cloudfunction as it also need to be called through app integration under specific user account 
-
-<img width="635" alt="allowingress cloud function" src="https://user-images.githubusercontent.com/93729562/215848109-e647f606-885d-4f3d-b0d0-603f05b1ec0e.png">
-
-
-5. Make sure you Integration is enabled and provisioned with all the settings, refer link below
+3. Make sure you Integration is enabled and provisioned with all the settings, refer link below
 https://cloud.google.com/application-integration/docs/setup-integration
 
 # Setup Integration 
