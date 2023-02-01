@@ -14,7 +14,7 @@ locals {
   pubsubconnector = "inventory"     # DO NOT CHANGE
   gcsconnector    = "partner-feed"  # DO NOT CHANGE
 
-  
+  sql_proxy_pid = ""
 }
 
 provider "google" {
@@ -311,9 +311,9 @@ resource "null_resource" "download_proxy" {
 }
 
 resource "null_resource" "cloud_sql_proxy" {
-  depends_on = [null_resource.cloud_sql_proxy]
+  depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
-    command = "./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$!"
+    command = "./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$! && echo $! > sql_proxy_pid"
   }
 }
 
@@ -321,11 +321,14 @@ resource "null_resource" "cloud_sql_import" {
   depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
     command = <<EOF
+      sleep 20
       mysql -u ${local.user}  --password=${random_password.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql
       kill $(cat sql_proxy_pid)
     EOF
   }
 }
+
+
 
 /*resource "null_resource" "openmysql" {
   provisioner "local-exec" {
