@@ -376,13 +376,14 @@ resource "null_resource" "createconnector" {
       integrationcli connectors create -n ${local.gcsconnector} -f ${local_file.gcs_file.filename} --wait=true
     EOF
   }
+   depends_on = [
+    null_resource.cloud_sql_import
+  ]
 }
 
 
 resource "null_resource" "createintegration" {
-  depends_on = [
-    null_resource.createconnector
-  ]
+ 
   provisioner "local-exec" {
     command = <<EOF
     export PATH=$PATH:$HOME/.integrationcli/bin &&
