@@ -16,9 +16,6 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
-- id: 'pull the code'
-  name: 'gcr.io/cloud-builders/git'
-  args: ['clone', 'https://github.com/mtalreja16/google-cloud-application-integration.git']
 - id: 'Create connections if not present'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
@@ -28,18 +25,13 @@ steps:
       gcloud auth print-access-token > /tmp/token
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
-
       #find connection
       for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
       do
         conname=$(basename ${connection%.*})
-        
         /tmp/integrationcli connectors get -n $conname;
-        
         echo $? >/tmp/$conname
-        
         echo "status_code_content" $(cat /tmp/$conname)
-   
         if [ $(cat /tmp/$conname) -ne 0 ]; then       
           echo "create connector"
           set -e
@@ -56,22 +48,15 @@ steps:
       gcloud auth print-access-token > /tmp/token
       /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
       /tmp/integrationcli token cache -t $(cat /tmp/token)
-
       for file in $(find google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/* -type f ! -name overrides.json);
       do 
-
-        echo $(basename "$(dirname "$file")") > /tmp/name
+        echo  > /tmp/name
         echo  $file > /tmp/filename
-
         /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA > /tmp/response
-
         echo "integration response: " $(cat /tmp/response)
         basename $(cat /tmp/response | jq -r .name) > /tmp/version
         echo "integration version: " $(cat /tmp/version)
-
-        #publish the integration version
         /tmp/integrationcli integrations versions publish -n $(cat /tmp/name) -v $(cat /tmp/version)
-
       done;
 #the name of the service account  to use when setting up the connector
 substitutions:

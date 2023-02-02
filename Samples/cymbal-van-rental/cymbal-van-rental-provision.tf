@@ -304,7 +304,10 @@ resource "null_resource" "download_proxy" {
 resource "null_resource" "cloud_sql_proxy" {
   depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
-    command = "./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$! && echo $! > sql_proxy_pid"
+     command = <<EOF
+      echo ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 > mysqlcmd.txt
+      ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$! && echo $! > sql_proxy_pid
+     EOF
   }
 }
 
@@ -312,8 +315,9 @@ resource "null_resource" "cloud_sql_import" {
   depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
     command = <<EOF
-      sleep 20
-      mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql
+      sleep 10 &&
+      echo mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} > mysqlcmd.txt &&
+      mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql &&
       kill $(cat sql_proxy_pid)
     EOF
   }
@@ -321,22 +325,6 @@ resource "null_resource" "cloud_sql_import" {
 
 
 
-/*resource "null_resource" "openmysql" {
-  provisioner "local-exec" {
-    command = <<EOF
-    set -e
-     ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & 
-     sql_proxy_pid=$! && 
-     sleep 2 && 
-     mysql -u ${local.user} --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql && 
-     kill $sql_proxy_pid
-    EOF
-  }
-  depends_on = [
-    null_resource.downloadproxy
-
-  ]
-}*/
 
 resource "local_file" "connector_file" {
   content = templatefile("template/mysql-connector.json", {
@@ -388,9 +376,6 @@ resource "null_resource" "createconnector" {
       integrationcli connectors create -n ${local.gcsconnector} -f ${local_file.gcs_file.filename} --wait=true
     EOF
   }
-  depends_on = [
-    null_resource.cloud_sql_import
-  ]
 }
 
 
