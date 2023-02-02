@@ -40,4 +40,4 @@ And wait for about 20 min
 navigate to cloudrun app "reservation-app" find the url and you should see the app running which is interacting with app integration
 
 
-Note -> There is inconsistent behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.
+*Note -> There is inconsistent behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.
