@@ -373,7 +373,7 @@ resource "null_resource" "createconnector" {
       integrationcli connectors create -n ${local.gcsconnector} -f ${local_file.gcs_file.filename} --wait=true
     EOF
   }
-   depends_on = [
+  depends_on = [
     null_resource.cloud_sql_import
   ]
 }
