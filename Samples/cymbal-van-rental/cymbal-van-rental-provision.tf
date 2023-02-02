@@ -1,5 +1,5 @@
 locals {
-  location             = ""                 # Add region
+  location             = "us-central1"      # DO NOT CHANGE
   project              = ""                 # Add ProjectId
   projectnumber        = ""                 # Add ProjectId
   dbinstance           = "reservation-demo" # DO NOT CHANGE
@@ -305,7 +305,7 @@ resource "null_resource" "cloud_sql_proxy" {
   depends_on = [null_resource.download_proxy]
   provisioner "local-exec" {
      command = <<EOF
-      echo ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 > mysqlcmd.txt
+      echo ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 > mysqlproxy.sh
       ./cloud_sql_proxy -dir cloudsql -instances=${local.project}:${local.location}:${local.dbinstance}=tcp:3306 & sql_proxy_pid=$! && echo $! > sql_proxy_pid
      EOF
   }
@@ -316,15 +316,12 @@ resource "null_resource" "cloud_sql_import" {
   provisioner "local-exec" {
     command = <<EOF
       sleep 10 &&
-      echo mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} > mysqlcmd.txt &&
+      echo mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} > mysqlcmd.sh &&
       mysql -u ${local.user}  --password=${random_string.password.result} --host 127.0.0.1 --database=${local.dbname} <db/reservationdb.sql &&
       kill $(cat sql_proxy_pid)
     EOF
   }
 }
-
-
-
 
 resource "local_file" "connector_file" {
   content = templatefile("template/mysql-connector.json", {
@@ -383,7 +380,6 @@ resource "null_resource" "createconnector" {
 
 
 resource "null_resource" "createintegration" {
- 
   provisioner "local-exec" {
     command = <<EOF
     export PATH=$PATH:$HOME/.integrationcli/bin &&
