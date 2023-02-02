@@ -380,6 +380,9 @@ resource "null_resource" "createconnector" {
 
 
 resource "null_resource" "createintegration" {
+  depends_on = [
+    null_resource.createconnector
+  ]
   provisioner "local-exec" {
     command = <<EOF
     export PATH=$PATH:$HOME/.integrationcli/bin &&
