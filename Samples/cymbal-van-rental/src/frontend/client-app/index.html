@@ -1,71 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cymbal Van Rentals</title>
-
-  <!-- Bootstrap first, custom second to override bootstrap-->
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <link rel="stylesheet" href="css/home.css">
-
-  <!-- Links for fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
-</head>
-
-<body>
-
-  <nav class="navbar fixed-top navbar-dark navbar-expand-md">
-    <div class="container-lg">
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="navbar-nav ml-auto">
-          <a href="index.html" class="nav-link mx-3 active">Home</a>
-          <a href="search.html" class="nav-link mx-3">Search</a>
-          <a href="myreservation.html" class="nav-link mx-3">My Reservation</a>
-          <a href="support.html" class="nav-link mx-3">Support</a>
-          <a  class="nav-link mx-3 active" href="demo.html">
-            <img src="img/unnamed.png" alt="RV/Van" />
-            </a>
-        </div>
+<html>
+  <head>
+    <title>App Integration - Demo Page</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/demo.css" />
+    <link rel="icon" type="image/x-icon" href="img/icon.ico">
+  </head>
+  <body background="img/unnamed.png">
+    <h1 >Cymbal Van Rentals - Application Integration Demo</h1>
+    <div class="container">
+      <div class="buttons-container">
+        <table class="table text-center" >
+        <tr>
+          <td>
+            <img src="img/person.png" width="200px" height="200px"  />
+          </td>
+          <td>
+            <img src="img/agent.png" width="200px" height="200px"  />
+          </td>
+          <td>
+            <img src="img/partner.png" width="200px" height="200px"  />
+          </td>
+        </tr>
+        <tr>
+          <td><a href="customer.html" class="customer-button">Customer</a></td>
+          <td> <a href="agent-search.html" class="agent-button">Agent</a></td>
+          <td> <a href="partner.html" class="partner-button">Partner</a></td>
+        </tr>
+      </table>
+      
+      </div>
+      
+       
       </div>
     </div>
-  </nav>
-
-  <header id="header">
-    <div class="hero-content container-lg d-flex flex-column justify-content-center align-items-center text-center">
-      <h1 class="display-3 font-weight-normal">Cymbal Van Rentals</h1>
-      <h2 class="font-weight-lighter">The Gateway to All Your Van Rental Needs</h2>
-      <div class="my-3">
-        <a href="search.html"><button class="btn btn-lg btn-primary p-2 px-3 p-md-3 mx-1">Search Now</button></a>
-      </div>
-    </div>
-  </header>
-
-  
-
-  <!-- Links to our social media pages>-->
-  <footer id="footer" class="px-3 px-lg-0 pb-5">
-    <div class="container-lg">
-      <div class="links pt-5 row">
-        <a href="#footer">Facebook</a>
-        <a href="#footer" class="mx-4">Twitter</a>
-        <a href="support.html">Support</a>
-      </div>
-      <div class="pt-4 row">
-        <p class="text-muted"> &COPY; 2022 Cymbal Van Rentals. &mdash; All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-
-  <!-- Scripts -->
-  <script src="js/jquery.min.js"></script>
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/ebcfb76865.js" crossorigin="anonymous"></script>
-  <script src="js/home.js"></script>
-</body>
-
+  </body>
 </html>

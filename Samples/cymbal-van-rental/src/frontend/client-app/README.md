@@ -8,7 +8,7 @@ We have built app for 3 personas
 
 ## Customer looking to Purchase a Van rental
 
-Landing page - Integration-Demo/client-app/index.html
+Landing page - Integration-Demo/client-app/customer.html
 
 ![image10](https://user-images.githubusercontent.com/93729562/210857426-1fc751b6-6629-4843-83f0-10c9234ebbec.png)
 
