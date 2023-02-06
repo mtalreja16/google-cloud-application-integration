@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -17,8 +18,8 @@ import (
 var (
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://localhost:8080/callback",
-		ClientID:     "YOUR_CLIENT_ID",
-		ClientSecret: "YOUR_CLIENT_SECRET",
+		ClientID:     "637254239955-ah8smfh2d0g71tqur5f8asi2hjf6vb5d.apps.googleusercontent.com",
+		ClientSecret: "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",
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
@@ -35,12 +36,51 @@ func main() {
 	mux := http.NewServeMux()
 	var jsonBody []byte
 
-	http.HandleFunc("/", handleMain)
-	http.HandleFunc("/login", handleGoogleLogin)
-	http.HandleFunc("/callback", handleGoogleCallback)
+	var authorized = false
 
-	fs := http.FileServer(http.Dir("client-app"))
-	mux.Handle("/", http.StripPrefix("/", fs))
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		googleIDToken := r.Header.Get("Authorization")
+		if googleIDToken == "" && !authorized {
+			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
+			return
+		}
+		fs := http.FileServer(http.Dir("client-app"))
+		fs.ServeHTTP(w, r)
+	})
+
+	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+		url := googleOauthConfig.AuthCodeURL(oauthStateString)
+		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+	})
+
+	mux.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
+		state := r.FormValue("state")
+		if state != oauthStateString {
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
+		}
+
+		code := r.FormValue("code")
+		token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+		log.Print(token)
+		if err != nil {
+			http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+			return
+		}
+
+		// Add a flag to indicate that the user is authorized
+		authorized = true
+
+		// Add a session cookie to store the user's authentication status
+		sessionCookie := &http.Cookie{
+			Name:     "session",
+			Value:    "authenticated",
+			HttpOnly: true,
+		}
+		http.SetCookie(w, sessionCookie)
+
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+	})
 
 	mux.HandleFunc("/run", func(w http.ResponseWriter, r *http.Request) {
 		setupCorsResponse(&w, r)
@@ -150,33 +190,6 @@ func execIntegration(integrationsService *integrations.Service, name string, tri
 		return nil, err
 	}
 	return jsonBody, nil
-}
-func handleMain(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "<a href='/login'>Google Login</a>")
-}
-
-func handleGoogleLogin(w http.ResponseWriter, r *http.Request) {
-	url := googleOauthConfig.AuthCodeURL(oauthStateString)
-	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
-}
-
-func handleGoogleCallback(w http.ResponseWriter, r *http.Request) {
-	state := r.FormValue("state")
-	if state != oauthStateString {
-		fmt.Printf("invalid oauth state, expected '%s', got '%s'\n", oauthStateString, state)
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
-	code := r.FormValue("code")
-	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
-	if err != nil {
-		fmt.Println("Code exchange failed with '%s'\n", err)
-		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-		return
-	}
-
-	fmt.Fprintf(w, "Login Successful! Token: %s\n", token.AccessToken)
 }
 
 func liftIntegration(integrationsService *integrations.Service, name string, executionId string) ([]byte, error) {

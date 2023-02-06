@@ -4,6 +4,8 @@ go 1.19
 
 require google.golang.org/api v0.105.0
 
+require github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+
 require (
 	cloud.google.com/go/compute v1.13.0 // indirect
 	cloud.google.com/go/compute/metadata v0.2.2 // indirect
