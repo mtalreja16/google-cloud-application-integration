@@ -4,7 +4,11 @@ go 1.19
 
 require google.golang.org/api v0.105.0
 
-require github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/gorilla/securecookie v1.1.1 // indirect
+	github.com/gorilla/sessions v1.2.1 // indirect
+)
 
 require (
 	cloud.google.com/go/compute v1.13.0 // indirect

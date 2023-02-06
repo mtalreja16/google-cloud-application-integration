@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/sessions"
 	cors "github.com/rs/cors"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -36,11 +37,12 @@ func main() {
 	mux := http.NewServeMux()
 	var jsonBody []byte
 
-	var authorized = false
+	var store = sessions.NewCookieStore([]byte("secret-key"))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		googleIDToken := r.Header.Get("Authorization")
-		if googleIDToken == "" && !authorized {
+		session, _ := store.Get(r, "session-name")
+		authorized := session.Values["authorized"]
+		if authorized == nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
 		}
@@ -68,17 +70,9 @@ func main() {
 			return
 		}
 
-		// Add a flag to indicate that the user is authorized
-		authorized = true
-
-		// Add a session cookie to store the user's authentication status
-		sessionCookie := &http.Cookie{
-			Name:     "session",
-			Value:    "authenticated",
-			HttpOnly: true,
-		}
-		http.SetCookie(w, sessionCookie)
-
+		session, _ := store.Get(r, "session-name")
+		session.Values["authorized"] = true
+		session.Save(r, w)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 	})
 
