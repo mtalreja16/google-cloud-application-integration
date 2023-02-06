@@ -7,7 +7,7 @@
 				"TriggerUrl": {
 					"key": "TriggerUrl",
 					"value": {
-						"stringValue": "https://us-central1-integration-demo-364406.cloudfunctions.net/pullmessages"
+						"stringValue": "https://${location}-${project}.cloudfunctions.net/pullmessages"
 					}
 				}
 			}
