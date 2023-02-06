@@ -17,9 +17,9 @@ import (
 
 var (
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/callback",
-		ClientID:     "637254239955-ah8smfh2d0g71tqur5f8asi2hjf6vb5d.apps.googleusercontent.com",
-		ClientSecret: "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",
+		RedirectURL:  os.Getenv("uri"),
+		ClientID:     os.Getenv("client_id"),
+		ClientSecret: os.Getenv("client_secret"),
 		Scopes: []string{
 			"https://www.googleapis.com/auth/userinfo.email",
 		},
