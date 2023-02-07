@@ -16,6 +16,9 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
+- id: 'pull the code'
+  name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/mtalreja16/google-cloud-application-integration.git']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'gcr.io/$PROJECT_ID/reservation-app:latest', './src/frontend']
 - name: 'gcr.io/cloud-builders/docker'
