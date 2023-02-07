@@ -16,28 +16,50 @@
 # gcloud builds submit --config=deploy.yaml --project=project-name --region=us-west1
 
 steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/reservation-app:latest', './src/frontend']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/$PROJECT_ID/reservation-app:latest']
+
 - id: 'Create connections if not present'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
   args:
     - -c
     - |
-      gcloud auth print-access-token > /tmp/token
-      /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
-      /tmp/integrationcli token cache -t $(cat /tmp/token)
-      #find connection
-      for connection in $(find  google-cloud-application-integration/Samples/cymbal-van-rental/connectors/* -type f);
-      do
-        conname=$(basename ${connection%.*})
-        /tmp/integrationcli connectors get -n $conname;
-        echo $? >/tmp/$conname
-        echo "status_code_content" $(cat /tmp/$conname)
-        if [ $(cat /tmp/$conname) -ne 0 ]; then       
-          echo "create connector"
-          set -e
-          /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
-        fi
-      done;
+       # Authenticate and store token
+        gcloud auth print-access-token | tee /tmp/token
+
+        # Set integration preferences
+        /tmp/integrationcli prefs set --nocheck=true --apigee-integration=false --reg=$LOCATION --proj=$PROJECT_ID
+
+        # Cache token
+        /tmp/integrationcli token cache -t $(cat /tmp/token)
+
+        # Loop through integration files and create, publish integrations
+        for file in $(find google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/* -type f ! -name overrides.json); do
+          # Store integration name
+          echo $(basename $file | cut -d'.' -f1) > /tmp/name
+          
+          # Store integration file name
+          echo $file > /tmp/filename
+          
+          # Create integration
+          /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o google-cloud-application-integration/Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA | tee /tmp/response
+          
+          # Display integration response
+          echo "integration response: " $(cat /tmp/response)
+          
+          # Store integration version
+          echo $(jq -r .name < /tmp/response | xargs basename) > /tmp/version
+          
+          # Display integration version
+          echo "integration version: " $(cat /tmp/version)
+          
+          # Publish integration
+          /tmp/integrationcli integrations versions publish -n $(cat /tmp/name) -v $(cat /tmp/version)
+        done
+
 - id: 'Create and publish the integration version'
   name: ghcr.io/srinandan/integrationcli-builder:latest
   entrypoint: 'bash'
@@ -60,9 +82,9 @@ steps:
       done;
 #the name of the service account  to use when setting up the connector
 substitutions:
-  _SERVICE_ACCOUNT_NAME: "reservation-demo@integration-golden-demo.iam.gserviceaccount.com"
-  _KMS_RING_NAME: "test"
-  _KMS_KEY_NAME: "test"
+  _SERVICE_ACCOUNT_NAME: "reservation-demo@dynolab-integration.iam.gserviceaccount.com"
+  _KMS_RING_NAME: "appint_keyring"
+  _KMS_KEY_NAME: "appint_key"
 
 options:
   logging: CLOUD_LOGGING_ONLY

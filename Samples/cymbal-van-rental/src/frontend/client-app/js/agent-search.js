@@ -17,7 +17,7 @@ function submitVanPickedup(id) {
       }).then(response => response.json())
         .then(data => {
           var out = JSON.stringify(data);
-          if(data.executionId!=null)
+          if(data!=null && data.executionId!=null)
           {
             $alertContainer.append(
               `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
@@ -105,11 +105,11 @@ function submitVanPickedup(id) {
     .then(data => {
       var out = JSON.stringify(data);
     
-    if(data.eventExecutionInfoId!=null)
+    if(data!=null && data.eventExecutionInfoId!=null)
     {
       $alertContainer.append(
         `<div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-          <p class="mb-0">Van Return was complete!!
+          <p class="mb-0">Van Reservation Confirmed!!
             ${out}
           </p>
         </div>`);
@@ -144,7 +144,7 @@ function submitVanPickedup(id) {
         .then(data => {
           // Extract data points from payload
           console.log(JSON.stringify(data.outputParameters));
-          if(data.outputParameters.reservations == '')
+          if(data!=null && data.outputParameters!=null && data.outputParameters.reservations == '')
           {
             const div = document.getElementById('searchResults');
             div.innerHTML = "<p>No reservations found!!</p>";
