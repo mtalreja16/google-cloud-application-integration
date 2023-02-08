@@ -7,11 +7,11 @@
 "configVariables": [
 	{
 		"key": "project_id",
-		"stringValue": "integration-golden-demo"
+		"stringValue": "PROJECT_ID"
 	},
 	{
 		"key": "database_region",
-		"stringValue": "us-west1"
+		"stringValue": "LOCATION"
 	},
 	{
 		"key": "instance_id",
@@ -22,7 +22,7 @@
 		"stringValue": "catalog"
 	}
 ],
-"serviceAccount":"reservation-demo@integration-golden-demo.iam.gserviceaccount.com",
+"serviceAccount":"reservation-demo@PROJECT_ID.iam.gserviceaccount.com",
 "authConfig": {
 	"authType": "USER_PASSWORD",
 	"userPassword": {

@@ -8,8 +8,8 @@
     "configVariables": [
             {
                     "key": "project_id",
-                    "stringValue": "integration-golden-demo"
+                    "stringValue": "PROJECT_ID"
             }
     ],
-    "serviceAccount":"reservation-demo@integration-golden-demo.iam.gserviceaccount.com"
+    "serviceAccount":"reservation-demo@PROJECT_ID.iam.gserviceaccount.com"
 }
