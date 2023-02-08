@@ -7,7 +7,7 @@
 				"TriggerUrl": {
 					"key": "TriggerUrl",
 					"value": {
-						"stringValue": "https://${location}-${project}.cloudfunctions.net/pullmessages"
+						"stringValue": "https://us-central1-dynolab-integration.cloudfunctions.net/pullMessages"
 					}
 				}
 			}

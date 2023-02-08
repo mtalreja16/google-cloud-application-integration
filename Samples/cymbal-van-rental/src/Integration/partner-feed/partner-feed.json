@@ -1,146 +1,123 @@
 {
-	"triggerConfigs": [
-		{
-			"label": "runs every 10 min",
-			"startTasks": [
-				{
-					"taskId": "1"
-				}
-			],
-			"properties": {
-				"Timer Name": "cymbalvan-Inventory-update_Timer_1",
-				"Scheduled Time spec": "0 */10 * * *"
-			},
-			"triggerType": "CRON",
-			"triggerNumber": "1",
-			"triggerId": "cron_trigger/cymbalvan-Inventory-update_Timer_1/0+*%2F10+*+*+*"
-		}
-	],
-	"taskConfigs": [
-		{
-			"task": "CloudFunctionTask",
-			"taskId": "1",
-			"parameters": {
-				"TriggerUrl": {
-					"key": "TriggerUrl",
-					"value": {
-						"stringValue": "https://us-central1-integration-demo-364406.cloudfunctions.net/pullmessages"
-					}
-				},
-				"data": {
-					"key": "data",
-					"value": {
-						"stringValue": "$data$"
-					}
-				}
-			},
-			"nextTasks": [
-				{
-					"taskId": "3"
-				}
-			],
-			"taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-			"displayName": "pull Messages from Queue"
-		},
-		{
-			"task": "GenericConnectorTask",
-			"taskId": "4",
-			"parameters": {
-				"connectorInputPayload": {
-					"key": "connectorInputPayload",
-					"value": {
-						"stringValue": "$`Task_4_connectorInputPayload`$"
-					}
-				},
-				"config": {
-					"key": "config",
-					"value": {
-						"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/integration-demo-364406/locations/us-west1/connections/partner-feed\",\n    \"serviceName\": \"projects/b58fc4d6f1ce89061-tp/locations/us-west1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/integration-demo-364406/locations/global/providers/gcp/connectors/gcs/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
-					}
-				},
-				"connectorOutputPayload": {
-					"key": "connectorOutputPayload",
-					"value": {
-						"stringValue": "$`Task_4_connectorOutputPayload`$"
-					}
-				},
-				"actionName": {
-					"key": "actionName",
-					"value": {
-						"stringValue": "UploadObject"
-					}
-				}
-			},
-			"taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-			"displayName": "partner-feed"
-		},
-		{
-			"task": "FieldMappingTask",
-			"taskId": "3",
-			"parameters": {
-				"FieldMappingConfigTaskParameterKey": {
-					"key": "FieldMappingConfigTaskParameterKey",
-					"value": {
-						"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$remotefilename$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"CONCAT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"baseFunction\": {\n                \"functionType\": {\n                  \"baseFunction\": {\n                    \"functionName\": \"GET_UUID\"\n                  }\n                }\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ObjectName$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"booleanValue\": true\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.HasBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"inte-partnerfeed\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.Bucket$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_BASE_64\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ContentBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
-					}
-				}
-			},
-			"nextTasks": [
-				{
-					"taskId": "4"
-				}
-			],
-			"taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-			"displayName": "Map data to gcs connector"
-		}
-	],
-	"integrationParameters": [
-		{
-			"key": "outputvar",
-			"dataType": "JSON_VALUE",
-			"displayName": "outputvar"
-		},
-		{
-			"key": "test",
-			"dataType": "STRING_VALUE",
-			"displayName": "test"
-		},
-		{
-			"key": "data",
-			"dataType": "STRING_VALUE",
-			"defaultValue": {
-				"stringValue": ""
-			},
-			"displayName": "data"
-		},
-		{
-			"key": "record",
-			"dataType": "INT_VALUE",
-			"displayName": "record"
-		},
-		{
-			"key": "remotefilename",
-			"dataType": "STRING_VALUE",
-			"defaultValue": {
-				"stringValue": "/pub/example/abc.txt"
-			},
-			"displayName": "remotefilename"
-		},
-		{
-			"key": "`Task_4_connectorInputPayload`",
-			"dataType": "JSON_VALUE",
-			"displayName": "`Task_4_connectorInputPayload`",
-			"producer": "1_4",
-			"jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"FolderPath\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The path to the folder that will receive the data of the object.\"\n    },\n    \"Content\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The Content to be uploaded in the bucket\"\n    },\n    \"ObjectName\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The name of the uploaded object. It should be specified only when uploading the content as InputStream.\"\n    },\n    \"ContentBytes\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"Bytes content to upload as file.\"\n    },\n    \"HasBytes\": {\n      \"type\": [\"boolean\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"Whether to upload content as bytes.\",\n      \"default\": false\n    },\n    \"Bucket\": {\n      \"type\": \"string\",\n      \"readOnly\": false,\n      \"description\": \"Bucket name where the object will be uploaded.\"\n    }\n  }\n}"
-		},
-		{
-			"key": "`Task_4_connectorOutputPayload`",
-			"dataType": "JSON_VALUE",
-			"displayName": "`Task_4_connectorOutputPayload`",
-			"isTransient": true,
-			"producer": "1_4",
-			"jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\"\n  }\n}"
-		}
-	]
+  "name": "projects/212527619573/locations/us-central1/integrations/partner-feed/versions/45c9064f-1a9a-414a-b51c-20bbdc52bf6f",
+  "updateTime": "2023-02-08T05:10:57.367Z",
+  "createTime": "2023-02-07T07:32:14.871Z",
+  "lastModifierEmail": "reservation-demo@dynolab-integration.iam.gserviceaccount.com",
+  "triggerConfigs": [{
+    "label": "runs every 10 min",
+    "startTasks": [{
+      "taskId": "5"
+    }],
+    "properties": {
+      "Timer Name": "cymbalvan-Inventory-update_Timer_1",
+      "Scheduled Time spec": "*/10 * * * *"
+    },
+    "triggerType": "CRON",
+    "triggerNumber": "1",
+    "triggerId": "cron_trigger/cymbalvan-Inventory-update_Timer_1/*%2F10+*+*+*+*"
+  }],
+  "taskConfigs": [{
+    "task": "GenericConnectorTask",
+    "taskId": "4",
+    "parameters": {
+      "connectorInputPayload": {
+        "key": "connectorInputPayload",
+        "value": {
+          "stringValue": "$`Task_4_connectorInputPayload`$"
+        }
+      },
+      "config": {
+        "key": "config",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/dynolab-integration/locations/us-central1/connections/partner-feed\",\n    \"serviceName\": \"projects/db62e795507c32c1b-tp/locations/us-central1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/dynolab-integration/locations/global/providers/gcp/connectors/gcs/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+        }
+      },
+      "connectorOutputPayload": {
+        "key": "connectorOutputPayload",
+        "value": {
+          "stringValue": "$`Task_4_connectorOutputPayload`$"
+        }
+      },
+      "actionName": {
+        "key": "actionName",
+        "value": {
+          "stringValue": "UploadObject"
+        }
+      }
+    },
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "partner-feed"
+  }, {
+    "task": "CloudFunctionTask",
+    "taskId": "5",
+    "parameters": {
+      "TriggerUrl": {
+        "key": "TriggerUrl",
+        "value": {
+          "stringValue": "https://us-central1-dynolab-integration.cloudfunctions.net/pullMessages"
+        }
+      },
+      "authConfig": {
+        "key": "authConfig",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.authconfig.AuthConfigTaskParam\"\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "3"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "pull Messages from Queue"
+  }, {
+    "task": "FieldMappingTask",
+    "taskId": "3",
+    "parameters": {
+      "FieldMappingConfigTaskParameterKey": {
+        "key": "FieldMappingConfigTaskParameterKey",
+        "value": {
+          "jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$remotefilename$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"CONCAT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"baseFunction\": {\n                \"functionType\": {\n                  \"baseFunction\": {\n                    \"functionName\": \"GET_UUID\"\n                  }\n                }\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ObjectName$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"booleanValue\": true\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.HasBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"stringValue\": \"inte-feed-1d4821f3\"\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.Bucket$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_BASE_64\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ContentBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"INT_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"SIZE\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$payloadlength$\",\n      \"fieldType\": \"INT_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+        }
+      }
+    },
+    "nextTasks": [{
+      "taskId": "4",
+      "condition": "$payloadlength$ \u003e 0",
+      "displayName": "payloadsize \u003e 0"
+    }],
+    "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
+    "displayName": "Map data to gcs connector"
+  }],
+  "integrationParameters": [{
+    "key": "data",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": ""
+    },
+    "displayName": "data"
+  }, {
+    "key": "`Task_4_connectorInputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_4_connectorInputPayload`",
+    "producer": "1_4",
+    "jsonSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"FolderPath\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The path to the folder that will receive the data of the object.\"\n    },\n    \"Content\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The Content to be uploaded in the bucket\"\n    },\n    \"ObjectName\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"The name of the uploaded object. It should be specified only when uploading the content as InputStream.\"\n    },\n    \"ContentBytes\": {\n      \"type\": [\"string\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"Bytes content to upload as file.\"\n    },\n    \"HasBytes\": {\n      \"type\": [\"boolean\", \"null\"],\n      \"readOnly\": false,\n      \"description\": \"Whether to upload content as bytes.\",\n      \"default\": false\n    },\n    \"Bucket\": {\n      \"type\": \"string\",\n      \"readOnly\": false,\n      \"description\": \"Bucket name where the object will be uploaded.\"\n    }\n  }\n}"
+  }, {
+    "key": "`Task_4_connectorOutputPayload`",
+    "dataType": "JSON_VALUE",
+    "displayName": "`Task_4_connectorOutputPayload`",
+    "isTransient": true,
+    "producer": "1_4",
+    "jsonSchema": "{\n  \"type\": \"array\",\n  \"items\": {\n    \"type\": \"object\"\n  }\n}"
+  }, {
+    "key": "payloadlength",
+    "dataType": "INT_VALUE",
+    "displayName": "payloadlength"
+  }, {
+    "key": "remotefilename",
+    "dataType": "STRING_VALUE",
+    "defaultValue": {
+      "stringValue": "base.txt"
+    },
+    "displayName": "remotefilename"
+  }]
 }
-
