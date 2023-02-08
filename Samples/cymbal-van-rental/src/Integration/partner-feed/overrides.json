@@ -2,7 +2,7 @@
 	"task_overrides": [
 		{
 			"task": "CloudFunctionTask",
-			"taskId": "1",
+			"taskId": "5",
 			"parameters": {
 				"TriggerUrl": {
 					"key": "TriggerUrl",
