@@ -39,5 +39,13 @@ Execute
 And wait for about 20 min
 navigate to cloudrun app "reservation-app" find the url and you should see the app running which is interacting with app integration
 
+Once you complete the deployment, you will see integration "partner-feed", Make sure you update the url for cloudfunction task, pointing to cloudfunction deployed in your project :
+
+<img width="381" alt="img" src="https://user-images.githubusercontent.com/93729562/217446114-ecf516c2-ab45-4bba-b7bc-fac16023f018.png">
+
+Also update the Bucket name in the partner-feed integration
+
+<img width="379" alt="imag" src="https://user-images.githubusercontent.com/93729562/217446739-2d86ee16-0dc2-46f4-a049-3297180193e8.png">
+
 
 *There is inconsistent behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.*
