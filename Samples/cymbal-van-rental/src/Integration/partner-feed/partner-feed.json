@@ -1,11 +1,4 @@
 {
-	"name": "projects/901962132371/locations/us-west1/integrations/cymbalvan-Inventory-update/versions/c0b7abcc-3fce-4057-a5aa-59b02202eb95",
-	"origin": "UI",
-	"snapshotNumber": "7",
-	"updateTime": "2023-01-27T23:44:30.219Z",
-	"createTime": "2023-01-27T16:24:37.119Z",
-	"lastModifierEmail": "mtalreja@google.com",
-	"state": "ACTIVE",
 	"triggerConfigs": [
 		{
 			"label": "runs every 10 min",

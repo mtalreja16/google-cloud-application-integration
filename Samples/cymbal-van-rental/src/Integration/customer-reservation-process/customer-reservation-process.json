@@ -1,11 +1,4 @@
 {
-	"name": "projects/405431248697/locations/us-west1/integrations/customer-reservation-process/versions/f0249989-c81b-4b9d-8c22-1102250028dd",
-	"origin": "UI",
-	"snapshotNumber": "1",
-	"updateTime": "2023-01-28T01:46:08.990Z",
-	"createTime": "2023-01-28T01:42:29.307Z",
-	"lastModifierEmail": "admin@mtalreja.altostrat.com",
-	"state": "SNAPSHOT",
 	"triggerConfigs": [
 		{
 			"label": "create reservation",
