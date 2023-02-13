@@ -39,11 +39,15 @@ Execute
 And wait for about 20 min
 navigate to cloudrun app "reservation-app" find the url and you should see the app running which is interacting with app integration
 
-Once you complete the deployment, you will see integration "partner-feed", Make sure you update the url for cloudfunction task, pointing to cloudfunction deployed in your project :
+# Update partner-feed integration
+
+- Once you complete the deployment, you will see integration "partner-feed", Make sure you update the url for cloudfunction task, pointing to cloudfunction deployed in your project :
 
 <img width="381" alt="img" src="https://user-images.githubusercontent.com/93729562/217446114-ecf516c2-ab45-4bba-b7bc-fac16023f018.png">
 
-Also update the Bucket name in the partner-feed integration
+- Make sure the cloud function's Ingress settings is set to "Allow all traffic"
+
+- Also update the Bucket name in the partner-feed integration
 
 <img width="379" alt="imag" src="https://user-images.githubusercontent.com/93729562/217446739-2d86ee16-0dc2-46f4-a049-3297180193e8.png">
 
