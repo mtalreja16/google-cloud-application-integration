@@ -7,7 +7,7 @@
 				"TriggerUrl": {
 					"key": "TriggerUrl",
 					"value": {
-						"stringValue": "https://us-central1-dynolab-integration.cloudfunctions.net/pullMessages"
+						"stringValue": "https://LOCATION-PROJECT_ID.cloudfunctions.net/pullMessages"
 					}
 				}
 			}
@@ -19,6 +19,14 @@
 			"task": "GenericConnectorTask",
 			"parameters": {
 				"connectionName": "partner-feed"
+			}
+		}
+	],
+	"param_overrides": [
+		{
+			"key": "_Bucket_File_Name",
+			"defaultValue": {
+				"stringValue": "BUCKETNAME"
 			}
 		}
 	]

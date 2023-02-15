@@ -179,8 +179,17 @@ resource "google_cloudfunctions_function" "pullMessages" {
   depends_on = [
     google_storage_bucket_object.zip_file
   ]
+  environment_variables = {
+    projectId = local.project
+  }
 }
 
+resource "google_pubsub_topic" "inventory" {
+  name = local.pubsubconnector
+  depends_on = [
+    google_project_iam_member.member-role
+  ]
+}
 
 resource "google_cloud_run_service" "service" {
   name     = local.cloudrun-app
@@ -198,18 +207,23 @@ resource "google_cloud_run_service" "service" {
           name  = "location"
           value = local.location
         }
+        env {
+          name  = "client_id"
+          value = ""
+        }
+        env {
+          name  = "client_secret"
+          value = ""
+        }
+        env {
+          name  = "uri"
+          value = ""
+        }
       }
     }
   }
   depends_on = [
     null_resource.reservation_app
-  ]
-}
-
-resource "google_pubsub_topic" "inventory" {
-  name = local.pubsubconnector
-  depends_on = [
-    google_project_iam_member.member-role
   ]
 }
 
