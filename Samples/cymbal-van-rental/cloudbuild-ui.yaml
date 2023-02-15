@@ -1,0 +1,15 @@
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - '-t'
+      - 'gcr.io/${_PROJ}/reservation-app:latest'
+      - Samples/cymbal-van-rental/src/frontend
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - 'gcr.io/${_PROJ}/reservation-app:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _PROJ: unused

@@ -1,0 +1,71 @@
+steps:
+  - name: 'ghcr.io/srinandan/integrationcli-builder:latest'
+    args:
+      - '-c'
+      - >
+        gcloud auth print-access-token > /tmp/token
+
+        /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true
+        --apigee-integration=false --reg=$_LOC --proj=$_PROJ
+
+        /tmp/integrationcli token cache -t $(cat /tmp/token)
+
+        #find connection
+
+        for connection in $(find 
+        Samples/cymbal-van-rental/connectors/*
+        -type f);
+
+        do
+          sed -i "s/PROJECT_ID/$_PROJ/g" $connection
+          sed -i "s/LOCATION/$_LOC/g" $connection
+          conname=$(basename ${connection%.*})
+          /tmp/integrationcli connectors get -n $conname;
+          echo $? >/tmp/$conname
+          echo "status_code_content" $(cat /tmp/$conname)
+          if [ $(cat /tmp/$conname) -ne 0 ]; then       
+            echo "create connector"
+            
+            set -e
+            /tmp/integrationcli connectors create -n $conname -f $connection --wait=true
+          fi
+        done;
+    id: Create connections if not present
+    entrypoint: bash
+  - name: 'ghcr.io/srinandan/integrationcli-builder:latest'
+    args:
+      - '-c'
+      - >
+        set -e
+
+        gcloud auth print-access-token > /tmp/token
+
+        /tmp/integrationcli prefs set integrationcli prefs set --nocheck=true
+        --apigee-integration=false --reg=$_LOC --proj=$_PROJ
+
+        /tmp/integrationcli token cache -t $(cat /tmp/token)
+
+        for file in $(find Samples/cymbal-van-rental/src/Integration/* -type f ! -name overrides.json);
+        do 
+          
+          echo $(basename $file | cut -d'.' -f1) > /tmp/name
+          echo  $file > /tmp/filename
+
+          sed -i "s/PROJECT_ID/$_PROJ/g" Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json
+          sed -i "s/LOCATION/$_LOC/g" Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json
+          sed -i "s/BUCKETNAME/$_BUCKETNAME/g" Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json
+
+          /tmp/integrationcli integrations create -n $(cat /tmp/name) -f $(cat /tmp/filename) -o Samples/cymbal-van-rental/src/Integration/$(cat /tmp/name)/overrides.json -u $SHORT_SHA > /tmp/response
+          echo "integration response: " $(cat /tmp/response)
+          basename $(cat /tmp/response | jq -r .name) > /tmp/version
+          echo "integration version: " $(cat /tmp/version)
+          /tmp/integrationcli integrations versions publish -n $(cat /tmp/name) -v $(cat /tmp/version)
+        done;
+    id: Create and publish the integration version
+    entrypoint: bash
+options:
+  logging: CLOUD_LOGGING_ONLY
+substitutions:
+  _SERVICE_ACCOUNT_NAME: reservation-demo@dynolab-integration.iam.gserviceaccount.com
+  _KMS_RING_NAME: appint_keyring
+  _KMS_KEY_NAME: appint_key
