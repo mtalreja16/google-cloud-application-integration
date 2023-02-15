@@ -1,3 +1,10 @@
+# When creating a CloudBuild trigger, use this file as the build configuration
+# add Environment Variables for _PROJ, _LOC, _BUCKETNAME, _SERVICE_ACCOUNT_NAME, _KMS_RING_NAME, _KMS_KEY_NAME
+# add substitutions for _PROJ, _LOC, _BUCKETNAME, _SERVICE_ACCOUNT_NAME, _KMS_RING_NAME, _KMS_KEY_NAME
+# _BUCKETNAME is the name of the bucket which wac created through tf, and co
+# add a trigger for the master branch
+
+
 steps:
   - name: 'ghcr.io/srinandan/integrationcli-builder:latest'
     args:
