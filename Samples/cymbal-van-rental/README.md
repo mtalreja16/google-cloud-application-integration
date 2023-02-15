@@ -39,26 +39,16 @@ Execute
 And wait for about 20 min
 navigate to cloudrun app "reservation-app" find the url and you should see the app running which is interacting with app integration
 
-# Update partner-feed integration
-
-- Once you complete the deployment, you will see integration "partner-feed", Make sure you update the url for cloudfunction task, pointing to cloudfunction deployed in your project :
-
-<img width="381" alt="img" src="https://user-images.githubusercontent.com/93729562/217446114-ecf516c2-ab45-4bba-b7bc-fac16023f018.png">
-
+# Update CloudFunction pullMessages
 - Make sure the cloud function's Ingress settings is set to "Allow all traffic"
 
-- Also update the Bucket name in the partner-feed integration, terraform creates the bucket for you which has prefix of "inte-feed" take the name of the bucket and update here...
-
-<img width="379" alt="imag" src="https://user-images.githubusercontent.com/93729562/217446739-2d86ee16-0dc2-46f4-a049-3297180193e8.png">
-
-* This step is optional, if you setup an CloudBuild to deploy the ongoing changes, then the cloud build is makign sure to update this info through cloud builds, more info you can find here cloudbuild-integration.yaml
 
 # Update the Cloud Run App.
-Cloud Run app is protected by Google Sign in, In order to use App, male sure to follow following steps 
+Cloud Run app is protected by Google Sign in, In order to use App, makee sure to follow following steps 
 
 1. Create OAuth Client
 2. Consent Screen 
+3. Update the Environment variables in cloudrun app with appropriate Client_Id, Client_Secret, and uri
 
-Once you have those in place, make sure to update the Environment variables in cloudrun app with appropriate Client_Id, Client_Secret, and uri
 
-*There is inconsistent behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.*
+*In rare case you might see that database is not created due to unpredictable behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.*
