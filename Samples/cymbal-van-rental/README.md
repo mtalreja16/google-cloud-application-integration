@@ -47,9 +47,18 @@ navigate to cloudrun app "reservation-app" find the url and you should see the a
 
 - Make sure the cloud function's Ingress settings is set to "Allow all traffic"
 
-- Also update the Bucket name in the partner-feed integration
+- Also update the Bucket name in the partner-feed integration, terraform creates the bucket for you which has prefix of "inte-feed" take the name of the bucket and update here...
 
 <img width="379" alt="imag" src="https://user-images.githubusercontent.com/93729562/217446739-2d86ee16-0dc2-46f4-a049-3297180193e8.png">
 
+* This step is optional, if you setup an CloudBuild to deploy the ongoing changes, then the cloud build is makign sure to update this info through cloud builds, more info you can find here cloudbuild-integration.yaml
+
+# Update the Cloud Run App.
+Cloud Run app is protected by Google Sign in, In order to use App, male sure to follow following steps 
+
+1. Create OAuth Client
+2. Consent Screen 
+
+Once you have those in place, make sure to update the Environment variables in cloudrun app with appropriate Client_Id, Client_Secret, and uri
 
 *There is inconsistent behavior from CloudSQLProxy, which get stuck and may not able to finish the provisiong of Tables and Stored proc, if you run into this issue, you will find a file  "mysqlcmd.sh" under google-cloud-application-integration/Samples/cymbal-van-rental and  need to run this file manually using command prompt, just copy the content from the file and run it to provision the tables and stored proc in db.*
