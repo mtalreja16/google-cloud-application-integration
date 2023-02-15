@@ -403,6 +403,9 @@ resource "null_resource" "createintegration" {
     sleep 2 &&
     for file in $(find ./src/Integration/* -type f ! -name overrides.json);
       do 
+        sed -i "s/PROJECT_ID/${local.project}/g" ./src/Integration/$(basename "$(dirname "$file")")/overrides.json 
+        sed -i "s/LOCATION/${local.location}/g" ./src/Integration/$(basename "$(dirname "$file")")/overrides.json 
+        sed -i "s/BUCKETNAME/${google_storage_bucket.integration_bucket_name.name}/g" ./src/Integration/$(basename "$(dirname "$file")")/overrides.json 
         integrationcli integrations create -n $(basename "$(dirname "$file")") -o ./src/Integration/$(basename "$(dirname "$file")")/overrides.json -f $file > ./output.txt &&
         export version=$(cat ./output.txt | jq '.name' | awk -F/ '{print $NF}' | tr -d '\"')  &&
         integrationcli integrations versions publish -n $(basename "$(dirname "$file")")  -v $version - t $token
