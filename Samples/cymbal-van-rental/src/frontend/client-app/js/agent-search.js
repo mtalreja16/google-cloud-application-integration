@@ -57,7 +57,7 @@ function submitVanPickedup(id) {
         "reservation-payload": "{}",
         "reservationid": data.id + ".0",
         "processclaim": claim, 
-        "notes" : document.getElementById("returnNotes").value
+        "notes" : "\"" + document.getElementById("returnNotes").value + "\""
       }),
       headers: {
         'Content-Type': 'application/json'
