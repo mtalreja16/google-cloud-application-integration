@@ -1,7 +1,7 @@
 {
-	"name": "projects/106709695735/locations/us-central1/integrations/partner-feed/versions/2c7683a5-e977-46e2-a7cf-921c8c394440",
-	"updateTime": "2023-02-13T06:48:30.078Z",
-	"createTime": "2023-02-13T03:08:26.255Z",
+	"name": "projects/212527619573/locations/us-central1/integrations/partner-feed/versions/45b4f205-12f6-45bf-baa1-b19398e7c0d2",
+	"updateTime": "2023-03-13T05:21:20.119Z",
+	"createTime": "2023-03-13T05:11:39.553Z",
 	"lastModifierEmail": "mtalreja@google.com",
 	"triggerConfigs": [{
 	  "label": "runs every 10 min",
@@ -14,7 +14,10 @@
 	  },
 	  "triggerType": "CRON",
 	  "triggerNumber": "1",
-	  "triggerId": "cron_trigger/cymbalvan-Inventory-update_Timer_1/*%2F10+*+*+*+*"
+	  "triggerId": "cron_trigger/cymbalvan-Inventory-update_Timer_1/*%2F10+*+*+*+*",
+	  "position": {
+		"x": -210
+	  }
 	}],
 	"taskConfigs": [{
 	  "task": "GenericConnectorTask",
@@ -29,7 +32,7 @@
 		"config": {
 		  "key": "config",
 		  "value": {
-			"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/verdant-coyote-377615/locations/us-central1/connections/partner-feed\",\n    \"serviceName\": \"projects/x0710189dccac574c-tp/locations/us-central1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/verdant-coyote-377615/locations/global/providers/gcp/connectors/gcs/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
+			"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.connectors.GenericConnectorTaskConfig\",\n  \"connection\": {\n    \"connectionName\": \"projects/dynolab-integration/locations/us-central1/connections/partner-feed\",\n    \"serviceName\": \"projects/db62e795507c32c1b-tp/locations/us-central1/namespaces/connectors/services/runtime\",\n    \"connectorVersion\": \"projects/dynolab-integration/locations/global/providers/gcp/connectors/gcs/versions/1\"\n  },\n  \"operation\": \"EXECUTE_ACTION\"\n}"
 		  }
 		},
 		"connectorOutputPayload": {
@@ -46,7 +49,11 @@
 		}
 	  },
 	  "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-	  "displayName": "partner-feed"
+	  "displayName": "partner-feed",
+	  "position": {
+		"x": -210,
+		"y": 378
+	  }
 	}, {
 	  "task": "CloudFunctionTask",
 	  "taskId": "5",
@@ -54,7 +61,7 @@
 		"TriggerUrl": {
 		  "key": "TriggerUrl",
 		  "value": {
-			"stringValue": "https://us-central1-verdant-coyote-377615.cloudfunctions.net/pullMessages"
+			"stringValue": "https://us-central1-dynolab-integration.cloudfunctions.net/pullMessages"
 		  }
 		},
 		"authConfig": {
@@ -68,7 +75,11 @@
 		"taskId": "3"
 	  }],
 	  "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-	  "displayName": "pull Messages from Queue"
+	  "displayName": "pull Messages from Queue",
+	  "position": {
+		"x": -210,
+		"y": 126
+	  }
 	}, {
 	  "task": "FieldMappingTask",
 	  "taskId": "3",
@@ -76,7 +87,7 @@
 		"FieldMappingConfigTaskParameterKey": {
 		  "key": "FieldMappingConfigTaskParameterKey",
 		  "value": {
-			"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$remotefilename$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"CONCAT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"baseFunction\": {\n                \"functionType\": {\n                  \"baseFunction\": {\n                    \"functionName\": \"GET_UUID\"\n                  }\n                }\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ObjectName$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"booleanValue\": true\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.HasBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$_Bucket_File_Name$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.Bucket$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_BASE_64\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ContentBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"INT_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"SIZE\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$payloadlength$\",\n      \"fieldType\": \"INT_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
+			"jsonValue": "{\n  \"@type\": \"type.googleapis.com/enterprise.crm.eventbus.proto.FieldMappingConfig\",\n  \"mappedFields\": [{\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$remotefilename$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"CONCAT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"baseFunction\": {\n                \"functionType\": {\n                  \"baseFunction\": {\n                    \"functionName\": \"GET_UUID\"\n                  }\n                }\n              }\n            }\n          }]\n        }, {\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"CONCAT\"\n            }\n          },\n          \"parameters\": [{\n            \"initialValue\": {\n              \"literalValue\": {\n                \"stringValue\": \".txt\"\n              }\n            }\n          }]\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ObjectName$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"BOOLEAN_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"literalValue\": {\n            \"booleanValue\": true\n          }\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.HasBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$_Bucket_File_Name$\"\n        }\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.Bucket$\",\n      \"fieldType\": \"STRING_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"STRING_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_BASE_64\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$`Task_4_connectorInputPayload`.ContentBytes$\",\n      \"fieldType\": \"JSON_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }, {\n    \"inputField\": {\n      \"fieldType\": \"INT_VALUE\",\n      \"transformExpression\": {\n        \"initialValue\": {\n          \"referenceValue\": \"$data$\"\n        },\n        \"transformationFunctions\": [{\n          \"functionType\": {\n            \"stringFunction\": {\n              \"functionName\": \"TO_JSON\"\n            }\n          }\n        }, {\n          \"functionType\": {\n            \"jsonFunction\": {\n              \"functionName\": \"SIZE\"\n            }\n          }\n        }]\n      }\n    },\n    \"outputField\": {\n      \"referenceKey\": \"$payloadlength$\",\n      \"fieldType\": \"INT_VALUE\",\n      \"cardinality\": \"OPTIONAL\"\n    }\n  }]\n}"
 		  }
 		}
 	  },
@@ -86,7 +97,11 @@
 		"displayName": "payloadsize \u003e 0"
 	  }],
 	  "taskExecutionStrategy": "WHEN_ALL_SUCCEED",
-	  "displayName": "Map data to gcs connector"
+	  "displayName": "Map data to gcs connector",
+	  "position": {
+		"x": -210,
+		"y": 252
+	  }
 	}],
 	"integrationParameters": [{
 	  "key": "data",
@@ -113,18 +128,18 @@
 	  "dataType": "INT_VALUE",
 	  "displayName": "payloadlength"
 	}, {
-	  "key": "remotefilename",
-	  "dataType": "STRING_VALUE",
-	  "defaultValue": {
-		"stringValue": "base.txt"
-	  },
-	  "displayName": "remotefilename"
-	}, {
 	  "key": "_Bucket_File_Name",
 	  "dataType": "STRING_VALUE",
 	  "defaultValue": {
-		"stringValue": "inte-feed-2d304a49"
+		"stringValue": "inte-feed-1d4821f3"
 	  },
 	  "displayName": "_Bucket_File_Name"
+	}, {
+	  "key": "remotefilename",
+	  "dataType": "STRING_VALUE",
+	  "defaultValue": {
+		"stringValue": "feed"
+	  },
+	  "displayName": "remotefilename"
 	}]
   }

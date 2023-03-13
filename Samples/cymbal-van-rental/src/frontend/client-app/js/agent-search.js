@@ -56,7 +56,8 @@ function submitVanPickedup(id) {
       body: JSON.stringify({
         "reservation-payload": "{}",
         "reservationid": data.id + ".0",
-        "processclaim": claim
+        "processclaim": claim, 
+        "notes" : document.getElementById("returnNotes").value
       }),
       headers: {
         'Content-Type': 'application/json'
@@ -217,8 +218,6 @@ function submitVanPickedup(id) {
             html += `<tr><th>Issued State:</th><td>${value}</td></tr>`;
             if(key=="licenseid")
             html += `<tr><th>License Id:</th><td>${value}</td></tr>`;
-            if(key=="gender")
-            html += `<tr><th>Gender:</th><td>${value}</td></tr>`;
             if(key=="pickupdate")
             html += `<tr><th>Pickup Date:</th><td>${value}</td></tr>`;
             if(key=="dropoffdate")
@@ -232,7 +231,7 @@ function submitVanPickedup(id) {
             if(key=="sku_id")
             html += `<tr><th>Requested Van:</th><td>${value}</td></tr>`;
             if(key=="configuration")
-            html += `<tr><th>Requested Conifuration:</th><td>${value}</td></tr>`;
+            html += `<tr><th>Requested Configuration:</th><td>${value}</td></tr>`;
             if(key=="status")
             html += `<tr><th>Reservation Status:</th><td>${value}</td></tr>`;
           }
@@ -245,7 +244,7 @@ function submitVanPickedup(id) {
         }
         else if(pickup == 'Fulfilled')
         {
-          html += `<tr><th>Add Notes: </th><td><textarea type=text class="form-cntrol"></textarea></td></tr>`;
+          html += `<tr><th>Add Notes: </th><td><textarea id="returnNotes" type=text class="form-cntrol"></textarea></td></tr>`;
           html += `<tr><th>Upload Pictures: </th><td><input type=file></input></td></tr>`;
           html += `<tr><th>Process for Claims </th><td><div class="bootstrap-switch-square">
                     <input type="checkbox" data-toggle="switch" name="Resend" id="Resend" />
