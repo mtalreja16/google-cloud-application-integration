@@ -5,14 +5,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
+	"github.com/gorilla/sessions"
 	cors "github.com/rs/cors"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/google"
 	integrations "google.golang.org/api/integrations/v1alpha"
 )
 
-/*var (
+var (
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  os.Getenv("uri"),
 		ClientID:     os.Getenv("client_id"),
@@ -24,7 +28,7 @@ import (
 	}
 	// Some random string, random for each request
 	oauthStateString = "random"
-)*/
+)
 
 func main() {
 	ctx := context.Background()
@@ -33,20 +37,20 @@ func main() {
 	mux := http.NewServeMux()
 	var jsonBody []byte
 
-	//var store = sessions.NewCookieStore([]byte("secret-key"))
+	var store = sessions.NewCookieStore([]byte("secret-key"))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		/*session, _ := store.Get(r, "session-name")
+		session, _ := store.Get(r, "session-name")
 		authorized := session.Values["authorized"]
 		if authorized == nil {
 			http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 			return
-		} */
+		}
 		fs := http.FileServer(http.Dir("client-app"))
 		fs.ServeHTTP(w, r)
 	})
 
-	/*mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
 		url := googleOauthConfig.AuthCodeURL(oauthStateString)
 		http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 	})
@@ -70,7 +74,7 @@ func main() {
 		session.Values["authorized"] = true
 		session.Save(r, w)
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
-	})*/
+	})
 
 	mux.HandleFunc("/run", func(w http.ResponseWriter, r *http.Request) {
 		setupCorsResponse(&w, r)
